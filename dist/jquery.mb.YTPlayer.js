@@ -2069,7 +2069,7 @@ let getYTPVideoID = function (url) {
 			let idx = jQuery('<span/>').addClass('mb_YTPTime');
 			let vURL = YTPlayer.opt.videoURL ? YTPlayer.opt.videoURL : '';
 			if (vURL.indexOf('http') < 0) vURL = 'https://www.youtube.com/watch?v=' + YTPlayer.opt.videoURL;
-			let movieUrl = jQuery('<span/>').html(jQuery.mbYTPlayer.controls.ytLogo).addClass('mb_YTPUrl ytpicon').attr('title', 'view on YouTube').on('click', function () {
+			let movieUrl = jQuery('<span/>').html(jQuery.mbYTPlayer.controls.ytLogo).addClass('mb_YTPUrl ytpicon').attr('title', 'смотреть на YouTube').on('click', function () {
 				window.open(vURL, 'viewOnYT')
 			});
 			let onlyVideo = jQuery('<span/>').html(jQuery.mbYTPlayer.controls.onlyYT).addClass('mb_OnlyYT ytpicon').on('click', function (e) {
