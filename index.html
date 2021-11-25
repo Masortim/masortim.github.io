@@ -1,0 +1,225 @@
+<!--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  jquery.mb.components
+
+  file: demo_videoList_autoChange.html
+  last modified: 10/25/18 8:00 PM
+  Version:  {{ version }}
+  Build:  {{ buildnum }}
+
+  Open Lab s.r.l., Florence - Italy
+  email:  matteo@open-lab.com
+  blog: 	http://pupunzi.open-lab.com
+  site: 	http://pupunzi.com
+  	http://open-lab.com
+
+  Licences: MIT, GPL
+  http://www.opensource.org/licenses/mit-license.php
+  http://www.gnu.org/licenses/gpl.html
+
+  Copyright (c) 2001-2018. Matteo Bicocchi (Pupunzi)
+  :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>youtube Chromeless Player - mb.YTPlayer</title>
+
+  <link href='https://fonts.googleapis.com/css?family=Lekton|Lobster' rel='stylesheet' type='text/css'>
+  <link href="../dist/css/jquery.mb.YTPlayer.min.css" media="all" rel="stylesheet" type="text/css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="../dist/jquery.mb.YTPlayer.js"></script>
+  <script src="assets/apikey.js"></script>
+
+  <style>
+    body {
+      border: none;
+      margin: 0;
+      padding: 30px;
+      background: #003e50;
+      font: normal 16px/20px Lekton, sans-serif;
+    }
+
+    h1,
+    h2 {
+      font-family: 'Lobster', cursive;
+      font-size: 40px;
+      text-shadow: 10px 10px 20px rgba(0, 0, 0, 0.30);
+      font-weight: 200;
+    }
+
+    .player {
+      display: inline-block;
+      vertical-align: top;
+      position: relative;
+      width: 500px;
+      height: 350px;
+      margin-top: 100px !important;
+      left: 0;
+      overflow: hidden;
+      border-radius: 4px;
+      -moz-box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+      box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    }
+
+    #wp {
+      position: fixed;
+      z-index: 10;
+      min-width: 300px;
+      background: rgba(0, 0, 0, 0.55);
+      /*background: #ffb200;*/
+      color: #fff;
+      font-size: 24px;
+      line-height: 24px;
+      padding: 20px;
+      bottom: 60px;
+      cursor: pointer;
+      text-align: left;
+      border-radius: 10px;
+      font-family: 'Lobster', cursive;
+    }
+
+    #wp:hover {
+      background: #000000;
+    }
+
+    #wp img {
+      width: 60px;
+      margin-right: 20px;
+    }
+  </style>
+
+  <script>
+    var myPlayListPlayer;
+    jQuery(function () {
+      /**
+       * Set the video list with all the parameters for each video
+       * @type {*[]}
+       */
+      var videos = [
+        {
+          videoURL: "C_ijc7A5oAc",
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 75,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large"
+        },
+        {
+          videoURL: "VqoyKzgkqR4",
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 50,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large"
+        },
+        {
+          videoURL: "-0Ao4t_fe0I",
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 75,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large"
+        },
+        {
+          videoURL: "7hMaHDTw-pI",
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 75,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large"
+        },
+        {
+          videoURL: "7Gr63DiEUxw",
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 75,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large"
+        },
+        {
+          videoURL: "k72ytAFMCI0",
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 75,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large"
+        },
+        {
+          videoURL: "rtkaUZvMaG8",
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 75,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large"
+        }
+      ];
+
+      myPlayListPlayer = jQuery("#myPlayerID").YTPlaylist(videos, true, function (video) {
+        /*
+                        if (video.videoData) {
+                            jQuery("#videoID").html(video.videoData.id);
+                            jQuery("#videoTitle").html(video.videoData.title);
+                        }
+        */
+      });
+
+      myPlayListPlayer.on("YTPData", function (e) {
+        jQuery("#videoID").html(e.prop.id);
+        jQuery("#videoTitle").html(e.prop.title);
+      });
+
+    });
+  </script>
+
+</head>
+
+<body>
+<div id="wrapper" style="position:relative; padding-top: 25vh; color:white; text-align: center;">
+  <h1> Торжественное открытие через: </h1>
+  <div><script src="https://megatimer.ru/get/1f6caf3ca570a69fe58766e80b3daf17.js"></script></div>
+  <button style="color:#000000; font-size: 22px; cursor: pointer" onclick="jQuery('#myPlayerID').YTPPlayNext()">играть случайное видео</button>
+</div>
+
+<div class="player" id="myPlayerID">My video</div>
+
+</body>
+</html>
