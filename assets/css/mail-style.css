@@ -7,6 +7,7 @@
 .es-button {
     mso-style-priority: 100 !important;
     text-decoration: none !important;
+    text-transform: uppercase;
 }
 
 a[x-apple-data-detectors] {
@@ -86,6 +87,7 @@ h5 {
     line-height: 120%;
     mso-line-height-rule: exactly;
     font-family: Montserrat, sans-serif;
+    text-transform: uppercase;
 }
 
 p,
