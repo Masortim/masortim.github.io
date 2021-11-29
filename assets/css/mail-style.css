@@ -37,6 +37,30 @@ a[x-apple-data-detectors] {
 /*
 END OF IMPORTANT
 */
+
+*,
+html * /* override x.xhtml.ru style */ 
+{
+  scrollbar-width: thin;
+  scrollbar-color: #f1c232 black;
+}
+
+*::-webkit-scrollbar,
+html *::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+*::-webkit-scrollbar-track,
+html *::-webkit-scrollbar-track {
+  background: black;
+}
+*::-webkit-scrollbar-thumb,
+html *::-webkit-scrollbar-thumb {
+  background-color: #f1c232;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+
 body {
     width: 100%;
     font-family: arial, 'helvetica neue', helvetica, sans-serif;
