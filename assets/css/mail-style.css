@@ -41,14 +41,14 @@ END OF IMPORTANT
 *,
 html * /* override x.xhtml.ru style */ 
 {
-  scrollbar-width: thin;
+  scrollbar-width: solid;
   scrollbar-color: #f1c232 black;
 }
 
 *::-webkit-scrollbar,
 html *::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
+  height: 8px;
+  width: 8px;
 }
 *::-webkit-scrollbar-track,
 html *::-webkit-scrollbar-track {
