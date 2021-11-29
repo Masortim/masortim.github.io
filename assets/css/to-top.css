@@ -1,0 +1,55 @@
+/* #ToTop button */#toTop {color: transparent;}#toTop:hover {color: #f1c232;background-color: transparent;border-color: transparent;}#toTop {background: transparent;}#toTop:before {color: #f1c232;}
+
+/*--------------------------------------------------------------
+## ToTop button
+--------------------------------------------------------------*/
+#toTop {
+  display: none;
+  text-decoration: none;
+  position: fixed;
+  bottom: 20px;
+  right: -999em;
+  overflow: hidden;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  z-index: 999;
+  text-align: center;
+  -webkit-transition: all 0.3s ease-out;
+          transition: all 0.3s ease-out; 
+}
+  #toTop span {
+    display: none; }
+  #toTop:before {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+    /* Support for IE. */
+    -webkit-font-feature-settings: 'liga';
+       -moz-font-feature-settings: 'liga';
+            font-feature-settings: 'liga';
+    width: 100%;
+    font-size: 32px;
+    line-height: 58px;
+    content: "arrow_upward"; }
+  #toTop:focus {
+    outline: none; }
+  @media (min-width: 544px) {
+    #toTop {
+      right: 20px; } }
+  @media (min-width: 768px) {
+    #toTop {
+      bottom: 50px; } }
