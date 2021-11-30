@@ -13,11 +13,21 @@
   <script src="../dist/jquery.mb.YTPlayer.js"></script>
   <script src="assets/apikey.js"></script>
 
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" >
+    <!-- Fonts -->
+    <link rel="stylesheet" type="text/css" href="assets/fonts/line-icons.css">
+    <!-- Main Style -->
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css">
+    <!-- Responsive Style -->
+    <link rel="stylesheet" type="text/css" href="assets/css/responsive.css">
+
   <style>
     body {
       border: none;
       margin: 0;
       padding: 30px;
+      background-image: url(assets/img/bg.jpg);
       background: #003e50;
       font: normal 16px/20px Lekton, sans-serif;
     }
@@ -80,33 +90,46 @@
        */
       var videos = [
         {
-          videoURL: "C_ijc7A5oAc",
+          videoURL: "k_okcNVZqqI", // INK DROPS
           containment: 'body',
           autoPlay: true,
           mute: true,
           startAt: 0,
-          // stopAt: 75,
+          stopAt: 200,
           opacity: 1,
           loop: false,
           ratio: 4/3,
           addRaster: true,
-          quality: "large"
+          quality: "large",
         },
         {
-          videoURL: "VqoyKzgkqR4",
+          videoURL: "0HtumDL5Oy8", // L'Enfer/ Henri-Georges Clouzot's Inferno
           containment: 'body',
           autoPlay: true,
           mute: true,
-          startAt: 0,
+          startAt: 4,
           // stopAt: 50,
           opacity: 1,
           loop: false,
           ratio: 4/3,
           addRaster: true,
-          quality: "large"
+          quality: "large",
         },
         {
-          videoURL: "-0Ao4t_fe0I",
+          videoURL: "7eoh7O1AW-I", // Threads of Colour - Mandelbrot Fractal Zoom
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 3,
+          // stopAt: 75,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
+        },
+        {
+          videoURL: "ymrJLhSeIlk", // Laszlo Moholy Nagy Ein Lichtspiel Schwarz Weiss Grau
           containment: 'body',
           autoPlay: true,
           mute: true,
@@ -116,10 +139,10 @@
           loop: false,
           ratio: 4/3,
           addRaster: true,
-          quality: "large"
+          quality: "large",
         },
         {
-          videoURL: "7hMaHDTw-pI",
+          videoURL: "VIKaSh9O1aM", // Music to animation of Kandinsky's Composition VIII
           containment: 'body',
           autoPlay: true,
           mute: true,
@@ -129,10 +152,10 @@
           loop: false,
           ratio: 4/3,
           addRaster: true,
-          quality: "large"
+          quality: "large",
         },
         {
-          videoURL: "7Gr63DiEUxw",
+          videoURL: "AaA246e4u_A", // Drippy Eye Projections Oil Wheel 056
           containment: 'body',
           autoPlay: true,
           mute: true,
@@ -142,10 +165,10 @@
           loop: false,
           ratio: 4/3,
           addRaster: true,
-          quality: "large"
+          quality: "large",
         },
         {
-          videoURL: "k72ytAFMCI0",
+          videoURL: "XVkADAwOXnU", // лучший расслабляющий аквариум
           containment: 'body',
           autoPlay: true,
           mute: true,
@@ -155,22 +178,13 @@
           loop: false,
           ratio: 4/3,
           addRaster: true,
-          quality: "large"
-        },
-        {
-          videoURL: "rtkaUZvMaG8",
-          containment: 'body',
-          autoPlay: true,
-          mute: true,
-          startAt: 0,
-          // stopAt: 75,
-          opacity: 1,
-          loop: false,
-          ratio: 4/3,
-          addRaster: true,
-          quality: "large"
+          quality: "large",
         }
       ];
+    let filters = {
+      brightness: 50,
+    }
+    jQuery('#myPlayerID').YTPApplyFilters(filters);
 
       myPlayListPlayer = jQuery("#myPlayerID").YTPlaylist(videos, true, function (video) {
         /*
@@ -192,10 +206,53 @@
 </head>
 
 <body>
-<div id="wrapper" style="position:relative; padding-top: 25vh; color:white; text-align: center;">
-  <h1> Торжественное открытие через: </h1>
-  <div><script src="https://megatimer.ru/get/1f6caf3ca570a69fe58766e80b3daf17.js"></script></div>
-  <button style="color:#000000; font-size: 22px; cursor: pointer" onclick="jQuery('#myPlayerID').YTPPlayNext()">играть случайное видео</button>
+
+    <div class="bg-wraper overlay has-vignette">
+      <div id="example" class="slider opacity-50 vegas-container" style="height: 983px;"></div>
+    </div>
+
+    <!-- Coundown Section Start -->
+    <section class="countdown-timer">
+      <div class="container">
+        <div class="row text-center">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="heading-count">
+              <h2>Торжественное открытие через:</h2>
+            </div>
+          </div>
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="row time-countdown justify-content-center" style="margin-bottom: 40px;">
+              <div id="clock" class="time-count"></div>
+            </div>
+            <div style="margin-bottom: 40px;"><script src="https://megatimer.ru/get/1f6caf3ca570a69fe58766e80b3daf17.js"></script></div>
+            <div class="button-group">
+              <a href="#" class="btn btn-border" onclick="jQuery('#myPlayerID').YTPPlayNext()">Случайное видео</a>
+            </div>
+            <!--<div class="social mt-4">
+              <a class="facebook" href="#" style="text-decoration: none;"><i class="lni-facebook-filled"></i></a>
+              <a class="twitter" href="#" style="text-decoration: none;"><i class="lni-twitter-filled"></i></a>
+              <a class="instagram" href="#" style="text-decoration: none;"><i class="lni-instagram-filled"></i></a>
+              <a class="google" href="#" style="text-decoration: none;"><i class="lni-google-plus"></i></a>
+            </div>-->
+
+            <div style="margin-top: 70px;">
+                <div>
+                    <p>Copyright © 
+                    <script>
+                        now = new Date
+                        theYear=now.getYear()
+                        if (theYear < 1900)
+                        theYear=theYear+1900
+                        document.write(theYear)
+                    </script></p>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </br></br>
+    </section>
+    <!-- Coundown Section End -->
 </div>
 
 <div class="player" id="myPlayerID">My video</div>
