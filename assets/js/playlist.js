@@ -199,6 +199,19 @@ var myPlayListPlayer;
           ratio: 4/3,
           addRaster: true,
           quality: "large",
+        },
+        {
+          videoURL: "7KXGZAEWzn0", // ORBIT - Journey Around Earth in Real Time | 4K Remastered
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 86,
+          // stopAt: 363,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
         }
       ];
     let filters = {
