@@ -134,6 +134,19 @@ var myPlayListPlayer;
           ratio: 4/3,
           addRaster: true,
           quality: "large",
+        },
+        {
+          videoURL: "XqmNiWsZ3m0", // Aquarium 4K VIDEO (ULTRA HD) 🐠 Beautiful Relaxing Coral Reef Fish - Relaxing Sleep Meditation Music
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 363,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
         }
       ];
     let filters = {
