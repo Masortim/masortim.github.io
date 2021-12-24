@@ -149,11 +149,11 @@ var myPlayListPlayer;
           quality: "large",
         },
         {
-          videoURL: "1vn154ANmp0", // Макромиры - Зима наступает. Где зимуют насекомые. Документальный фильм в FullHD 1080p
+          videoURL: "eRUQPfVACs0", // Norway in 8K ULTRA HD HDR - Most peaceful Country in the World (60 FPS)
           containment: 'body',
           autoPlay: true,
           mute: true,
-          startAt: 56,
+          startAt: 8,
           // stopAt: 363,
           opacity: 1,
           loop: false,
