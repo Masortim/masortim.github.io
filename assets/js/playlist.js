@@ -110,11 +110,11 @@ var myPlayListPlayer;
           quality: "large",
         },
         {
-          videoURL: "Y_plhk1FUQA", // COSMIC RELAXATION: 8 HOURS of 4K Deep Space NASA Footage + Chillout Music for Studying, Working, Etc
+          videoURL: "SiwWL76ZlPQ", // 8k HDR Dolby Vision | Best of 2021
           containment: 'body',
           autoPlay: true,
           mute: true,
-          startAt: 24,
+          startAt: 0,
           // stopAt: 363,
           opacity: 1,
           loop: false,
@@ -149,7 +149,20 @@ var myPlayListPlayer;
           quality: "large",
         },
         {
-          videoURL: "eRUQPfVACs0", // Norway in 8K ULTRA HD HDR - Most peaceful Country in the World (60 FPS)
+          videoURL: "DN0mpbWwDvw", // Музыка с глубоким фокусом для улучшения концентрации
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 363,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
+        },
+        {
+          videoURL: "HwtgRuV2b84", // Liquid Light Show Bright Edition
           containment: 'body',
           autoPlay: true,
           mute: true,
