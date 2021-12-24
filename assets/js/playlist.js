@@ -212,6 +212,45 @@ var myPlayListPlayer;
           ratio: 4/3,
           addRaster: true,
           quality: "large",
+        },
+        {
+          videoURL: "ts5DqZF8MPk", // Abstract Macro Liquid in Slow Motion! 4K Relaxing Screensaver for Meditation. Relaxing music
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 32,
+          // stopAt: 363,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
+        },
+        {
+          videoURL: "oOkGmK3_Hdg", // Abstract Liquid! V - 4! 1 Hour 4K Relaxing Screensaver for Meditation. Amazing Fluid! Relaxing Music
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 363,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
+        },
+        {
+          videoURL: "vQoR7gJTirk", // Цвета океана 8K ULTRA HD - Лучшие морские животные 8K для релаксации и успокаивающей музыки
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 11,
+          // stopAt: 363,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
         }
       ];
     let filters = {
