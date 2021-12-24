@@ -147,6 +147,19 @@ var myPlayListPlayer;
           ratio: 4/3,
           addRaster: true,
           quality: "large",
+        },
+        {
+          videoURL: "1vn154ANmp0", // Макромиры - Зима наступает. Где зимуют насекомые. Документальный фильм в FullHD 1080p
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 363,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
         }
       ];
     let filters = {
