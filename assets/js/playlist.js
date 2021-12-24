@@ -95,6 +95,32 @@ var myPlayListPlayer;
           ratio: 4/3,
           addRaster: true,
           quality: "large",
+        },
+        {
+          videoURL: "PpUgBpeJqT0", // 【中山道の桜】馬籠から妻籠への道のり :【Samurai Trail】Walking the Nakasendo from Magome to Tsumago (Gifu-Nagano, Japan)
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 363,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
+        },
+        {
+          videoURL: "Y_plhk1FUQA", // COSMIC RELAXATION: 8 HOURS of 4K Deep Space NASA Footage + Chillout Music for Studying, Working, Etc
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 21,
+          // stopAt: 363,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
         }
       ];
     let filters = {
