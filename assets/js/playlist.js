@@ -257,7 +257,7 @@ var myPlayListPlayer;
           containment: 'body',
           autoPlay: true,
           mute: true,
-          startAt: 18,
+          startAt: 232,
           stopAt: 2887,
           opacity: 1,
           loop: false,
