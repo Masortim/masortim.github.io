@@ -318,19 +318,6 @@ var myPlayListPlayer;
           quality: "large",
         },
         {
-          videoURL: "MQWNuNRPU6c", // СУПЕРМАКРО МИР в 8K ULTRA HD
-          containment: 'body',
-          autoPlay: true,
-          mute: true,
-          startAt: 22,
-          // stopAt: 120,
-          opacity: 1,
-          loop: false,
-          ratio: 4/3,
-          addRaster: true,
-          quality: "large",
-        },
-        {
           videoURL: "nxZeFDC66uE", // Imminence - این نیز بگذرد (This Too Shall Pass) [Visual Experience]
           containment: 'body',
           autoPlay: true,
