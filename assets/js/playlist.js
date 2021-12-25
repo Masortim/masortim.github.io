@@ -253,12 +253,12 @@ var myPlayListPlayer;
           quality: "large",
         },
         {
-          videoURL: "GfO-3Oir-qM", // Our Planet | One Planet | FULL EPISODE | Netflix
+          videoURL: "kIkmrJimPvQ", // Screensaver with color smoke and ambient relaxing music
           containment: 'body',
           autoPlay: true,
           mute: true,
-          startAt: 232,
-          stopAt: 2887,
+          startAt: 0,
+          stopAt: 120,
           opacity: 1,
           loop: false,
           ratio: 4/3,
