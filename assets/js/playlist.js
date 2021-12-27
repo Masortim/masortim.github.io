@@ -290,6 +290,19 @@ var myPlayListPlayer;
           ratio: 4/3,
           addRaster: true,
           quality: "large",
+        },
+        {
+          videoURL: "AmyIxu39JJE", // Швеция Красивая природа - Стокгольм, водопад Ристафаллет с расслабляющей музыкой - качество 4k UHD
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 30,
+          stopAt: 1400,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
         }
       ];
     let filters = {
