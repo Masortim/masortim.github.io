@@ -271,7 +271,7 @@ var myPlayListPlayer;
           autoPlay: true,
           mute: true,
           startAt: 0,
-          // stopAt: 120,
+          stopAt: 1000,
           opacity: 1,
           loop: false,
           ratio: 4/3,
