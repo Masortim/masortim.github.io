@@ -232,7 +232,7 @@ var myPlayListPlayer;
           autoPlay: true,
           mute: true,
           startAt: 0,
-          stopAt: 974,
+          stopAt: 458,
           opacity: 1,
           loop: false,
           ratio: 4/3,
