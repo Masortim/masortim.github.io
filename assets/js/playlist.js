@@ -277,6 +277,19 @@ var myPlayListPlayer;
           ratio: 4/3,
           addRaster: true,
           quality: "large",
+        },
+        {
+          videoURL: "GJYrMhJxTrs", // Россия Drone Film (4K UHD) с успокаивающей музыкой
+          containment: 'body',
+          autoPlay: true,
+          mute: true,
+          startAt: 0,
+          // stopAt: 120,
+          opacity: 1,
+          loop: false,
+          ratio: 4/3,
+          addRaster: true,
+          quality: "large",
         }
       ];
     let filters = {
