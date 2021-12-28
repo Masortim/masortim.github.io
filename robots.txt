@@ -1,0 +1,9 @@
+User-agent: 
+Crawl-delay: 1
+Host: https://masortim.github.io
+Disallow: /assets/
+Disallow: /dist/
+Disallow: /README.md
+Disallow: /events.html
+Disallow: /mail.html
+Sitemap: https://masortim.github.io/sitemap.xml
