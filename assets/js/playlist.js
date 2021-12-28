@@ -188,19 +188,6 @@ var myPlayListPlayer;
           quality: "large",
         },
         {
-          videoURL: "gLcpjY3Gm2E", // 8k HDR Dolby Vision
-          containment: 'body',
-          autoPlay: true,
-          mute: true,
-          startAt: 20,
-          // stopAt: 363,
-          opacity: 1,
-          loop: false,
-          ratio: 4/3,
-          addRaster: true,
-          quality: "large",
-        },
-        {
           videoURL: "7KXGZAEWzn0", // ORBIT - Journey Around Earth in Real Time | 4K Remastered
           containment: 'body',
           autoPlay: true,
