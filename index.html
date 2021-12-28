@@ -19,6 +19,7 @@
   <script src="dist/jquery.mb.YTPlayer.js"></script>
   <script src="assets/apikey.js"></script>
   <script src="assets/js/playlist.js"></script>
+  <script src="assets/js/current_date.js"></script>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" >
@@ -28,75 +29,14 @@
     <link rel="stylesheet" type="text/css" href="assets/css/main.css">
     <!-- Responsive Style -->
     <link rel="stylesheet" type="text/css" href="assets/css/responsive.css">
-
-  <style>
-    body {
-      border: none;
-      margin: 0;
-      padding: 30px;
-      background: url(assets/images/bg.jpg) black;
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-attachment: fixed;
-      background-size: cover;
-      font: normal 16px/20px Lekton, sans-serif;
-    }
-
-    h1,
-    h2 {
-      font-family: 'Lobster', cursive;
-      font-size: 40px;
-      text-shadow: 10px 10px 20px rgba(0, 0, 0, 0.30);
-      font-weight: 200;
-    }
-
-    .player {
-      display: inline-block;
-      vertical-align: top;
-      position: relative;
-      width: 500px;
-      height: 350px;
-      margin-top: 100px !important;
-      left: 0;
-      overflow: hidden;
-      border-radius: 0px;
-      -moz-box-shadow: 0 0 0px rgba(0, 0, 0, .5);
-      box-shadow: 0 0 0px rgba(0, 0, 0, .5);
-    }
     
-    #wp {
-      position: fixed;
-      z-index: 10;
-      min-width: 300px;
-      background: rgba(0, 0, 0, 0.55);
-      /*background: #ffb200;*/
-      color: #fff;
-      font-size: 24px;
-      line-height: 24px;
-      padding: 20px;
-      bottom: 60px;
-      cursor: pointer;
-      text-align: left;
-      border-radius: 10px;
-      font-family: 'Lobster', cursive;
-    }
-
-    #wp:hover {
-      background: #000000;
-    }
-
-    #wp img {
-      width: 60px;
-      margin-right: 20px;
-    }
-  </style>
+    <link rel="stylesheet" type="text/css" href="assets/css/demo.css">
 
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript" >
      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
      m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
      ym(86999117, "init", {
           clickmap:true,
           trackLinks:true,
@@ -160,14 +100,7 @@
 
             <div style="margin-top: 70px;">
                 <div>
-                    <p>Copyright © 
-                    <script>
-                        now = new Date
-                        theYear=now.getYear()
-                        if (theYear < 1900)
-                        theYear=theYear+1900
-                        document.write(theYear)
-                    </script></p>
+                    <p>Copyright © <script src="assets/js/current_date.js"></script></p>
                 </div>
             </div>
           </div>
