@@ -100,7 +100,15 @@
 
             <div style="margin-top: 70px;">
                 <div>
-                    <p>Copyright © <script src="assets/js/current_date.js"></script></p>
+                    <p>Copyright © 
+                      <script>
+                        now = new Date
+                        theYear=now.getYear()
+                        if (theYear < 1900)
+                        theYear=theYear+1900
+                        document.write(theYear)
+                      </script>
+                    </p>
                 </div>
             </div>
           </div>
