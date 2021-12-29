@@ -149,12 +149,12 @@ var myPlayListPlayer;
           quality: "large",
         },
         {
-          videoURL: "DN0mpbWwDvw", // Музыка с глубоким фокусом для улучшения концентрации
+          videoURL: "DN0mpbWwDvw", // Музыка с глубоким фокусом для улучшения концентрации - 12 часов эмбиентной учебной музыки
           containment: 'body',
           autoPlay: true,
           mute: true,
           startAt: 0,
-          stopAt: 3750,
+          stopAt: 937,
           opacity: 1,
           loop: false,
           ratio: 4/3,
