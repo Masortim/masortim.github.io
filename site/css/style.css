@@ -1,4 +1,4 @@
-/* Подключаемые веб-шрифты
+﻿/* Подключаемые веб-шрифты
    -----------------------  */
 @import url('https://fonts.googleapis.com/css2?family=Oswald&family=Russo+One&display=swap');
 
@@ -6,214 +6,213 @@
    ------------------------------------  */
 html
 {
-	font-size: 14px;
+    font-size: 14px;
 }
 
 /* Свойства для тела страницы
    --------------------------  */
 .w90
 {
-	max-width: 1200px;
-	width: 90%;
-	margin: 0 auto 0 auto;
+    max-width: 1200px;
+    width: 90%;
+    margin: 0 auto 0 auto;
 }
 
 /* Свойство хедера для отступа снизу
    ---------------------------------  */
 header
 {
-	margin-bottom: 100px;
+    margin-bottom: 100px;
 }
 
 /* Свойства для всех типов заголовков
    ----------------------------------  */
 h1, h2, h3, h4, h5, h6
 {
-	margin-top: 0;
-	font-weight: normal;
-	margin-bottom: 15px;
+    margin-top: 0;
+    font-weight: normal;
+    margin-bottom: 15px;
 }
 
 /* Используемый шрифт для основного заголовка и подзаголовков
    ----------------------------------------------------------  */
 h1, h2, h3
 {
-	font-family: 'Russo One', sans-serif;
+    font-family: 'Russo One', sans-serif;
 }
 
 /* Размер шрифта для основного заголовка
    -------------------------------------  */
 h1
 {
-	font-size: 3.43rem;
+    font-size: 3.43rem;
 }
 
 /* Размер шрифта заголовков альюомов
    ---------------------------------  */
 h3
 {
-	font-size: 1.7rem;
+    font-size: 1.7rem;
 }
 
 /* Свойства для названий артистов
    ------------------------------  */
 h4
 {
-	font-family: 'Oswald', sans-serif;
-	font-weight: normal;
-	font-size: 1.28rem;
+    font-family: 'Oswald', sans-serif;
+    font-weight: normal;
+    font-size: 1.28rem;
 }
 
 /* Свойства поисковой строки
    -------------------------  */
 #find-field
 {
-	font-family: 'Oswald', sans-serif;
-	font-weight: normal;
-	font-size: 1.7rem;
-	border: none;
-	border-bottom: 1px solid black;
-	outline: 0 !important;
-	width: 100%;
-	margin-top: 20px;
-	margin-bottom: 30px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: normal;
+    font-size: 1.7rem;
+    border: none;
+    border-bottom: 1px solid black;
+    outline: 0 !important;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 30px;
 }
 
 /* Цвет текста в строке поиска
    ----------------------------  */
 #find-field::placeholder /* Современные браузеры */
 {
-	color: black;
+    color: black;
 }
 #find-field::-webkit-input-placeholder /* WebKit, Edge */
 {
-	color: black;
+    color: black;
 }
 #find-field::-ms-input-placeholder /* Edge */
 {
-	color: black;
+    color: black;
 }
 #find-field:-moz-placeholder /* Firefox 4-18 */
 {
-	color: black;
+    color: black;
 }
 #find-field::-moz-placeholder /* Firefox 19+ */
 {
-	color: black;
+    color: black;
 }
 #find-field:-ms-input-placeholder /* IE 10-11 */
 {
-	color: black;
+    color: black;
 }
 
 /* Свойства ссылок в блоке альбомов
    --------------------------------  */
 .albums a
 {
-	color: black;
-	text-decoration: none;
+    color: black;
+    text-decoration: none;
 }
 .albums a:visited /* после перехода по ссылке */
 {
-	color: black;
+    color: black;
 }
 .albums a:hover /* после наведения на ссылку */
 {
-	color: black;
+    color: black;
 }
 
 /* Отступы в названиях альбомов
    ----------------------------  */
 .albums h3
 {
-	margin-top: 10px;
-	margin-bottom: 0;
+    margin-top: 10px;
+    margin-bottom: 0;
 }
 
 /* Свойства для блока рейтинга
    ---------------------------  */
 .rating
 {
-	width: 100px;
-	height: 16.83px;
-	margin-top: 5px;
-	margin-left: auto;
-	margin-right: auto;
-	background-image: url('../img/rating.png');
+    width: 100px;
+    height: 16.83px;
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    background-image: url('../img/rating.png');
 }
 
 /* Спрайты с координатами рейтингов
    --------------------------------  */
 .r-0
 {
-	background-position: 0 0;
+    background-position: 0 0;
 }
 .r-1
 {
-	background-position: 0 -16.83px;
+    background-position: 0 -16.83px;
 }
 .r-2
 {
-	background-position: 0 -33.66px;
+    background-position: 0 -33.66px;
 }
 .r-3
 {
-	background-position: 0 -50.49px;
+    background-position: 0 -50.49px;
 }
 .r-4
 {
-	background-position: 0 -67.32px;
+    background-position: 0 -67.32px;
 }
 .r-5
 {
-	background-position: 0 -84.15px;
+    background-position: 0 -84.15px;
 }
 
 /* Адаптивное расположение блока с альбомами
    -----------------------------------------  */
 .albums
 {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: space-around;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 /* Свойства контейнера для каждого альбома
    ---------------------------------------  */
 .album
 {
-	width: 26.5%;
-	margin-bottom: 50px;
-	transition: all 0.40s cubic-bezier(.17,.67,.43,.98);
+    width: 26.5%;
+    margin-bottom: 50px;
+    transition: all 0.40s cubic-bezier(.17,.67,.43,.98);
 }
 
 /* При ширине экрана 900px ширина изображений 45% от ширины экрана
    ---------------------------------------------------------------  */
 @media screen and (max-width: 900px)
 {
-	.album
-	{
-		width: 45%;
-	}
+    .album
+    {
+        width: 45%;
+    }
 }
 /* При ширине экрана 500px ширина изображений 90% от ширины экрана
    ---------------------------------------------------------------  */
 @media screen and (max-width: 500px)
 {
-	.album
-	{
-		width: 90%;
-	}
+    .album
+    {
+        width: 90%;
+    }
 }
 
 /* Обложка будет занимать всю ширину контейнера
    --------------------------------------------  */
 .album img
 {
-	width: 100%;
+    width: 100%;
 }
-
 
 /* ---------- *
  * Album page *
@@ -223,87 +222,103 @@ h4
    ---------------------------  */
 .wFull
 {
-	width: 100%;
-	margin: 0;
-	padding: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 /* Текстовый блок
    --------------  */
 .w600
 {
-	max-width: 600px;
-	width: 90%;
-	margin: 0 auto 0 auto;
+    max-width: 600px;
+    width: 90%;
+    margin: 0 auto 0 auto;
 }
 
 /* Стартовая обложка на всю страницу
    ---------------------------------  */
 #cover-bg
 {
-	background: black;
-	height: 100vh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	overflow: hidden;
-	margin-bottom: 50px;
+    background: black;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 50px;
 }
 
 /* Обложка альбома
    ---------------  */
 #cover
 {
-	width: 90%;
-	max-width: 600px;
-	transition: all 2s;
-	box-shadow: 0 0 200px 75px red;
+    width: 90%;
+    max-width: 600px;
+    transition: all 2s;
+    box-shadow: 0 0 200px 75px red;
 }
 
 /* Имя исполнителя
    ---------------  */
 .artist-name
 {
-	font-size: 7.14rem;
-	color: white;
-	position: absolute;
-	bottom: 30px;
+    font-size: 7.14rem;
+    color: white;
+    position: absolute;
+
+    /* Дополнительные свойства для устаревших iOS */
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+
+    bottom: 30px;
 }
 
 /* Анимация стрелки
    ----------------  */
 @keyframes arrow_move
 {
-	0%
-	{
-		bottom: 10px;
-	}
-	50%
-	{
-		bottom: 20px;
-	}
-	100%
-	{
-		bottom: 10px;
-	}
+    0%
+    {
+        bottom: 10px;
+    }
+    50%
+    {
+        bottom: 20px;
+    }
+    100%
+    {
+        bottom: 10px;
+    }
 }
 
 /* Свойства стрелки
    ----------------  */
 .arrow
 {
-	position: absolute;
-	bottom: 10px;
-	animation: arrow_move 2s infinite;
+    position: absolute;
+ 
+    /* Дополнительные свойства для устаревших iOS */
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+
+    bottom: 10px;
+    animation: arrow_move 2s infinite;
 }
 
 /* Свойства абзаца
    ---------------  */
 p
 {
-	font-family: 'Oswald', sans-serif;
-	font-weight: normal;
-	font-size: 1.28rem;
-	margin-top: 0;
-	margin-bottom: 15px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: normal;
+    font-size: 1.28rem;
+    margin-top: 0;
+    margin-bottom: 15px;
 }
