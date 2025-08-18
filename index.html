@@ -1,4 +1,215 @@
 <!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chronos – Pinboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="topbar__left">
+          <div class="brand">
+            <div class="brand__logo">⧉</div>
+            <div class="brand__name">Chronos</div>
+          </div>
+          <nav class="nav">
+            <a class="nav__link nav__link--active" href="#">Pinboard</a>
+            <a class="nav__link" href="#">Calendar</a>
+            <a class="nav__link" href="#">Friends</a>
+            <a class="nav__link nav__link--messages" id="messagesToggle" href="javascript:void(0)">Messages <span class="badge">3</span></a>
+          </nav>
+        </div>
+        <div class="topbar__right">
+          <button class="btn btn--circle" title="Add">+</button>
+          <button class="avatar avatar--small" title="Profile"></button>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="hero">
+          <img class="hero__bg" src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1920&auto=format&fit=crop" alt="Highway coast" />
+          <div class="hero__overlay"></div>
+
+          <div class="hero__inner">
+            <div class="hero__likes">
+              <span class="icon icon--heart"></span>
+              <span>10 023</span>
+            </div>
+            <h1 class="hero__title">Roadtrip on Highway One</h1>
+            <div class="hero__meta">26 January – 1 February</div>
+
+            <div class="hero__footer">
+              <div class="avatars">
+                <span class="avatar" style="--i:url('https://images.unsplash.com/photo-1544006659-f0b21884ce1d?q=80&w=100&auto=format&fit=crop');"></span>
+                <span class="avatar" style="--i:url('https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=100&auto=format&fit=crop');"></span>
+                <span class="avatar" style="--i:url('https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=100&auto=format&fit=crop');"></span>
+                <span class="avatar" style="--i:url('https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=100&auto=format&fit=crop');"></span>
+              </div>
+              <div class="poll">
+                <span>Yes</span>
+                <div class="switch"><span class="dot"></span></div>
+                <span>No</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="messages-popover" id="messagesPopover" aria-hidden="true">
+            <div class="messages-popover__tabs">
+              <button class="tab tab--active">Inbox (8)</button>
+              <button class="tab">Sent</button>
+              <button class="tab tab--icon" aria-label="Compose">✎</button>
+            </div>
+            <ul class="messages-popover__list">
+              <li class="msg">
+                <span class="avatar" style="--i:url('https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?q=80&w=100&auto=format&fit=crop');"></span>
+                <div class="msg__body">
+                  <div class="msg__name">Jacob Hubertus</div>
+                  <div class="msg__text">Are you coming to the Roadtrip?</div>
+                </div>
+              </li>
+              <li class="msg">
+                <span class="avatar" style="--i:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop');"></span>
+                <div class="msg__body">
+                  <div class="msg__name">Jasmine Larsson</div>
+                  <div class="msg__text">This Pinboard idea in Chronos is neat.</div>
+                </div>
+              </li>
+              <li class="msg">
+                <span class="avatar" style="--i:url('https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=100&auto=format&fit=crop');"></span>
+                <div class="msg__body">
+                  <div class="msg__name">Trent Walton</div>
+                  <div class="msg__text">See you at the coast.</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="toolbar">
+          <div class="toolbar__title">Your Pinboard</div>
+          <div class="toolbar__sort">
+            <span>Sort by</span>
+            <div class="dots">
+              <span class="dot dot--active"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid">
+          <!-- Row 1 -->
+          <article class="card card--image">
+            <img src="https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=1200&auto=format&fit=crop" alt="Binoculars" />
+            <div class="card__badge"><span class="icon icon--heart"></span><span>1 001</span></div>
+            <button class="dot dot--corner" aria-label="more"></button>
+          </article>
+
+          <article class="card card--note">
+            <div class="card__like"><span class="icon icon--heart"></span>20</div>
+            <div class="card__note">This pinboard is filled with cool events, photos and media. I love it.</div>
+            <button class="dot dot--corner" aria-label="more"></button>
+          </article>
+
+          <article class="card card--image">
+            <img src="https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1200&auto=format&fit=crop" alt="Ski lift" />
+            <div class="card__badge"><span class="icon icon--heart"></span><span>99</span></div>
+            <div class="card__caption">
+              <div class="card__title">Company retreat in Deer Valley, Utah</div>
+              <div class="card__sub">3pm – 8pm</div>
+              <div class="card__faces">
+                <span class="avatar"></span>
+                <span class="avatar"></span>
+                <span class="avatar"></span>
+                <span class="poll poll--mini"><span>Yes</span><span>No</span></span>
+              </div>
+            </div>
+            <button class="dot dot--corner" aria-label="more"></button>
+          </article>
+
+          <!-- Row 2 -->
+          <article class="card card--music">
+            <div class="card__art" style="background-image:url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200&auto=format&fit=crop')"></div>
+            <div class="card__overlay">
+              <div class="card__title">Daft Punk - Get lucky</div>
+              <div class="player">
+                <button class="btn btn--circle btn--play" aria-label="Play">▶</button>
+                <div class="progress"><span style="width: 55%"></span></div>
+              </div>
+            </div>
+            <div class="card__badge"><span class="icon icon--heart"></span><span>22</span></div>
+            <button class="dot dot--corner" aria-label="more"></button>
+          </article>
+
+          <article class="card card--video">
+            <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop" alt="Summer nights" />
+            <div class="card__overlay card__overlay--fade">
+              <div class="card__title">Summer Nights</div>
+              <div class="player">
+                <button class="btn btn--circle btn--play" aria-label="Play">▶</button>
+                <div class="progress"><span style="width: 30%"></span></div>
+              </div>
+            </div>
+            <div class="card__like card__like--soft"><span class="icon icon--heart"></span>2</div>
+            <button class="dot dot--corner" aria-label="more"></button>
+          </article>
+
+          <article class="card card--note">
+            <div class="card__like"><span class="icon icon--heart"></span>52</div>
+            <div class="card__note">What if the world revolves around Doge?</div>
+            <button class="dot dot--corner" aria-label="more"></button>
+          </article>
+
+          <!-- Row 3 -->
+          <article class="card card--image">
+            <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop" alt="Sunset" />
+            <div class="card__badge"><span class="icon icon--heart"></span><span>1 401</span></div>
+            <button class="dot dot--corner" aria-label="more"></button>
+          </article>
+
+          <article class="card card--note">
+            <div class="card__like"><span class="icon icon--heart"></span>19</div>
+            <div class="card__note">Everything is so cool around here, so I...</div>
+            <button class="dot dot--corner" aria-label="more"></button>
+          </article>
+
+          <article class="card card--image">
+            <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1200&auto=format&fit=crop" alt="Pier" />
+            <div class="card__badge"><span class="icon icon--heart"></span><span>57</span></div>
+            <div class="card__caption">
+              <div class="card__title">Santa Monica Pier</div>
+            </div>
+            <button class="dot dot--corner" aria-label="more"></button>
+          </article>
+        </section>
+      </main>
+
+      <aside class="timeline">
+        <button class="chev" aria-label="prev">‹</button>
+        <div class="timeline__rail">
+          <div class="tick"></div>
+          <div class="tick"></div>
+          <div class="tick"></div>
+          <div class="tick"></div>
+          <div class="tick"></div>
+          <div class="tick"></div>
+          <div class="tick"></div>
+        </div>
+        <div class="timeline__date">4 January</div>
+        <button class="chev" aria-label="next">›</button>
+      </aside>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+  </html>
+
+<!DOCTYPE html>
 
 <html lang="ru">
 
