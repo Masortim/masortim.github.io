@@ -1,4 +1,280 @@
 <!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chronos – Pinboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <div class="brand">
+        <div class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="22" fill="#ecf1f5" stroke="#bfc9d4" stroke-width="2" />
+            <circle cx="24" cy="24" r="10" fill="#4e5d78" />
+            <circle cx="24" cy="24" r="4" fill="#ecf1f5" />
+          </svg>
+        </div>
+        <span class="brand__name">Chronos</span>
+      </div>
+
+      <nav class="mainnav">
+        <a class="mainnav__item is-active" href="#">Pinboard</a>
+        <a class="mainnav__item" href="#">Calendar</a>
+        <a class="mainnav__item" href="#">Friends</a>
+        <button class="mainnav__item has-bubble" id="messagesBtn" type="button">
+          Messages
+          <span class="bubble">3</span>
+        </button>
+      </nav>
+
+      <div class="topbar__actions">
+        <button class="iconbtn" aria-label="Create">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <button class="avatar">
+          <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=256&auto=format&fit=facearea&facepad=2&h=96" alt="user" />
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Messages dropdown -->
+  <div id="messagesPanel" class="dropdown dropdown--messages" aria-hidden="true">
+    <div class="dropdown__pointer"></div>
+    <div class="dropdown__header">
+      <button class="tab is-active" data-tab="inbox">Inbox (8)</button>
+      <button class="tab" data-tab="sent">Sent</button>
+      <button class="iconbtn small" aria-label="Compose">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+        </svg>
+      </button>
+    </div>
+    <ul class="message-list" data-tab-panel="inbox">
+      <li class="message-item">
+        <img class="message-item__avatar" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?q=80&w=200&h=200&fit=crop&auto=format" alt="Jacob" />
+        <div class="message-item__body">
+          <div class="message-item__name">Jacob Hubertus</div>
+          <div class="message-item__text">Are you coming to the Roadtrip?</div>
+        </div>
+      </li>
+      <li class="message-item">
+        <img class="message-item__avatar" src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=200&h=200&fit=crop&auto=format" alt="Jasmine" />
+        <div class="message-item__body">
+          <div class="message-item__name">Jasmine Larsson</div>
+          <div class="message-item__text">This Pinboard idea in Chronos is neat.</div>
+        </div>
+      </li>
+      <li class="message-item">
+        <img class="message-item__avatar" src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=200&h=200&fit=crop&auto=format" alt="Trent" />
+        <div class="message-item__body">
+          <div class="message-item__name">Trent Walton</div>
+          <div class="message-item__text">Let’s plan the weekend.</div>
+        </div>
+      </li>
+    </ul>
+    <ul class="message-list is-hidden" data-tab-panel="sent">
+      <li class="message-item">
+        <div class="message-item__body">
+          <div class="message-item__name">You</div>
+          <div class="message-item__text">Sent a new photo.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <main class="page">
+    <section class="hero">
+      <img class="hero__bg" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1920&auto=format&fit=crop" alt="Highway One" />
+      <div class="hero__overlay"></div>
+      <div class="container hero__content">
+        <div class="hero__meta">
+          <div class="like-chip">
+            <span class="icon-heart" aria-hidden="true"></span>
+            <span>10 023</span>
+          </div>
+        </div>
+        <h1 class="hero__title">Roadtrip on Highway One</h1>
+        <div class="hero__subtitle">26 January – 1 February</div>
+
+        <div class="hero__footer">
+          <div class="avatars">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=96&h=96&fit=crop&auto=format" alt="" />
+            <img src="https://images.unsplash.com/photo-1545996124-0501ebae84d0?q=80&w=96&h=96&fit=crop&auto=format" alt="" />
+            <img src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?q=80&w=96&h=96&fit=crop&auto=format" alt="" />
+            <img src="https://images.unsplash.com/photo-1541534401786-2077eed87a5f?q=80&w=96&h=96&fit=crop&auto=format" alt="" />
+          </div>
+          <div class="poll">
+            <span>Yes</span>
+            <label class="switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+            <span>No</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pinboard container">
+      <div class="pinboard__header">
+        <h2 class="section-title">Your Pinboard</h2>
+        <div class="sort">
+          <span>Sort by</span>
+          <button class="sortdot is-active"></button>
+          <button class="sortdot"></button>
+          <button class="sortdot"></button>
+        </div>
+      </div>
+
+      <div class="cards">
+        <!-- Card 1 image -->
+        <article class="card card--image" style="--img:url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop');">
+          <div class="card__top">
+            <div class="chip chip--heart"><span class="icon-heart"></span>1 001</div>
+            <button class="dot"></button>
+          </div>
+        </article>
+
+        <!-- Card 2 text -->
+        <article class="card card--text">
+          <div class="card__top">
+            <div class="chip"><span class="icon-like"></span>20</div>
+            <button class="dot"></button>
+          </div>
+          <p class="card__text">This pinboard is filled with cool events, photos and media. I love it.</p>
+        </article>
+
+        <!-- Card 3 image with meta -->
+        <article class="card card--image" style="--img:url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1200&auto=format&fit=crop');">
+          <div class="card__top">
+            <div class="chip chip--heart"><span class="icon-heart"></span>99</div>
+            <button class="dot"></button>
+          </div>
+          <div class="card__meta on-image">
+            <h3 class="card__title">Company retreat in Deer Valley, Utah</h3>
+            <div class="card__sub">3pm – 8pm</div>
+            <div class="avatars small">
+              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=64&h=64&fit=crop&auto=format" alt="" />
+              <img src="https://images.unsplash.com/photo-1545996124-0501ebae84d0?q=80&w=64&h=64&fit=crop&auto=format" alt="" />
+              <img src="https://images.unsplash.com/photo-1541101767792-f9b2b1c4f127?q=80&w=64&h=64&fit=crop&auto=format" alt="" />
+            </div>
+            <div class="poll mini"><span>Yes</span><span>No</span></div>
+          </div>
+        </article>
+
+        <!-- Card 4 audio-like -->
+        <article class="card card--media">
+          <div class="card__top">
+            <div class="chip"><span class="icon-like"></span>22</div>
+            <button class="dot active"></button>
+          </div>
+          <div class="media-thumb" style="background-image:url('https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?q=80&w=1200&auto=format&fit=crop');"></div>
+          <div class="media-caption">Daft Punk – Get Lucky</div>
+          <div class="media-controls">
+            <button class="play" aria-label="Play">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <div class="progress"><span style="width:35%"></span></div>
+          </div>
+        </article>
+
+        <!-- Card 5 video-like -->
+        <article class="card card--image" style="--img:url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop');">
+          <div class="card__meta">
+            <h3 class="card__title">Summer Nights</h3>
+            <div class="media-controls compact">
+              <button class="play" aria-label="Play"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+              <div class="progress"><span style="width:20%"></span></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 6 text -->
+        <article class="card card--text">
+          <div class="card__top">
+            <div class="chip"><span class="icon-like"></span>52</div>
+            <button class="dot"></button>
+          </div>
+          <p class="card__text">What if the world revolves around Doge?</p>
+        </article>
+
+        <!-- Card 7 image -->
+        <article class="card card--image" style="--img:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop');">
+          <div class="card__top">
+            <div class="chip chip--heart"><span class="icon-heart"></span>1 401</div>
+            <button class="dot"></button>
+          </div>
+        </article>
+
+        <!-- Card 8 text -->
+        <article class="card card--text">
+          <div class="card__top">
+            <div class="chip"><span class="icon-like"></span>19</div>
+            <button class="dot"></button>
+          </div>
+          <p class="card__text">Everything is so cool around here, so I just keep scrolling and pinning.</p>
+        </article>
+
+        <!-- Card 9 image -->
+        <article class="card card--image" style="--img:url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1200&auto=format&fit=crop');">
+          <div class="card__meta">
+            <h3 class="card__title">Santa Monica Pier</h3>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="timeline">
+    <div class="container timeline__inner">
+      <button class="roundnav" aria-label="Prev">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <div class="timeline__track">
+        <span class="tick"></span>
+        <span class="tick"></span>
+        <span class="tick"></span>
+        <span class="tick"></span>
+        <span class="tick active"></span>
+        <span class="tick"></span>
+        <span class="tick"></span>
+        <span class="tick"></span>
+      </div>
+      <div class="timeline__label">4 January</div>
+      <div class="timeline__track right">
+        <span class="tick"></span>
+        <span class="tick"></span>
+        <span class="tick"></span>
+        <span class="tick"></span>
+      </div>
+      <button class="roundnav" aria-label="Next">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>
+
+<!DOCTYPE html>
 
 <html lang="ru">
 
