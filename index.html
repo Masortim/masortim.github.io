@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  body {
+    font-family: sans-serif;
+    margin: 0;
+    overflow: hidden;
+  }
+  .node circle {
+    cursor: pointer;
+    transition: fill 0.3s;
+  }
+  .node text {
+    font-size: 12px;
+    fill: #333;
+  }
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+</style>
+<body>
+  <svg width="100%" height="100%"></svg>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    const data = {
+      name: "Forms of the Predicate in English Language",
+      children: [
+        {
+          name: "Active Voice",
+          children: [
+            {
+              name: "Present Tense Forms",
+              children: [
+                { 
+                    name: "Simple Present",
+                    children: [
+                      { name: "Expresses habitual or general actions not occuring at the moment of speech, e.g., «He always analyses experimental results.»" },
+                      { name: "Formed using the base verb (V) with added «-s» for third person singular." }
+                    ]
+                },
+                { name: "Present Continuous",
+                    children: [
+                      { name: "Indicates ongoing actions at the moment of speech or within of current period, e.g., «He is analysing experimental results now.»" },
+                      { name: "Formed with «am/is/are + Ving» (present participle) excluding verbs of mental perception and evaluation." }
+                    ]
+                },
+                { name: "Present Perfect Continuous",
+                    children: [
+                      { name: "Describes actions that began before the moment of speech and continue up to the present, cobining duration («already») and continuation («still»), e.g., «He has been analysing experimental results nowfor 2 weeks.»" },
+                      { name: "Formed with «have/has + been + Ving»." }
+                    ]
+                },
+                { name: "Present Perfect",
+                    children: [
+                      { name: "Indicates compleeted actions with present relevance of results, e.g., «He has just analysed experimental results.»" },
+                      { name: "Formed with «have/has + Ved/V3» (past participle)." }
+                    ]
+                }
+              ]
+            },
+            { 
+                name: "Past Tense Forms",
+                children: [
+                  { name: "Simple Past",
+                    children: [
+                      { name: "Refers to actions occuring at a specific past time without emphasis on completion, e.g., «He analysed experimental results yesterday.»" },
+                      { name: "Formed using «Ved/V2» (past simple form)." }
+                    ]
+                	},
+                  { name: "Past Continuous",
+                    children: [
+                      { name: "Denotes ongoing actions at an exact past moment or period, identifable via: (a) time markers, (b) simultaneous past actions in Simple Past, or (c) duration phrases, e.g., «He was analysing experimental results at 3 p.m. yesterday.»" },
+                      { name: "Formed with «was/were + Ving»." }
+                    ]
+                	},
+                  { name: "Past Perfect Continuous",
+                    children: [
+                      { name: "Describes actions that had been ongoing before a specific past moment and continued thereafter, e.g., «He had been analysing experimental results for an hour when his supervisor came.»" },
+                      { name: "Formed with «had + been + Ving»." }
+                    ]
+                	},
+                  { name: "Past Perfect",
+                    children: [
+                      { name: "Indicates actions completed before a specific past moment, e.g., «He had analysed experimental results by the time his supervisor came.»" },
+                      { name: "Formed with «had + Ved/V3» (limited to contexts with explicit past time reference)." }
+                    ]
+                	}
+                ]
+            },
+            { 
+                name: "Future Tense Forms",
+                children: [
+                  { name: "Simple Future",
+                    children: [
+                      { name: "Expresses future actions, e.g., «He will analyse experimental results tomorrow.»" },
+                      { name: "Formed with «will/shall + V» (base verb)." }
+                    ]
+                	},
+                  { name: "Future Continuous",
+                    children: [
+                      { name: "Refers to ongoing actions at a specific future time, identifable via time markers or simultaneous future actions (in Present Simple), e.g., «He will be analysing experimental results at 3 p.m. tomorrow.»" },
+                      { name: "Formed with «will/shall + be + Ving»." }
+                    ]
+                	},
+                  { name: "Future Perfect Continuous",
+                    children: [
+                      { name: "Describes actions that will have been ongoing before a future moment and continue thereafter, e.g., «He will have been analysing experimental results for 2 hours when his supervisor comes.»" },
+                      { name: "Formed with «will/shall + have + been + Ving»." }
+                    ]
+                	},
+                  { name: "Future Perfect",
+                    children: [
+                      { name: "Indicates actions completed before a specific future moment, e.g., «He will have analysed experimental results by the time his supervisor comes.»" },
+                      { name: "Formed with «will/shall + have + Ved/V3»." }
+                    ]
+                	}
+                ]
+            },
+            { 
+                name: "Future-in-the-Past Forms",
+                children: [
+                  { name: "Simple Future-in-the-Past",
+                    children: [
+                      { name: "Expresses huture actions for a past perspective (used in reported speech), e.g., «He said that he would analyse experimental results.»" },
+                      { name: "Formed with «would/should + V»." }
+                    ]
+                },
+                  { name: "Future Continuous-in-the-Past",
+                    children: [
+                      { name: "Denotes ongoing future actions from a past perspective, e.g., «He said that he would be analysing experimental results all day long.»" },
+                      { name: "Formed with «would/should + be + Ving»." }
+                    ]
+                },
+                  { name: "Future Perfect Continuous-in-the-Past",
+                    children: [
+                      { name: "Describes actions that would have been ongoing before a future moment from a past perspective, e.g., «He said that he would have been analysing experimental results for 2 hours when his supervisor came back.»" },
+                      { name: "Formed with «would/should + have + been + Ving»." }
+                    ]
+                },
+                  { name: "Future Perfect-in-the-Past",
+                    children: [
+                      { name: "Indicates actions that would be completed before a future moment from a past perspective, e.g., «He said that he would have analysed experimental results by the end of the week.»" },
+                      { name: "Formed with «would/should + have + Ved/V3»." }
+                    ]
+                }
+                ]
+            }
+          ]
+        },
+        {
+          name: "Passive Voice",
+          children: [
+            {
+              name: "Present Tense Forms",
+              children: [
+                { name: "Simple Present Passive",
+                    children: [
+                      { name: "Describes habitual or general passive actions, e.g., «Experimental results are always analysed by him.»" },
+                      { name: "Formed with «am/is/are + Ved/V3»." }
+                    ]
+                },
+                { name: "Present Continuous Passive",
+                    children: [
+                      { name: "Indicates ongoing passive actions at the moment of speech, e.g., «Experimental results are being analysed by him at the moment.»" },
+                      { name: "Formed with «am/is/are + being + Ved/V3» (no Present Perfect Continuous Passive exists)." }
+                    ]
+                },
+                { name: "Present Perfect Passive",
+                    children: [
+                      { name: "Refers to completed passive actions with present relevance, e.g., «Experimental results have already been analysed by him.»" },
+                      { name: "Formed with «have/has + been + Ved/V3»." }
+                    ]
+                }
+              ]
+            },
+            {
+              name: "Past Tense Forms",
+              children: [
+                { name: "Simple Past Passive",
+                    children: [
+                      { name: "Denotes passive actions in a specific past period, e.g., «Experimental results were analysed by him yesterday.»" },
+                      { name: "Formed with «was/were + Ved/V3»." }
+                    ]
+                },
+                { name: "Past Continuous Passive",
+                    children: [
+                      { name: "Expresses ongoing passive actions at an exact past moment, e.g., «Experimental results were being analysed by him at 9 a.m. yesterday.»" },
+                      { name: "Formed with «was/were + being + Ved/V3» (no Past Perfect Continuous Passive exists)." }
+                    ]
+                },
+                { name: "Past Perfect Passive",
+                    children: [
+                      { name: "Indicates passive actions completed before a specific past moment, e.g., «Experimental results had been analysed by the time his supervisor came.»" },
+                      { name: "Formed with «had + been + Ved/V3»." }
+                    ]
+                }
+              ]
+            },
+            {
+              name: "Future Tense Forms",
+              children: [
+                { name: "Simple Future Passive",
+                    children: [
+                      { name: "Describes future passive actions, e.g., «Experimental results will be analysed by him tomorrow.»" },
+                      { name: "Formed with «will/shall + be + Ved/V3» (no Future Continuous or Future Perfect Continuous Passive forms exists)." }
+                    ]
+                },
+                { name: "Future Perfect Passive",
+                    children: [
+                      { name: "Refers to passive actions to be completed before a future moment from a past perspective, e.g., «Experimental results will have been analysed by him by the time his supervisor comes.»" },
+                      { name: "Formed with «will/shall + have + been + Ved/V3»." }
+                    ]
+                }
+              ]
+            },
+            {
+              name: "Future-in-the-Past Passive Forms",
+              children: [
+                { name: "Future-in-the-Past Passive",
+                    children: [
+                      { name: "Expresses future passive actions from a past perspective, e.g., «He said that experimental results would be analysed next day.»" },
+                      { name: "Formed with «would/should + be + Ved/V3» (no Future Continuous-in-the-Past Passive exists)." }
+                    ]
+                },
+                { name: "Future-in-the-Past Perfect",
+                    children: [
+                      { name: "Indicates passive actions to be completed before a future moment from a past perspective, e.g., «He said that experimental results would have been analysed by the time his supervisor came.»" },
+                      { name: "Formed with «would/should + have + been + Ved/V3» (no Future Perfect Continuous-in-the-Past Passive exists)." }
+                    ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const svg = d3.select("svg")
+      .attr("viewBox", [0, 0, width, height]);
+
+    // Группа для дерева
+    const g = svg.append("g");
+
+    // Добавляем zoom/pan
+    const zoom = d3.zoom()
+      .scaleExtent([0.5, 3]) // минимальный и максимальный масштаб
+      .on("zoom", (event) => {
+        g.attr("transform", event.transform);
+      });
+
+    svg.call(zoom);
+
+    // Начальное положение дерева (центр по горизонтали, ближе к верху)
+    const initialTransform = d3.zoomIdentity
+      .translate(width / 2, 100) // 100px от верхнего края
+      .scale(1);
+
+    svg.call(zoom.transform, initialTransform);
+
+    const tree = d3.tree().size([height - 200, width - 400]);
+    const root = d3.hierarchy(data);
+
+    let i = 0;
+
+    root.x0 = height / 2;
+    root.y0 = 0;
+
+    root.children.forEach(collapse);
+    update(root);
+
+    function collapse(d) {
+      if (d.children) {
+        d._children = d.children;
+        d._children.forEach(collapse);
+        d.children = null;
+      }
+    }
+
+    function update(source) {
+      const treeData = tree(root);
+      const nodes = treeData.descendants();
+      const links = treeData.links();
+
+      nodes.forEach(d => d.y = d.depth * 180);
+
+      const node = g.selectAll("g.node")
+        .data(nodes, d => d.id || (d.id = ++i));
+
+      const nodeEnter = node.enter().append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${source.y0},${source.x0})`)
+        .on("click", (event, d) => {
+          if (d.children) {
+            d._children = d.children;
+            d.children = null;
+          } else {
+            d.children = d._children;
+            d._children = null;
+          }
+          update(d);
+        });
+
+      nodeEnter.append("circle")
+        .attr("r", 8)
+        .style("fill", d => {
+          if (d._children) {
+            if (d.data.name.includes("Perfect Continuous")) return "pink";
+            if (d.data.name.includes("Perfect")) return "lightgreen";
+            if (d.data.name === "Future-in-the-Past Passive") return "red";
+            if (d.data.name.includes("Continuous") && !d.data.name.includes("Perfect")) return "lightblue";
+            if (d.data.name.includes("Simple")) return "red";
+            if (d.data.name === "Active Voice") return "orange";
+            if (d.data.name === "Passive Voice") return "#C8A2C8";
+            if (d.data.name === "Present Tense Forms") return "green";
+            if (d.data.name === "Past Tense Forms") return "maroon";
+            if (d.data.name === "Future Tense Forms") return "yellow";
+            if (d.data.name === "Future-in-the-Past Forms") return "orange";
+            if (d.data.name === "Future-in-the-Past Passive Forms") return "#C8A2C8";
+            if (d.depth === 0) return "blue";
+            return "#999";
+          } else {
+            return "#fff";
+          }
+        })
+        .style("stroke", d => {
+          if (d._children) {
+            return "#666";
+          } else {
+            if (d.data.name.includes("Perfect Continuous")) return "pink";
+            if (d.data.name.includes("Perfect")) return "lightgreen";
+            if (d.data.name === "Future-in-the-Past Passive") return "red";
+            if (d.data.name.includes("Continuous") && !d.data.name.includes("Perfect")) return "lightblue";
+            if (d.data.name.includes("Simple")) return "red";
+            if (d.data.name === "Active Voice") return "orange";
+            if (d.data.name === "Passive Voice") return "#C8A2C8";
+            if (d.data.name === "Present Tense Forms") return "green";
+            if (d.data.name === "Past Tense Forms") return "maroon";
+            if (d.data.name === "Future Tense Forms") return "yellow";
+            if (d.data.name === "Future-in-the-Past Forms") return "orange";
+            if (d.data.name === "Future-in-the-Past Passive Forms") return "#C8A2C8";
+            if (d.depth === 0) return "blue";
+            if (d.data.name.startsWith("Formed")) return "darkorange";
+            if (!d.children && !d._children) return "darkblue";
+            return "#666";
+          }
+        })
+        .style("stroke-width", "1.5px");
+
+      nodeEnter.append("text")
+        .attr("dy", ".35em")
+        .attr("x", d => {
+          if (d.depth === 0) return -13;
+          return d._children ? -13 : 13;
+        })
+        .attr("text-anchor", d => {
+          if (d.depth === 0) return "end";
+          return d._children ? "end" : "start";
+        })
+        .text(d => d.data.name)
+        .style("fill-opacity", 1);
+
+      const nodeUpdate = nodeEnter.merge(node);
+
+      nodeUpdate.transition()
+        .duration(500)
+        .attr("transform", d => `translate(${d.y},${d.x})`);
+
+      nodeUpdate.select("circle")
+        .transition()
+        .duration(500)
+        .style("fill", d => {
+          if (d._children) {
+            if (d.data.name.includes("Perfect Continuous")) return "pink";
+            if (d.data.name.includes("Perfect")) return "lightgreen";
+            if (d.data.name === "Future-in-the-Past Passive") return "red";
+            if (d.data.name.includes("Continuous") && !d.data.name.includes("Perfect")) return "lightblue";
+            if (d.data.name.includes("Simple")) return "red";
+            if (d.data.name === "Active Voice") return "orange";
+            if (d.data.name === "Passive Voice") return "#C8A2C8";
+            if (d.data.name === "Present Tense Forms") return "green";
+            if (d.data.name === "Past Tense Forms") return "maroon";
+            if (d.data.name === "Future Tense Forms") return "yellow";
+            if (d.data.name === "Future-in-the-Past Forms") return "orange";
+            if (d.data.name === "Future-in-the-Past Passive Forms") return "#C8A2C8";
+            if (d.depth === 0) return "blue";
+            return "#999";
+          } else {
+            return "#fff";
+          }
+        })
+        .style("stroke", d => {
+          if (d._children) {
+            return "#666";
+          } else {
+            if (d.data.name.includes("Perfect Continuous")) return "pink";
+            if (d.data.name.includes("Perfect")) return "lightgreen";
+            if (d.data.name === "Future-in-the-Past Passive") return "red";
+            if (d.data.name.includes("Continuous") && !d.data.name.includes("Perfect")) return "lightblue";
+            if (d.data.name.includes("Simple")) return "red";
+            if (d.data.name === "Active Voice") return "orange";
+            if (d.data.name === "Passive Voice") return "#C8A2C8";
+            if (d.data.name === "Present Tense Forms") return "green";
+            if (d.data.name === "Past Tense Forms") return "maroon";
+            if (d.data.name === "Future Tense Forms") return "yellow";
+            if (d.data.name === "Future-in-the-Past Forms") return "orange";
+            if (d.data.name === "Future-in-the-Past Passive Forms") return "#C8A2C8";
+            if (d.depth === 0) return "blue";
+            if (d.data.name.startsWith("Formed")) return "darkorange";
+            if (!d.children && !d._children) return "darkblue";
+            return "#666";
+          }
+        })
+        .style("stroke-width", "1.5px");
+
+      const nodeExit = node.exit().transition()
+        .duration(500)
+        .attr("transform", d => `translate(${source.y},${source.x})`)
+        .remove();
+
+      nodeExit.select("circle").attr("r", 8);
+      nodeExit.select("text").style("fill-opacity", 1e-6);
+
+      const link = g.selectAll("path.link")
+        .data(links, d => d.target.id);
+
+      const linkEnter = link.enter().insert("path", "g")
+        .attr("class", "link")
+        .attr("d", d => {
+          const o = {x: source.x0, y: source.y0};
+          return diagonal({source: o, target: o});
+        })
+        .style("stroke", d => {
+          if (d.target.data.name.includes("Perfect Continuous")) return "pink";
+          if (d.target.data.name.includes("Perfect")) return "lightgreen";
+          if (d.target.data.name === "Future-in-the-Past Passive") return "red";
+          if (d.target.data.name.includes("Continuous") && !d.target.data.name.includes("Perfect")) return "lightblue";
+          if (d.target.data.name.includes("Simple")) return "red";
+          if (d.target.data.name === "Active Voice") return "orange";
+          if (d.target.data.name === "Passive Voice") return "#C8A2C8";
+          if (d.target.data.name === "Present Tense Forms") return "green";
+          if (d.target.data.name === "Past Tense Forms") return "maroon";
+          if (d.target.data.name === "Future Tense Forms") return "yellow";
+          if (d.target.data.name === "Future-in-the-Past Forms") return "orange";
+          if (d.target.data.name === "Future-in-the-Past Passive Forms") return "#C8A2C8";
+          if (d.target.data.name.startsWith("Formed")) return "darkorange";
+          if (!d.target.children && !d.target._children) return "darkblue";
+          return "#ccc";
+        });
+
+      const linkUpdate = linkEnter.merge(link);
+
+      linkUpdate.transition()
+        .duration(500)
+        .attr("d", diagonal);
+
+      linkUpdate
+        .style("stroke", d => {
+          if (d.target.data.name.includes("Perfect Continuous")) return "pink";
+          if (d.target.data.name.includes("Perfect")) return "lightgreen";
+          if (d.target.data.name === "Future-in-the-Past Passive") return "red";
+          if (d.target.data.name.includes("Continuous") && !d.target.data.name.includes("Perfect")) return "lightblue";
+          if (d.target.data.name.includes("Simple")) return "red";
+          if (d.target.data.name === "Active Voice") return "orange";
+          if (d.target.data.name === "Passive Voice") return "#C8A2C8";
+          if (d.target.data.name === "Present Tense Forms") return "green";
+          if (d.target.data.name === "Past Tense Forms") return "maroon";
+          if (d.target.data.name === "Future Tense Forms") return "yellow";
+          if (d.target.data.name === "Future-in-the-Past Forms") return "orange";
+          if (d.target.data.name === "Future-in-the-Past Passive Forms") return "#C8A2C8";
+          if (d.target.data.name.startsWith("Formed")) return "darkorange";
+          if (!d.target.children && !d.target._children) return "darkblue";
+          return "#ccc";
+        });
+
+      link.exit().transition()
+        .duration(500)
+        .attr("d", d => {
+          const o = {x: source.x, y: source.y};
+          return diagonal({source: o, target: o});
+        })
+        .remove();
+
+      nodes.forEach(d => {
+        d.x0 = d.x;
+        d.y0 = d.y;
+      });
+    }
+
+    function diagonal(d) {
+      return `M ${d.source.y},${d.source.x}
+              C ${(d.source.y + d.target.y) / 2},${d.source.x}
+                ${(d.source.y + d.target.y) / 2},${d.target.x}
+                ${d.target.y},${d.target.x}`;
+    }
+  </script>
+</body>
