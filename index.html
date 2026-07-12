@@ -31,6 +31,11 @@
             --mondrian-white: #f1faee;
         }
 
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: var(--orange) var(--darker);
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
             color: var(--text);
@@ -1017,7 +1022,7 @@
             }
         }
 
-        /* ===== MODAL — ИСПРАВЛЕННАЯ ВЕРСИЯ ===== */
+        /* ===== MODAL ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -1045,7 +1050,6 @@
             align-items: center;
             justify-content: center;
             gap: 14px;
-            /* Центрирование через flex + ограничение размеров */
             margin: 0 auto;
         }
         .modal-content img {
@@ -1367,9 +1371,14 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--orange-light);
         }
-        html {
-            scrollbar-width: thin;
-            scrollbar-color: var(--orange) var(--darker);
+
+        /* ===== БЛОКИРОВКА СКРОЛЛА С КОМПЕНСАЦИЕЙ ===== */
+        html.modal-open {
+            overflow: hidden !important;
+        }
+        body.modal-open {
+            overflow: hidden !important;
+            padding-right: var(--scrollbar-width, 0px) !important;
         }
 
         /* ===== FORM MODAL ===== */
@@ -1541,19 +1550,6 @@
             font-size: 15px;
             color: var(--text);
             font-weight: 500;
-        }
-
-        /* ===== БЛОКИРОВКА СКРОЛЛА С КОМПЕНСАЦИЕЙ ===== */
-        body.modal-open {
-            overflow: hidden !important;
-            padding-right: var(--scrollbar-width, 0px) !important;
-        }
-
-        /* Селектор для элементов, которые могут дёргаться */
-        .sticky-nav,
-        .scroll-top,
-        .toast {
-            transition: margin-right 0.25s ease, right 0.25s ease;
         }
     </style>
 
@@ -1922,10 +1918,12 @@
             scrollbarWidth = getScrollbarWidth();
             document.documentElement.style.setProperty('--scrollbar-width', scrollbarWidth + 'px');
             document.body.classList.add('modal-open');
+            document.documentElement.classList.add('modal-open');
         }
 
         function unlockScroll() {
             document.body.classList.remove('modal-open');
+            document.documentElement.classList.remove('modal-open');
             document.documentElement.style.removeProperty('--scrollbar-width');
         }
 
@@ -1937,7 +1935,6 @@
             const caption = document.getElementById('modalCaption');
             img.src = galleryImages[currentIndex].src;
             caption.textContent = galleryImages[currentIndex].caption;
-            // Сбрасываем opacity перед показом
             img.style.opacity = '1';
             modal.classList.add('active');
             lockScroll();
