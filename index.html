@@ -31,16 +31,16 @@
             --mondrian-white: #f1faee;
         }
 
-        html {
-            scrollbar-width: thin;
-            scrollbar-color: var(--orange) var(--darker);
+        /* Убираем горизонтальный скролл на всех устройствах */
+        html, body {
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
         body {
             font-family: 'Roboto', sans-serif;
             color: var(--text);
             background: var(--darker);
-            overflow-x: hidden;
         }
 
         /* ===== HERO ===== */
