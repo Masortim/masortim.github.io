@@ -300,7 +300,6 @@
         .scroll-indicator {
             position: absolute;
             left: 50%;
-            transform: translateX(-50%);
             z-index: 3;
             cursor: pointer;
             display: flex;
@@ -308,7 +307,8 @@
             align-items: center;
             gap: 8px;
             opacity: 0;
-            animation: fadeInUp 0.8s ease 0.6s forwards;
+            /* Анимация включает translateX(-50%) для центрирования */
+            animation: scrollFadeInUp 0.8s ease 0.6s forwards;
             /* top задаётся через JS */
         }
         .scroll-indicator-arrow {
@@ -376,6 +376,18 @@
             }
         }
 
+        /* ===== Кастомная анимация для скролл-индикатора (с translateX(-50%)) ===== */
+        @keyframes scrollFadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
         /* ===== HERO BOILER (декоративный) ===== */
         .hero-boiler {
             position: absolute;
@@ -389,7 +401,7 @@
             filter: drop-shadow(0 0 60px rgba(232, 106, 23, 0.3));
         }
 
-        /* ===== ANIMATIONS ===== */
+        /* ===== ANIMATIONS (общие) ===== */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -1219,10 +1231,9 @@
             height: 20px;
             z-index: 99;
         }
-        /* ===== ОСНОВНЫЕ ИЗМЕНЕНИЯ: увеличены отступы и расстояния ===== */
         .nav-wrapper {
             max-width: 100%;
-            padding: 0 40px;  /* было 24px → 40px */
+            padding: 0 40px;
             margin: 0 auto;
             display: flex;
             align-items: center;
@@ -1242,7 +1253,7 @@
         }
         .nav-links {
             display: flex;
-            gap: 40px;  /* было 32px → 40px */
+            gap: 40px;
             list-style: none;
         }
         .nav-links a {
@@ -1287,7 +1298,7 @@
 
         @media (max-width: 768px) {
             .nav-wrapper {
-                padding: 0 20px;  /* на мобильных чуть меньше */
+                padding: 0 20px;
             }
             .nav-links {
                 position: fixed;
@@ -1297,7 +1308,7 @@
                 background: rgba(13, 13, 13, 0.98);
                 flex-direction: column;
                 align-items: center;
-                padding: 24px 20px;  /* было 24px 0 → добавили боковые отступы */
+                padding: 24px 20px;
                 gap: 20px;
                 transform: translateY(-150%);
                 transition: transform 0.35s ease;
@@ -1611,8 +1622,8 @@
             </a>
         </div>
 
-        <!-- ===== АБСОЛЮТНАЯ СТРЕЛКА ===== -->
-        <div class="scroll-indicator animate-in delay-4" id="scrollIndicator" onclick="scrollToSection(event, 'features')">
+        <!-- ===== АБСОЛЮТНАЯ СТРЕЛКА (исправлена: анимация с translateX(-50%)) ===== -->
+        <div class="scroll-indicator" id="scrollIndicator" onclick="scrollToSection(event, 'features')">
             <div class="scroll-indicator-arrow">
                 <svg viewBox="0 0 24 24">
                     <path d="M12 5v14M5 12l7 7 7-7"/>
@@ -1959,7 +1970,7 @@
             navLinks.classList.toggle('open');
         }
 
-        // === ПОЗИЦИОНИРОВАНИЕ СТРЕЛКИ ===
+        // === ПОЗИЦИОНИРОВАНИЕ СТРЕЛКИ (вертикальное) ===
         function positionScrollIndicator() {
             const hero = document.getElementById('heroSection');
             const cta = document.getElementById('heroCta');
