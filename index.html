@@ -296,7 +296,7 @@
             fill: currentColor;
         }
 
-        /* ===== SCROLL INDICATOR (абсолютное позиционирование) ===== */
+        /* ===== SCROLL INDICATOR ===== */
         .scroll-indicator {
             position: absolute;
             left: 50%;
@@ -307,9 +307,7 @@
             align-items: center;
             gap: 8px;
             opacity: 0;
-            /* Анимация включает translateX(-50%) для центрирования */
             animation: scrollFadeInUp 0.8s ease 0.6s forwards;
-            /* top задаётся через JS */
         }
         .scroll-indicator-arrow {
             width: 28px;
@@ -376,7 +374,6 @@
             }
         }
 
-        /* ===== Кастомная анимация для скролл-индикатора (с translateX(-50%)) ===== */
         @keyframes scrollFadeInUp {
             from {
                 opacity: 0;
@@ -388,7 +385,7 @@
             }
         }
 
-        /* ===== HERO BOILER (декоративный) ===== */
+        /* ===== HERO BOILER ===== */
         .hero-boiler {
             position: absolute;
             right: -5%;
@@ -401,7 +398,7 @@
             filter: drop-shadow(0 0 60px rgba(232, 106, 23, 0.3));
         }
 
-        /* ===== ANIMATIONS (общие) ===== */
+        /* ===== ANIMATIONS ===== */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -664,7 +661,6 @@
             transform: translateY(0);
         }
 
-        /* отключаем эффекты для информационных ячеек */
         .mondrian-cell.cell-6,
         .mondrian-cell.cell-7 {
             cursor: default;
@@ -1027,20 +1023,19 @@
             }
         }
 
-        /* ===== MODAL ===== */
+        /* ===== MODAL (ИСПРАВЛЕННОЕ ЦЕНТРИРОВАНИЕ) ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.95);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
-            padding: 70px 20px;
+            padding: 20px;
         }
         .modal-overlay.active {
             opacity: 1;
@@ -1050,7 +1045,7 @@
             position: relative;
             width: 100%;
             max-width: 1200px;
-            height: 100%;
+            max-height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1059,7 +1054,7 @@
         }
         .modal-content img {
             max-width: 100%;
-            max-height: calc(100vh - 180px);
+            max-height: calc(100vh - 160px);
             object-fit: contain;
             border-radius: 8px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -1138,7 +1133,7 @@
 
         @media (max-width: 768px) {
             .modal-overlay {
-                padding: 60px 12px;
+                padding: 12px;
             }
             .modal-content img {
                 max-height: calc(100vh - 140px);
@@ -1203,7 +1198,7 @@
             fill: #fff;
         }
 
-        /* ===== STICKY NAV — увеличенные отступы ===== */
+        /* ===== STICKY NAV ===== */
         .sticky-nav {
             position: fixed;
             top: 0;
@@ -1622,7 +1617,7 @@
             </a>
         </div>
 
-        <!-- ===== АБСОЛЮТНАЯ СТРЕЛКА (исправлена: анимация с translateX(-50%)) ===== -->
+        <!-- ===== СТРЕЛКА ===== -->
         <div class="scroll-indicator" id="scrollIndicator" onclick="scrollToSection(event, 'features')">
             <div class="scroll-indicator-arrow">
                 <svg viewBox="0 0 24 24">
@@ -1812,7 +1807,7 @@
         <svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
     </button>
 
-    <!-- ===== MODAL ===== -->
+    <!-- ===== MODAL (ИСПРАВЛЕННОЕ) ===== -->
     <div class="modal-overlay" id="imageModal" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeModal()" aria-label="Закрыть">
@@ -1952,7 +1947,6 @@
             }, 300);
         }
 
-        // === УНИВЕРСАЛЬНАЯ ФУНКЦИЯ ПРОКРУТКИ ===
         function scrollToSection(event, id) {
             event.preventDefault();
             const el = document.getElementById(id);
@@ -1970,7 +1964,7 @@
             navLinks.classList.toggle('open');
         }
 
-        // === ПОЗИЦИОНИРОВАНИЕ СТРЕЛКИ (вертикальное) ===
+        // === Позиционирование стрелки ===
         function positionScrollIndicator() {
             const hero = document.getElementById('heroSection');
             const cta = document.getElementById('heroCta');
