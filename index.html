@@ -822,6 +822,7 @@
             background: var(--orange);
             padding: 40px 20px;
             text-align: center;
+            position: relative; /* для возможного позиционирования */
         }
         .cta-bar h3 {
             font-family: 'Oswald', sans-serif;
@@ -1020,6 +1021,14 @@
                 padding: 14px 28px;
                 font-size: 14px;
             }
+
+            /* ===== КНОПКА "НАВЕРХ" НА МОБИЛЬНЫХ ===== */
+            .scroll-top {
+                bottom: 30px;          /* чуть выше от нижнего края */
+                right: 30px;           /* чуть левее от правого края */
+                width: 44px;
+                height: 44px;
+            }
         }
 
         /* ===== MODAL ===== */
@@ -1200,7 +1209,7 @@
             }
         }
 
-        /* ===== SCROLL TOP ===== */
+        /* ===== SCROLL TOP (общие стили) ===== */
         .scroll-top {
             position: fixed;
             bottom: 24px;
