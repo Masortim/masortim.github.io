@@ -64,7 +64,6 @@
             z-index: 1;
         }
 
-        /* ===== HERO CONTENT ===== */
         .hero-content {
             position: relative;
             z-index: 2;
@@ -129,7 +128,6 @@
             margin: 0 auto 28px;
         }
 
-        /* ===== HERO-CONTACTS ===== */
         .hero-contacts {
             width: 100%;
             max-width: 560px;
@@ -264,7 +262,6 @@
             object-fit: contain;
         }
 
-        /* ===== HERO CTA ===== */
         .hero-cta {
             display: inline-flex;
             align-items: center;
@@ -373,7 +370,6 @@
                 transform: translateX(-50%) scale(0.5);
             }
         }
-
         @keyframes scrollFadeInUp {
             from {
                 opacity: 0;
@@ -385,7 +381,6 @@
             }
         }
 
-        /* ===== HERO BOILER ===== */
         .hero-boiler {
             position: absolute;
             right: -5%;
@@ -660,7 +655,6 @@
             opacity: 1;
             transform: translateY(0);
         }
-
         .mondrian-cell.cell-6,
         .mondrian-cell.cell-7 {
             cursor: default;
@@ -1023,19 +1017,19 @@
             }
         }
 
-        /* ===== MODAL (ИСПРАВЛЕННОЕ ЦЕНТРИРОВАНИЕ) ===== */
+        /* ===== MODAL — ИСПРАВЛЕННАЯ ВЕРСИЯ ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.92);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            padding: 20px;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            padding: 20px;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
         }
         .modal-overlay.active {
             opacity: 1;
@@ -1045,25 +1039,31 @@
             position: relative;
             width: 100%;
             max-width: 1200px;
-            max-height: 100%;
+            max-height: 90vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 16px;
+            gap: 14px;
+            /* Центрирование через flex + ограничение размеров */
+            margin: 0 auto;
         }
         .modal-content img {
             max-width: 100%;
-            max-height: calc(100vh - 160px);
+            max-height: calc(90vh - 80px);
+            width: auto;
+            height: auto;
             object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
             transition: opacity 0.15s ease;
+            display: block;
+            flex-shrink: 0;
         }
         .modal-close {
             position: fixed;
-            top: 16px;
-            right: 16px;
+            top: 20px;
+            right: 20px;
             width: 48px;
             height: 48px;
             background: var(--gray);
@@ -1097,6 +1097,7 @@
             text-align: center;
             flex-shrink: 0;
             padding: 0 60px;
+            max-width: 90%;
         }
         .modal-nav {
             position: fixed;
@@ -1125,29 +1126,32 @@
             fill: #fff;
         }
         .modal-prev {
-            left: 16px;
+            left: 20px;
         }
         .modal-next {
-            right: 16px;
+            right: 20px;
         }
 
         @media (max-width: 768px) {
             .modal-overlay {
                 padding: 12px;
             }
+            .modal-content {
+                max-height: 94vh;
+            }
             .modal-content img {
-                max-height: calc(100vh - 140px);
+                max-height: calc(94vh - 70px);
             }
             .modal-close {
-                top: 10px;
-                right: 10px;
-                width: 42px;
-                height: 42px;
+                top: 12px;
+                right: 12px;
+                width: 40px;
+                height: 40px;
             }
             .modal-nav {
-                width: 42px;
-                height: 42px;
-                background: rgba(42, 42, 42, 0.85);
+                width: 38px;
+                height: 38px;
+                background: rgba(42, 42, 42, 0.8);
             }
             .modal-prev {
                 left: 8px;
@@ -1156,8 +1160,39 @@
                 right: 8px;
             }
             .modal-caption {
-                font-size: 13px;
-                padding: 0 50px;
+                font-size: 12px;
+                padding: 0 40px;
+            }
+        }
+        @media (max-width: 480px) {
+            .modal-overlay {
+                padding: 8px;
+            }
+            .modal-content {
+                max-height: 96vh;
+            }
+            .modal-content img {
+                max-height: calc(96vh - 60px);
+            }
+            .modal-close {
+                top: 8px;
+                right: 8px;
+                width: 36px;
+                height: 36px;
+            }
+            .modal-nav {
+                width: 32px;
+                height: 32px;
+            }
+            .modal-prev {
+                left: 4px;
+            }
+            .modal-next {
+                right: 4px;
+            }
+            .modal-caption {
+                font-size: 11px;
+                padding: 0 30px;
             }
         }
 
@@ -1346,10 +1381,10 @@
             align-items: center;
             justify-content: center;
             z-index: 2000;
+            padding: 20px;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
-            padding: 20px;
         }
         .form-modal-overlay.active {
             opacity: 1;
@@ -1365,6 +1400,7 @@
             position: relative;
             transform: translateY(20px);
             transition: transform 0.3s ease;
+            margin: 0 auto;
         }
         .form-modal-overlay.active .form-modal {
             transform: translateY(0);
@@ -1506,6 +1542,19 @@
             color: var(--text);
             font-weight: 500;
         }
+
+        /* ===== БЛОКИРОВКА СКРОЛЛА С КОМПЕНСАЦИЕЙ ===== */
+        body.modal-open {
+            overflow: hidden !important;
+            padding-right: var(--scrollbar-width, 0px) !important;
+        }
+
+        /* Селектор для элементов, которые могут дёргаться */
+        .sticky-nav,
+        .scroll-top,
+        .toast {
+            transition: margin-right 0.25s ease, right 0.25s ease;
+        }
     </style>
 
     <!-- SEO -->
@@ -1571,7 +1620,6 @@
         <div class="hero-overlay"></div>
 
         <div class="hero-content">
-            <!-- Бейдж (патент) -->
             <a href="https://rospatent.gov.ru/" target="_blank" rel="noopener" class="hero-badge animate-in" style="color: inherit; text-decoration: none;">Российский патент</a>
 
             <h1 class="animate-in delay-1">Тепло<span>динамик</span></h1>
@@ -1581,7 +1629,6 @@
                 Бункер 75 кг обеспечивает непрерывную работу до 3 суток без вмешательства.
             </p>
 
-            <!-- ===== HERO-CONTACTS ===== -->
             <div class="hero-contacts animate-in delay-4">
                 <div class="hero-contact-row">
                     <div class="hero-contact-item">
@@ -1610,14 +1657,12 @@
                 </div>
             </div>
 
-            <!-- CTA -->
             <a href="#contact" class="hero-cta animate-in delay-4" id="heroCta" onclick="scrollToSection(event, 'contact')">
                 <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z"/></svg>
                 Оставить заявку
             </a>
         </div>
 
-        <!-- ===== СТРЕЛКА ===== -->
         <div class="scroll-indicator" id="scrollIndicator" onclick="scrollToSection(event, 'features')">
             <div class="scroll-indicator-arrow">
                 <svg viewBox="0 0 24 24">
@@ -1627,7 +1672,6 @@
             </div>
         </div>
 
-        <!-- Декоративный котёл -->
         <img class="hero-boiler" src="Рис 2.jpg" alt="Котел Теплодинамик">
     </section>
 
@@ -1807,7 +1851,7 @@
         <svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
     </button>
 
-    <!-- ===== MODAL (ИСПРАВЛЕННОЕ) ===== -->
+    <!-- ===== MODAL ===== -->
     <div class="modal-overlay" id="imageModal" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeModal()" aria-label="Закрыть">
@@ -1860,13 +1904,32 @@
 
     <!-- ===== SCRIPTS ===== -->
     <script>
-        // === Галерея ===
+        // === ГАЛЕРЕЯ ===
         const galleryImages = [
             { src: 'Анимация1.gif', caption: '3D-модель котла Теплодинамик' },
             { src: 'Рис 2.jpg', caption: 'Визуализация котла в интерьере' }
         ];
         let currentIndex = 0;
+        let scrollbarWidth = 0;
 
+        // === ВЫЧИСЛЕНИЕ ШИРИНЫ СКРОЛЛБАРА ===
+        function getScrollbarWidth() {
+            return window.innerWidth - document.documentElement.clientWidth;
+        }
+
+        // === БЛОКИРОВКА СКРОЛЛА С КОМПЕНСАЦИЕЙ ===
+        function lockScroll() {
+            scrollbarWidth = getScrollbarWidth();
+            document.documentElement.style.setProperty('--scrollbar-width', scrollbarWidth + 'px');
+            document.body.classList.add('modal-open');
+        }
+
+        function unlockScroll() {
+            document.body.classList.remove('modal-open');
+            document.documentElement.style.removeProperty('--scrollbar-width');
+        }
+
+        // === ОТКРЫТИЕ МОДАЛЬНОГО ОКНА (ИЗОБРАЖЕНИЯ) ===
         function openModal(index) {
             currentIndex = index;
             const modal = document.getElementById('imageModal');
@@ -1874,17 +1937,21 @@
             const caption = document.getElementById('modalCaption');
             img.src = galleryImages[currentIndex].src;
             caption.textContent = galleryImages[currentIndex].caption;
+            // Сбрасываем opacity перед показом
+            img.style.opacity = '1';
             modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            lockScroll();
         }
 
+        // === ЗАКРЫТИЕ МОДАЛЬНОГО ОКНА (ИЗОБРАЖЕНИЯ) ===
         function closeModal(event) {
             if (event && event.target !== event.currentTarget) return;
             const modal = document.getElementById('imageModal');
             modal.classList.remove('active');
-            document.body.style.overflow = '';
+            unlockScroll();
         }
 
+        // === ПЕРЕКЛЮЧЕНИЕ ИЗОБРАЖЕНИЙ ===
         function changeImage(direction) {
             currentIndex += direction;
             if (currentIndex < 0) currentIndex = galleryImages.length - 1;
@@ -1899,6 +1966,7 @@
             }, 150);
         }
 
+        // === КЛАВИАТУРА ДЛЯ МОДАЛКИ ===
         document.addEventListener('keydown', function(e) {
             const modal = document.getElementById('imageModal');
             if (!modal.classList.contains('active')) return;
@@ -1907,7 +1975,7 @@
             if (e.key === 'ArrowRight') changeImage(1);
         });
 
-        // === Scroll Top ===
+        // === SCROLL TOP ===
         const scrollTopBtn = document.getElementById('scrollTopBtn');
         const stickyNav = document.getElementById('stickyNav');
         const navLinks = document.getElementById('navLinks');
@@ -1947,6 +2015,7 @@
             }, 300);
         }
 
+        // === ПРОКРУТКА К СЕКЦИЯМ ===
         function scrollToSection(event, id) {
             event.preventDefault();
             const el = document.getElementById(id);
@@ -1964,7 +2033,7 @@
             navLinks.classList.toggle('open');
         }
 
-        // === Позиционирование стрелки ===
+        // === ПОЗИЦИОНИРОВАНИЕ СТРЕЛКИ ===
         function positionScrollIndicator() {
             const hero = document.getElementById('heroSection');
             const cta = document.getElementById('heroCta');
@@ -1978,7 +2047,6 @@
             const heroBottom = heroRect.bottom;
 
             const mid = (buttonBottom + heroBottom) / 2;
-
             const topOffset = mid - heroRect.top - indicator.offsetHeight / 2;
 
             indicator.style.top = topOffset + 'px';
@@ -1988,16 +2056,16 @@
         window.addEventListener('resize', positionScrollIndicator);
         setTimeout(positionScrollIndicator, 1000);
 
-        // === Form Modal ===
+        // === FORM MODAL ===
         function openFormModal() {
             document.getElementById('formModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            lockScroll();
         }
 
         function closeFormModal(event) {
             if (event && event.target !== event.currentTarget) return;
             document.getElementById('formModal').classList.remove('active');
-            document.body.style.overflow = '';
+            unlockScroll();
         }
 
         function submitForm(event) {
@@ -2024,7 +2092,7 @@
             }
         });
 
-        // === Scroll Animation Observer ===
+        // === SCROLL ANIMATION OBSERVER ===
         document.addEventListener('DOMContentLoaded', function() {
             const animElements = document.querySelectorAll('.scroll-animate');
             const observer = new IntersectionObserver((entries) => {
