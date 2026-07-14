@@ -13,6 +13,19 @@
             box-sizing: border-box;
         }
 
+        /* ===== FIX: предотвращаем горизонтальный скролл на мобильных ===== */
+        html {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+        body {
+            overflow-x: hidden;
+            max-width: 100%;
+            font-family: 'Roboto', sans-serif;
+            color: var(--text);
+            background: var(--darker);
+        }
+
         :root {
             --orange: #e86a17;
             --orange-light: #f08a45;
@@ -29,13 +42,6 @@
             --mondrian-yellow: #f4a261;
             --mondrian-black: #111;
             --mondrian-white: #f1faee;
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            color: var(--text);
-            background: var(--darker);
-            overflow-x: hidden;
         }
 
         /* ===== БЛОКИРОВКА СКРОЛЛА С КОМПЕНСАЦИЕЙ ===== */
@@ -395,6 +401,7 @@
             padding: 80px 20px;
             max-width: 1200px;
             margin: 0 auto;
+            overflow: hidden; /* FIX: предотвращает overflow внутри секций */
         }
         .section-title {
             font-family: 'Oswald', sans-serif;
@@ -489,6 +496,7 @@
         .specs-section {
             background: var(--dark);
             padding: 80px 20px;
+            overflow: hidden; /* FIX */
         }
         .specs-wrapper {
             max-width: 1200px;
@@ -506,6 +514,8 @@
             border-radius: 16px;
             border: 1px solid var(--gray-light);
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            display: block;
+            max-width: 100%;
         }
         .specs-image::after {
             content: '';
@@ -558,6 +568,7 @@
             max-width: 1100px;
             margin: 0 auto;
             padding: 0 20px;
+            overflow: hidden; /* FIX */
         }
         .mondrian-grid {
             display: grid;
@@ -569,6 +580,7 @@
             border-radius: 4px;
             max-width: 1000px;
             margin: 0 auto;
+            max-width: 100%; /* FIX */
         }
         .mondrian-cell {
             position: relative;
@@ -587,6 +599,7 @@
             height: 100%;
             object-fit: cover;
             transition: transform 0.6s ease;
+            display: block;
         }
         .mondrian-cell:hover img {
             transform: scale(1.08);
@@ -926,11 +939,21 @@
             .section {
                 padding: 50px 16px;
             }
+            .specs-section {
+                padding: 50px 16px;
+            }
+            .contact-section {
+                padding: 50px 16px;
+            }
+            .mondrian-gallery {
+                padding: 0 12px;
+            }
             .mondrian-grid {
                 grid-template-columns: 1fr 1fr;
                 grid-template-rows: 200px 100px 200px;
                 gap: 8px;
                 padding: 8px;
+                max-width: 100%;
             }
             .cell-1 {
                 grid-column: 1 / 3;
@@ -962,6 +985,23 @@
             .hero-cta {
                 padding: 14px 28px;
                 font-size: 14px;
+            }
+            /* FIX: sticky-nav на мобильных — отступы уже есть, но убедимся, что ничего не вылезает */
+            .sticky-nav {
+                left: 12px !important;
+                right: 12px !important;
+                width: auto !important;
+            }
+            .nav-wrapper {
+                padding: 0 16px !important;
+            }
+            .nav-links {
+                left: 12px !important;
+                right: 12px !important;
+            }
+            /* FIX: hero-content padding */
+            .hero-content {
+                padding: 30px 16px;
             }
         }
 
@@ -1252,23 +1292,25 @@
             fill: #fff;
         }
 
+        /* ===== УЛУЧШЕННАЯ МОБИЛЬНАЯ НАВИГАЦИЯ ===== */
         @media (max-width: 768px) {
-            /* ===== УМЕНЬШАЕМ ШИРИНУ И ОТСТУПЫ ===== */
             .sticky-nav {
-                left: 10px;
-                right: 10px;
+                left: 16px;
+                right: 16px;
                 width: auto;
-                border-radius: 12px;
+                border-radius: 16px;
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+                border-bottom: none;
             }
             .nav-wrapper {
-                padding: 0 24px; /* увеличен правый отступ для смещения гамбургера */
+                padding: 0 20px;
+                height: 60px;
             }
             .nav-links {
                 position: fixed;
                 top: 60px;
-                left: 10px;
-                right: 10px;
+                left: 16px;
+                right: 16px;
                 background: rgba(13, 13, 13, 0.98);
                 flex-direction: column;
                 align-items: center;
@@ -1276,8 +1318,7 @@
                 gap: 20px;
                 transform: translateY(-150%);
                 transition: transform 0.35s ease;
-                border-bottom: 1px solid var(--gray-light);
-                border-radius: 0 0 12px 12px;
+                border-radius: 0 0 16px 16px;
                 overflow: hidden;
             }
             .nav-links.open {
@@ -1285,7 +1326,8 @@
             }
             .nav-toggle {
                 display: block;
-                margin-right: 4px; /* дополнительно отодвигаем от края */
+                margin-right: 4px;
+                padding: 8px 6px;
             }
         }
 
@@ -1848,7 +1890,6 @@
         }
 
         function unlockScroll() {
-            // Проверяем, есть ли ещё открытые модальные окна
             const anyModalOpen = document.querySelector('.modal-overlay.active') ||
                 document.querySelector('.form-modal-overlay.active');
             if (!anyModalOpen) {
