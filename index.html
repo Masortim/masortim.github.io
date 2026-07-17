@@ -2148,20 +2148,22 @@
             </button>
             <h3>Заказать консультацию</h3>
             <p>Оставьте свои контакты, и наш специалист свяжется с вами в ближайшее время.</p>
-            <form onsubmit="submitForm(event)">
+            <form id="contactForm" action="https://formspree.io/f/mwvglazw" method="POST">
+                <input type="hidden" name="_subject" value="Новая заявка с сайта Теплодинамик" />
+                <input type="hidden" name="_replyto" value="alex.typeface@gmail.com" />
                 <div class="form-group">
                     <label for="formName">Имя</label>
-                    <input type="text" id="formName" placeholder="Ваше имя" required />
+                    <input type="text" name="name" id="formName" placeholder="Ваше имя" required />
                 </div>
                 <div class="form-group">
                     <label for="formEmail">Email</label>
-                    <input type="email" id="formEmail" placeholder="your@email.ru" required />
+                    <input type="email" name="email" id="formEmail" placeholder="your@email.ru" required />
                 </div>
                 <div class="form-group">
                     <label for="formPhone">Телефон</label>
-                    <input type="tel" id="formPhone" placeholder="+7 (___) ___-__-__" required />
+                    <input type="tel" name="phone" id="formPhone" placeholder="+7 (___) ___-__-__" required />
                 </div>
-                <button type="submit" class="form-submit">Отправить</button>
+                <button type="submit" class="form-submit" id="formSubmitBtn">Отправить</button>
             </form>
         </div>
     </div>
@@ -2396,11 +2398,35 @@
 
         function submitForm(event) {
             event.preventDefault();
-            closeFormModal();
-            document.getElementById('formName').value = '';
-            document.getElementById('formEmail').value = '';
-            document.getElementById('formPhone').value = '';
-            showToast();
+            var form = document.getElementById('contactForm');
+            var btn = document.getElementById('formSubmitBtn');
+            var originalText = btn.textContent;
+            btn.textContent = 'Отправка...';
+            btn.disabled = true;
+
+            var data = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            }).then(function(response) {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                if (response.ok) {
+                    closeFormModal();
+                    document.getElementById('formName').value = '';
+                    document.getElementById('formEmail').value = '';
+                    document.getElementById('formPhone').value = '';
+                    showToast();
+                } else {
+                    alert('Ошибка отправки. Попробуйте позже или свяжитесь по телефону.');
+                }
+            }).catch(function(error) {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                alert('Ошибка сети. Проверьте подключение и попробуйте снова.');
+            });
         }
 
         function showToast() {
@@ -2417,6 +2443,9 @@
                 closeFormModal();
             }
         });
+
+        // Привязываем обработчик отправки формы
+        document.getElementById('contactForm').addEventListener('submit', submitForm);
 
         // === Scroll Animation Observer ===
         document.addEventListener('DOMContentLoaded', function() {
