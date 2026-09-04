@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Билет 3 — Качество обработки почвы · Измельчающие устройства · Птицеводство</title>
+<meta name="description" content="Качественные показатели обработки почвы; Типы и регулирование измельчающих устройств кормоуборочных комбайнов; Комплексная механизация и автоматизация птицеводства">
+<style>
+:root{
+  --bg:#f4f6f3; --bg2:#ffffff; --ink:#141a17; --ink2:#4a5a51; --line:#dbe3dc;
+  --acc:#1f7a4d; --acc2:#0f5c39; --accsoft:#e6f3eb; --gold:#b8860b; --goldsoft:#fdf4dc;
+  --red:#a5342b; --redsoft:#fbeae7; --blue:#215c8a; --bluesoft:#e8f1f8;
+  --shadow:0 1px 2px rgba(16,32,24,.06),0 8px 24px rgba(16,32,24,.07);
+  --r:14px;
+}
+[data-theme=dark]{
+  --bg:#101613; --bg2:#171f1b; --ink:#e8efe9; --ink2:#a6b6ac; --line:#28332d;
+  --acc:#5cc98d; --acc2:#8fe0b1; --accsoft:#17301f; --gold:#e0b95c; --goldsoft:#2c2413;
+  --red:#ef8d80; --redsoft:#331d19; --blue:#7db6e0; --bluesoft:#152531;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  font-feature-settings:"liga" 1;overflow-wrap:break-word}
+a{color:var(--acc2);text-decoration:none}a:hover{text-decoration:underline}
+h1,h2,h3,h4,h5{line-height:1.25;margin:0 0 .5em;font-weight:750;letter-spacing:-.01em}
+p{margin:.55em 0}
+code,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em;
+  background:var(--accsoft);color:var(--acc2);padding:.1em .38em;border-radius:6px}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:60;background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.82));
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+[data-theme=dark] .top{background:linear-gradient(180deg,rgba(23,31,27,.95),rgba(23,31,27,.8))}
+.topin{max-width:1400px;margin:0 auto;padding:.5rem .9rem;display:flex;align-items:center;gap:.6rem}
+.brand{font-weight:800;font-size:.98rem;letter-spacing:-.02em;white-space:nowrap;display:flex;align-items:center;gap:.5rem}
+.brand .logo{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#fff;display:grid;place-items:center;font-size:.8rem;flex:0 0 auto}
+.brand small{display:block;font-weight:600;color:var(--ink2);font-size:.7rem;letter-spacing:.02em}
+.spacer{flex:1}
+.ib{border:1px solid var(--line);background:var(--bg2);color:var(--ink);border-radius:10px;
+  padding:.34rem .6rem;font-size:.82rem;font-weight:650;cursor:pointer;white-space:nowrap}
+.ib:hover{border-color:var(--acc);color:var(--acc2);text-decoration:none}
+.ib.icon{padding:.34rem .5rem;font-size:.95rem}
+select.ib{padding-right:1.6rem}
+.prog{height:3px;background:transparent}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--gold));transition:width .1s}
+.burger{display:none}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:290px minmax(0,1fr);gap:1.6rem;
+  padding:1.3rem .9rem 4rem}
+main{min-width:0}
+.side{position:sticky;top:62px;align-self:start;max-height:calc(100vh - 84px);overflow:auto;
+  background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:.85rem;box-shadow:var(--shadow);
+  scrollbar-width:thin}
+.side h6{margin:.9rem 0 .4rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2)}
+.side h6:first-child{margin-top:.1rem}
+.snav a{display:flex;gap:.5rem;align-items:baseline;padding:.3rem .45rem;border-radius:9px;font-size:.85rem;color:var(--ink)}
+.snav a:hover{background:var(--accsoft);text-decoration:none}
+.snav a.on{background:var(--acc);color:#fff;font-weight:700}
+[data-theme=dark] .snav a.on{color:#08130c}
+.snav .n{font-variant-numeric:tabular-nums;font-weight:800;font-size:.72rem;opacity:.65;min-width:1.4em}
+.snav .sub{padding-left:1.5rem;font-size:.79rem;color:var(--ink2)}
+.snav .sub a{color:var(--ink2);padding:.16rem .4rem}
+#q{width:100%;padding:.45rem .6rem;border:1px solid var(--line);border-radius:10px;background:var(--bg);
+  color:var(--ink);font-size:.85rem;margin-bottom:.5rem}
+#q:focus{outline:2px solid var(--acc);outline-offset:1px}
+.hidem{display:none!important}
+
+/* ---------- cards ---------- */
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+  padding:1.15rem 1.3rem;margin-bottom:1.15rem}
+.hero{background:linear-gradient(135deg,var(--acc) 0%,var(--acc2) 60%,#0a4029 100%);color:#fff;border:none}
+[data-theme=dark] .hero{background:linear-gradient(135deg,#1c4a30,#123021 60%,#0b1f15)}
+.hero h1{font-size:1.55rem;margin-bottom:.25em}
+.hero .muted{color:rgba(255,255,255,.82)}
+.hero .tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
+.tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);border-radius:999px;
+  padding:.16rem .62rem;font-size:.76rem;font-weight:650}
+
+/* question block */
+.q{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+  margin-bottom:1.35rem;overflow:hidden;scroll-margin-top:74px}
+.qh{display:flex;gap:.85rem;align-items:flex-start;padding:1.05rem 1.3rem;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,var(--accsoft),transparent)}
+.qn{flex:0 0 auto;width:38px;height:38px;border-radius:11px;background:var(--acc);color:#fff;display:grid;
+  place-items:center;font-weight:800;font-size:1.02rem}
+[data-theme=dark] .qn{color:#08130c}
+.qh h2{font-size:1.18rem;margin:0}
+.qh .sub{font-size:.78rem;color:var(--ink2);margin-top:.2rem;font-weight:600}
+.qb{padding:1.15rem 1.3rem}
+.q h3{font-size:1.02rem;margin:1.5rem 0 .45rem;padding-left:.7rem;border-left:4px solid var(--acc);color:var(--ink)}
+.q h3:first-child{margin-top:.2rem}
+.q h4{font-size:.92rem;margin:1.1rem 0 .3rem;color:var(--acc2);text-transform:uppercase;letter-spacing:.05em}
+
+/* info boxes */
+.box{border-radius:12px;padding:.75rem .95rem;margin:.85rem 0;border:1px solid var(--line);background:var(--bg)}
+.box>.bt{display:flex;align-items:center;gap:.4rem;font-weight:800;font-size:.76rem;text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:.35rem}
+.box p:first-of-type{margin-top:0}.box p:last-child{margin-bottom:0}
+.box.tldr{background:var(--accsoft);border-color:transparent}.box.tldr>.bt{color:var(--acc2)}
+.box.mem{background:var(--goldsoft);border-color:transparent}.box.mem>.bt{color:var(--gold)}
+.box.trap{background:var(--redsoft);border-color:transparent}.box.trap>.bt{color:var(--red)}
+.box.def{background:var(--bluesoft);border-color:transparent}.box.def>.bt{color:var(--blue)}
+.box.big{font-size:1.03rem}
+
+/* lists */
+ul,ol{margin:.45em 0 .8em;padding-left:1.25em}
+li{margin:.28em 0}
+ul.dash{list-style:none;padding-left:.1em}
+ul.dash>li{position:relative;padding-left:1.15em}
+ul.dash>li:before{content:"—";position:absolute;left:0;color:var(--acc);font-weight:700}
+ul.tick{list-style:none;padding-left:.1em}
+ul.tick>li{position:relative;padding-left:1.45em}
+ul.tick>li:before{content:"✓";position:absolute;left:0;top:.05em;color:var(--acc);font-weight:800}
+ol.flow{counter-reset:f;list-style:none;padding-left:0}
+ol.flow>li{position:relative;padding-left:2.15em;margin:.5em 0}
+ol.flow>li:before{counter-increment:f;content:counter(f);position:absolute;left:0;top:.1em;width:1.5rem;height:1.5rem;
+  border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-size:.78rem;font-weight:800}
+[data-theme=dark] ol.flow>li:before{color:#08130c}
+b,strong{font-weight:750}
+.hl{background:linear-gradient(transparent 62%,var(--goldsoft) 62%);padding:0 .12em;font-weight:700}
+
+/* tables */
+.tw{overflow-x:auto;margin:.8rem 0;border-radius:12px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;background:var(--bg2)}
+th,td{padding:.5rem .7rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:var(--accsoft);color:var(--acc2);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;
+  white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:rgba(127,127,127,.045)}
+td.c,th.c{text-align:center}
+.f{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+
+/* formula */
+.formula{background:var(--bg2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;
+  padding:.8rem 1rem;margin:.8rem 0;font-size:1.02rem}
+.formula .fx{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.02rem;font-weight:700;
+  letter-spacing:.01em;overflow-x:auto;white-space:nowrap}
+.formula .lg{font-size:.84rem;color:var(--ink2);margin-top:.45rem}
+.formula .lg b{color:var(--ink)}
+
+/* numbers grid */
+.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem;margin:.8rem 0}
+.num{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem}
+.num b{display:block;font-size:1.12rem;color:var(--acc2);font-variant-numeric:tabular-nums;line-height:1.2}
+.num span{font-size:.78rem;color:var(--ink2);display:block;margin-top:.15rem}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:.34rem;margin:.5rem 0}
+.chip{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.14rem .5rem;font-size:.78rem;
+  font-weight:650;color:var(--ink2);font-family:ui-monospace,Menlo,Consolas,monospace}
+
+/* details / recite */
+details{border:1px solid var(--line);border-radius:12px;background:var(--bg);margin:.8rem 0;overflow:hidden}
+details>summary{cursor:pointer;padding:.6rem .9rem;font-weight:750;font-size:.86rem;list-style:none;
+  display:flex;align-items:center;gap:.5rem;color:var(--acc2)}
+details>summary::-webkit-details-marker{display:none}
+details>summary:before{content:"▸";transition:transform .15s}
+details[open]>summary:before{transform:rotate(90deg)}
+details>.dc{padding:0 .95rem .85rem}
+
+/* learned checkbox */
+.learn{display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:700;color:var(--ink2);
+  cursor:pointer;border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:.24rem .7rem;
+  user-select:none;margin-left:auto}
+.learn input{accent-color:var(--acc);width:15px;height:15px}
+.learn.done{background:var(--acc);color:#fff;border-color:var(--acc)}
+[data-theme=dark] .learn.done{color:#08130c}
+
+/* ticket grid on index */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1rem}
+.tcard{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+  padding:.95rem 1.05rem;display:flex;flex-direction:column;gap:.5rem;transition:border-color .15s,transform .15s}
+.tcard:hover{border-color:var(--acc);transform:translateY(-2px)}
+.tcard .th{display:flex;align-items:center;gap:.6rem}
+.tcard .tno{width:40px;height:40px;border-radius:12px;background:var(--accsoft);color:var(--acc2);display:grid;
+  place-items:center;font-weight:800;flex:0 0 auto}
+.tcard.done{border-color:var(--acc);background:linear-gradient(180deg,var(--accsoft),var(--bg2) 45%)}
+.tcard ol{margin:.1rem 0 0;padding-left:1.3rem;font-size:.87rem;color:var(--ink2)}
+.tcard ol li{margin:.22rem 0}
+.tcard ol li a{color:var(--ink)}
+.bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:.2rem}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--gold));width:0;transition:width .25s}
+.themetag{font-size:.72rem;color:var(--ink2);font-weight:650}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem;margin:.9rem 0}
+.kpi{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:.7rem .85rem}
+.kpi b{display:block;font-size:1.5rem;color:var(--acc2);line-height:1.1}
+.kpi span{font-size:.78rem;color:var(--ink2)}
+.sectitle{display:flex;align-items:center;gap:.6rem;margin:1.6rem 0 .7rem}
+.sectitle h2{margin:0;font-size:1.15rem}
+.sectitle .rule{flex:1;height:1px;background:var(--line)}
+.foot{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line);color:var(--ink2);font-size:.82rem}
+.pn{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
+.pn a{flex:1 1 220px;border:1px solid var(--line);background:var(--bg2);border-radius:12px;padding:.7rem .9rem;
+  box-shadow:var(--shadow)}
+.pn a:hover{border-color:var(--acc);text-decoration:none}
+.pn .d{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);font-weight:750}
+.pn .t{font-weight:700;font-size:.92rem}
+svg{max-width:100%;height:auto}
+.fig{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:.8rem;margin:.85rem 0;text-align:center}
+.fig .cap{font-size:.78rem;color:var(--ink2);margin-top:.4rem}
+@media(max-width:980px){
+  .wrap{grid-template-columns:1fr;padding:.9rem .7rem 3rem}
+  .side{position:fixed;top:0;left:0;height:100vh;max-height:100vh;width:min(320px,88vw);z-index:80;border-radius:0;
+    transform:translateX(-102%);transition:transform .22s;padding-top:3.4rem}
+  body.menu .side{transform:none;box-shadow:0 0 60px rgba(0,0,0,.4)}
+  .burger{display:inline-block}
+  .hero h1{font-size:1.28rem}
+  .qb,.qh,.card{padding-left:1rem;padding-right:1rem}
+  .brand small{display:none}
+  .hideS{display:none}
+}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:70;opacity:0;pointer-events:none;transition:.2s}
+body.menu .backdrop{opacity:1;pointer-events:auto}
+@media print{
+  .top,.side,.pn,.learn,.backdrop,.burger{display:none!important}
+  .wrap{display:block;padding:0}
+  body{background:#fff;font-size:11.5pt}
+  .q,.card{box-shadow:none;border-color:#bbb;break-inside:avoid}
+  details{display:block}details>summary{display:none}details>.dc{padding:0}
+  a{color:#000}
+}
+</style>
+</head>
+<body data-ticket="3">
+<div class="top"><div class="topin">
+  <button class="ib icon burger" id="burger" aria-label="Меню">☰</button>
+  <a class="brand" href="index.html" style="color:inherit"><span class="logo">А</span>
+    <span>Шпаргалки<small>Эксплуатация с/х техники · 17 билетов</small></span></a>
+  <span class="spacer"></span>
+  <select class="ib hideS" id="tsel" aria-label="Перейти к билету">
+    <option value="">Билет…</option><option value="1">Билет 1</option><option value="2">Билет 2</option><option value="3">Билет 3</option><option value="4">Билет 4</option><option value="5">Билет 5</option><option value="6">Билет 6</option><option value="7">Билет 7</option><option value="8">Билет 8</option><option value="9">Билет 9</option><option value="10">Билет 10</option><option value="11">Билет 11</option><option value="12">Билет 12</option><option value="13">Билет 13</option><option value="14">Билет 14</option><option value="15">Билет 15</option><option value="16">Билет 16</option><option value="17">Билет 17</option></select>
+  <span class="ib hideS" id="bprog" style="cursor:default"></span>
+  <a class="ib icon" href="index.html" title="Индекс">⌂</a>
+  <button class="ib icon" id="tbtn" title="Тема">☾</button>
+  <button class="ib icon" onclick="window.print()" title="Печать / PDF">⎙</button>
+</div><div class="prog"><i></i></div></div>
+<div class="backdrop" id="bd"></div>
+<div class="wrap">
+<aside class="side">
+  <button class="ib icon" id="closeSide" style="position:absolute;top:.5rem;right:.6rem">✕</button>
+  <h6>Поиск</h6>
+  <input id="q" type="search" placeholder="Поиск по вопросам…" autocomplete="off">
+  <h6>Готовность <span data-prog style="float:right;color:var(--acc2)"></span></h6>
+  <div class="bar"><i data-progbar></i></div>
+  <div style="font-size:.75rem;color:var(--ink2);margin-top:.25rem">Отмечено: <span data-progn></span> вопросов</div>
+  <h6>Билеты</h6>
+  <nav class="snav" id="snav"></nav>
+</aside>
+<main>
+<div class="card hero"><div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap"><div style="font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;opacity:.85">Экзаменационный билет</div></div><h1>Билет № 3</h1><div class="muted">Качество обработки почвы · Измельчающие устройства · Птицеводство</div><div class="tags">
+<a class="tag" href="#q1" style="color:#fff">1. Почвообработка</a>
+<a class="tag" href="#q2" style="color:#fff">2. Кормоуборка</a>
+<a class="tag" href="#q3" style="color:#fff">3. Животноводство</a>
+</div></div>
+<div class="card"><h3 style="border:0;padding:0;margin-top:0">Что в билете</h3><ol>
+<li><a href="#q1"><b>Качественные показатели обработки почвы</b></a><br><span style="color:var(--ink2);font-size:.87rem">7 показателей с допустимыми отклонениями + как их контролируют и оценивают.</span></li>
+<li><a href="#q2"><b>Типы и регулирование измельчающих устройств кормоуборочных комбайнов</b></a><br><span style="color:var(--ink2);font-size:.87rem">Барабанные vs дисковые, доизмельчители, зазоры, заточка, подбор длины резки.</span></li>
+<li><a href="#q3"><b>Комплексная механизация и автоматизация птицеводства</b></a><br><span style="color:var(--ink2);font-size:.87rem">Клеточная и напольная технология: корм, вода, яйцо, помёт, климат, компьютерное управление.</span></li>
+</ol>
+<div class="box def"><div class="bt">🔗 Связь между вопросами</div><p>Первый вопрос — <b>как оценить качество</b> работы почвенной машины, второй — <b>как настроить качество</b> резки корма, третий — <b>как собрать качество в поточную систему</b> птицефабрики. Общий ключ: показатели → регулировки → комплекс.</p></div>
+</div>
+<section class="q" id="q1"><div class="qh"><span class="qn">1</span><div style="flex:1"><h2>Качественные показатели обработки почвы</h2><div class="sub">Почвообработка · билет 3 · вопрос 1</div></div><label class="learn" data-id="3-1"><input type="checkbox"> Выучено</label></div><div class="qb">
+<div class="box tldr big"><div class="bt">🎯 Суть за 30 секунд</div>
+<p><b>Качественные показатели</b> — это измеримые характеристики обработки, установленные <b>на основе агротехнических требований</b> с указанием <b>допустимых отклонений</b>. Они показывают, <b>соответствует ли обработанная почва требованиям произрастания растений</b>. Сдал работу — значит попал в допуск по каждому показателю.</p></div>
+
+<h3>1. Глубина обработки и её равномерность</h3>
+<p><b>Как измеряют:</b> <b>динамометрической линейкой</b> через равные промежутки <b>по диагонали</b> поля (диагональ — потому что по краям и в середине условия разные).</p>
+<div class="tw"><table>
+<thead><tr><th>Операция</th><th>Допустимое отклонение средней глубины от заданной</th></tr></thead>
+<tbody>
+<tr><td>Вспашка</td><td class="f">не более ±5 % (или ±1–2 см)</td></tr>
+<tr><td>Культивация на 8–10 см</td><td class="f">не более 1 см</td></tr>
+<tr><td>Безотвальная обработка (до 20 см)</td><td class="f">±1 см</td></tr>
+</tbody></table></div>
+<p>Отдельно оценивают <b>неравномерность глубины</b> — по захвату и по ходу агрегата, через <b>среднеквадратичное отклонение</b>.</p>
+
+<h3>2. Крошение и комковатость (глыбистость)</h3>
+<ul class="dash">
+<li>Это <b>структурный состав почвы по крупности комков</b>.</li>
+<li><b>Оптимум</b> — мелкокомковатая структура с преобладанием фракций <span class="f">1–10 (до 50) мм</span>.</li>
+<li>На вспашке <b>глыбы более 10 см</b> должны занимать <span class="f">не более 15–20 %</span> поверхности пашни.</li>
+<li>После боронования — комья <span class="f">не крупнее 5 см</span>.</li>
+</ul>
+<div class="formula"><div class="fx">ρ = m<sub>&lt;50</sub> / m<sub>общ</sub></div>
+<div class="lg"><b>ρ</b> — коэффициент крошения; <b>m<sub>&lt;50</sub></b> — масса фракций почвы мельче 50 мм; <b>m<sub>общ</sub></b> — общая масса пробы. Чем ближе к 1, тем лучше раскрошена почва.</div></div>
+
+<h3>3. Гребнистость поверхности</h3>
+<p>Это <b>разность высот гребней и борозд</b>: на вспашке высота гребней <span class="f">не более 7 см</span>, на культивации — <span class="f">до 4 см</span>. Поверхность пашни должна быть ровной, <b>развальные гребни и завальные борозды выровнены</b> (иначе там скапливается вода, сорняки, а сеялка идёт «в гору-с горы»).</p>
+
+<h3>4. Заделка растительных остатков, стерни, удобрений, сорняков</h3>
+<div class="tw"><table>
+<thead><tr><th>Приём</th><th>Норматив</th></tr></thead>
+<tbody>
+<tr><td>Вспашка</td><td>заделка стерни <b>не менее 95–98 %</b> на глубину <b>10–12 см и более</b></td></tr>
+<tr><td>Культивация и лущение</td><td>полнота подрезания и оборота сорняков <b>до 95 %</b></td></tr>
+<tr><td>Безотвальные и почвозащитные приёмы</td><td>наоборот, оценивают <b>сохранение стерни</b>: 80–90 % при глубине до 20 см; <b>не менее 75 %</b> при бороновании в зонах ветровой эрозии</td></tr>
+</tbody></table></div>
+<div class="box mem"><div class="bt">🧠 Логика, а не зубрёжка</div><p>Отвальный плуг <b>прячет</b> стерню (заделка 95–98 %), плоскорез <b>оставляет</b> её на поверхности (сохранение 80–90 %) — это не противоречие, а разные задачи: первый борется с сорняками и вредителями, второй — с ветровой эрозией.</p></div>
+
+<h3>5. Ровность стыков и отсутствие огрехов</h3>
+<p><b>Огрехи</b> — пропуски между смежными проходами и необработанные поворотные полосы. Огрех = полоса сорняков и неперепаханной почвы на поле, которую видно весь сезон.</p>
+
+<h3>6. Влагопроницаемость и водно-физические свойства</h3>
+<ul class="dash">
+<li>долевое <b>увеличение плотности</b> в рабочем слое;</li>
+<li><b>сохранение влаги</b> (прикатывание, мульчирование);</li>
+<li><b>плотность верхнего слоя под посев</b> — <span class="f">1,1–1,3 г/см³</span> (оптимальное ложе для семени: не «пуховик» и не «бетон»).</li>
+</ul>
+
+<h3>7. Дополнительные показатели</h3>
+<ul class="dash">
+<li><b>заполненность гребневых валиков</b> при нарезке;</li>
+<li><b>ширина защитных зон</b> при междурядной обработке — <span class="f">10–12 см</span> (полоса у стебля, куда лапа не заходит, чтобы не повредить корни);</li>
+<li><b>повреждение культурных растений</b> при бороновании всходов — <span class="f">не более 3–5 %</span>.</li>
+</ul>
+
+<h3>Кто и как контролирует</h3>
+<ol class="flow">
+<li><b>Механизатор</b> — самоконтроль <b>в процессе работы, каждые 2–3 часа</b>.</li>
+<li><b>Агроном</b> — при <b>приёмке</b> работы.</li>
+<li><b>Оценка</b> — по <b>балльной системе</b>: каждому показателю присваивают балл в зависимости от отклонения от норматива, а качество работы классифицируют как <b>отличное, хорошее, удовлетворительное, неудовлетворительное</b>.</li>
+</ol>
+
+<div class="box mem"><div class="bt">🧠 Как запомнить 7 показателей</div>
+<p><b>«ГКЗ-РОВ-В-Д»</b>: <b>Г</b>лубина → <b>К</b>рошение → <b>З</b>аделка → <b>Р</b>овность (гребнистость) → <b>О</b>грехи → <b>В</b>лага → <b>Д</b>ополнительные.</p>
+<p>Ключевые цифры одним блоком: <b>±5 % / 7 см / 15–20 % / 95–98 % / 1,1–1,3 г/см³ / 10–12 см / 3–5 %</b>.</p></div>
+
+<div class="box trap"><div class="bt">⚠️ Частые ловушки</div>
+<ul class="tick">
+<li>Начните с фразы «<b>устанавливаются на основе агротехнических требований с указанием допустимых отклонений</b>» — это и есть определение.</li>
+<li>Инструмент измерения глубины — <b>динамометрическая линейка</b>, схема замеров — <b>по диагонали</b>. Спросят обязательно.</li>
+<li>Не забудьте про <b>двухуровневый контроль</b> (механизатор + агроном) и <b>балльную оценку</b> — без них ответ «обрублен».</li>
+</ul></div>
+
+<details><summary>🗣 Мини-ответ на 1 минуту</summary><div class="dc">
+<p>«Качественные показатели обработки почвы устанавливаются на основе агротехнических требований с указанием допустимых отклонений и характеризуют соответствие обработки требованиям произрастания растений. Первый — глубина и её равномерность: замеряют динамометрической линейкой через равные промежутки по диагонали; отклонение средней глубины на вспашке не более пяти процентов или одного-двух сантиметров, на культивации восемь-десять сантиметров — не более сантиметра, на безотвальной обработке плюс-минус сантиметр; оценивают и среднеквадратичное отклонение по захвату и по ходу агрегата. Второй — крошение и комковатость: оптимум мелкокомковатая структура с фракциями от одного до десяти, до пятидесяти миллиметров, глыбы крупнее десяти сантиметров — не более пятнадцати-двадцати процентов поверхности, после боронования комья не крупнее пяти сантиметров, коэффициент крошения равен массе фракций мельче пятидесяти миллиметров к общей массе. Третий — гребнистость: высота гребней на вспашке не более семи сантиметров, на культивации до четырёх. Четвёртый — заделка стерни, остатков и сорняков: на вспашке не менее 95–98 % на глубину десять-двенадцать сантиметров, на культивации и лущении до 95 %, а при безотвальных почвозащитных приёмах, наоборот, оценивают сохранение стерни: 80–90 %, в зонах ветровой эрозии не менее 75 %. Пятый — ровность стыков и отсутствие огрехов. Шестой — влагопроницаемость и водно-физические свойства, плотность верхнего слоя под посев 1,1–1,3 грамма на кубический сантиметр. Седьмой — дополнительные: заполненность гребневых валиков, ширина защитных зон 10–12 см, повреждение всходов при бороновании не более трёх-пяти процентов. Контроль ведёт механизатор каждые два-три часа и агроном при приёмке; оценку выводят по балльной системе: отличное, хорошее, удовлетворительное, неудовлетворительное».</p></div></details>
+</div></section>
+<section class="q" id="q2"><div class="qh"><span class="qn">2</span><div style="flex:1"><h2>Типы и регулирование измельчающих устройств кормоуборочных комбайнов</h2><div class="sub">Кормоуборка · билет 3 · вопрос 2</div></div><label class="learn" data-id="3-2"><input type="checkbox"> Выучено</label></div><div class="qb">
+<div class="box tldr big"><div class="bt">🎯 Суть за 30 секунд</div>
+<p>Измельчающее устройство — <b>главный рабочий орган</b> кормоуборочного комбайна: от него зависит качество корма. Типов два — <span class="hl">барабанные</span> (лучше по качеству, на КСК-100, «Полесье», Дон-680М, РСМ, JAGUAR) и <span class="hl">дисковые</span> (проще, на КСД-2,0 и КИК-1,4, диск заодно работает вентилятором). <b>Длина резки</b> задаётся парой «<b>число работающих ножей × скорость подачи массы вальцами</b>».</p></div>
+
+<h3>1. Барабанные измельчающие аппараты</h3>
+<div class="tw"><table>
+<thead><tr><th>Конструкция</th><th>Особенность</th><th>Пример</th></tr></thead>
+<tbody>
+<tr><td><b>Открытого типа</b></td><td>ножи закреплены <b>консольно</b> на барабане</td><td>ряд прицепных и самоходных машин</td></tr>
+<tr><td><b>Закрытого типа</b></td><td>цилиндрический корпус-барабан, ножи <b>внутри</b></td><td><b>КСК-100</b>: барабан Ø <span class="f">630 мм</span>, <span class="f">24 ножа</span></td></tr>
+</tbody></table></div>
+<p><b>Принцип резания:</b> ножи закреплены <b>под углом к образующей барабана</b> (V-образно или гребенчато) → резание <b>наклонное, скользящее</b>. Прядь массы прижата вальцами к <b>противорежущей пластине</b>, нож проходит вдоль неё с зазором <span class="f">0,5–1,0 мм</span> и срезает частицу длиной, <b>равной шагу подачи за один проход ножа</b>.</p>
+<div class="box def"><div class="bt">📘 Ключевая формулировка</div><p>Длина резки = подача массы за время между двумя проходами ножей. Отсюда: <b>больше ножей или медленнее подача → резка мельче</b>; <b>меньше ножей или быстрее подача → резка крупнее</b>.</p></div>
+<p><b>Диапазон длины резки</b> у современных машин — <span class="f">4–70 мм</span> (набор ножей 6/12/24 шт., плавное или ступенчатое изменение привода вальцов — <b>гидравлические коробки передач</b>):</p>
+<div class="nums">
+<div class="num"><b>20–30 мм</b><span>силос</span></div>
+<div class="num"><b>50–70 мм</b><span>сенаж</span></div>
+<div class="num"><b>40–80 мм</b><span>зелёный корм</span></div>
+<div class="num"><b>4–70 мм</b><span>общий диапазон регулировки</span></div>
+</div>
+
+<h3>2. Дисковые измельчители</h3>
+<ul class="dash">
+<li>Устройство: <b>массивный диск с радиально расположенными ножами</b> — на <b>КСД-2,0</b> и <b>КИК-1,4</b>.</li>
+<li>Работает <b>одновременно как вентилятор-выбрасыватель</b> — поэтому отдельного выбрасывающего устройства не нужно.</li>
+<li>Регулировка длины резки — <b>сменой числа ножей (2–6)</b> и изменением скорости подачи.</li>
+<li>Минусы: <b>качество резки несколько уступает барабанным</b>, а <b>энергии на выброс расходуется больше</b>.</li>
+</ul>
+
+<h3>3. Доизмельчающие устройства (за ножевым барабаном)</h3>
+<div class="tw"><table>
+<thead><tr><th>Устройство</th><th>Конструкция</th><th>Назначение и регулировка</th></tr></thead>
+<tbody>
+<tr><td><b>Для стержней и стеблей</b></td><td>V-образные <b>жалюзи-стекатели</b></td><td>доскабливание и расщепление грубых частиц</td></tr>
+<tr><td><b>Зерновой доизмельчитель</b> (кукуруза на зернофураж)</td><td>пара <b>рифлёных вальцов со спиральными желобками</b>, вращаются с <b>разными окружными скоростями</b></td><td>зазор между вальцами регулируют <span class="f">1–4 мм</span>: должен <b>дробиться каждый початок</b>, но не плющиться в пыль</td></tr>
+<tr><td><b>Доизмельчитель соломы-половы</b></td><td>отдельный аппарат</td><td>возврат грубой фракции на дорезку</td></tr>
+</tbody></table></div>
+
+<h3>4. Техника регулировок — порядок действий</h3>
+<ol class="flow">
+<li><b>Ножи</b>: точат до толщины кромки <span class="f">0,15–0,30 мм</span> (на современных машинах — <b>автоматическая заточка из кабины</b>), выставляют по высоте относительно пластины <b>шаблоном</b>.</li>
+<li><b>Противорежущая пластина</b>: при износе <b>переворачивают или меняют</b>, устанавливают с зазором <span class="f">0,5–1 мм</span>.</li>
+<li><b>Привод вальцов</b> синхронизируют с подачей; при <b>застое массы</b> применяют <b>автоматическое опрокидывание (реверс)</b> питательного аппарата.</li>
+<li><b>Точный подбор</b> пары «число ножей — скорость подачи» делают по желаемой длине резки и <b>фактическому гранулометрическому составу проб</b>.</li>
+</ol>
+<div class="tw"><table>
+<thead><tr><th>Ошибка в зазоре ножи–пластина</th><th>Последствие</th></tr></thead>
+<tbody>
+<tr><td>Зазор увеличен</td><td><b>«мочаловка» массы</b> (не режет, а рвёт) + <b>перерасход энергии</b></td></tr>
+<tr><td>Зазор нулевой</td><td><b>задевание ножей</b> о пластину → износ и поломка</td></tr>
+</tbody></table></div>
+
+<div class="box mem"><div class="bt">🧠 Как запомнить</div>
+<p>Барабан КСК-100: <b>«630 на 24»</b> — диаметр 630 мм, 24 ножа. Зазор ножей: <b>«полмиллиметра — миллиметр»</b> (0,5–1 мм). Заточка: <b>«0,15–0,30»</b>. Зерновые вальцы: <b>«1–4 мм»</b>.</p>
+<p>Дисковый = «нож + вентилятор в одном» → хуже резка, больше энергии на выброс.</p></div>
+
+<div class="box trap"><div class="bt">⚠️ Частые ловушки</div>
+<ul class="tick">
+<li>Вопрос «<b>как увеличить длину резки?</b>» — два правильных рычага: <b>уменьшить число работающих ножей</b> или <b>увеличить скорость подачи вальцами</b>. Назовите оба.</li>
+<li>Почему зазор вальцов-доизмельчителей именно <b>1–4 мм</b>? — меньше: зерно плющится в муку и перегревается; больше: початок не дробится и не усваивается.</li>
+<li>Почему V-образная установка ножей? — <b>скользящее</b> (наклонное) резание: плавная нагрузка, меньше вибраций и шума, ровнее частицы.</li>
+</ul></div>
+
+<details><summary>🗣 Мини-ответ на 1 минуту</summary><div class="dc">
+<p>«Измельчающее устройство — основной рабочий орган кормоуборочного комбайна, определяющий качество корма; выпускаются два конструктивных типа: барабанные и дисковые. Барабанные аппараты применяют на КСК-100, „Полесье“, Дон-680М, РСМ, JAGUAR; они бывают открытого типа с консольно закреплёнными ножами и закрытого — с цилиндрическим корпусом и ножами внутри: на КСК-100 барабан закрытого типа диаметром 630 мм с 24 ножами. Ножи закреплены под углом к образующей барабана, V-образно или гребенчато, что даёт наклонное скользящее резание: прядь массы прижата вальцами к противорежущей пластине, нож проходит вдоль неё с зазором 0,5–1,0 мм и срезает частицу длиной, равной шагу подачи за один проход ножа. Длина резки определяется числом работающих ножей и скоростью подачи массы питательными вальцами: увеличивая подачу или уменьшая число ножей, получают более крупную резку. Современные комбайны имеют наборы ножей на 6, 12 и 24 штуки и гидравлические коробки привода вальцов, диапазон резки 4–70 мм: силос 20–30 мм, сенаж 50–70, зелёный корм 40–80 мм. Дисковые измельчители — массивный диск с радиальными ножами на КСД-2,0 и КИК-1,4, работающий одновременно вентилятором-выбрасывателем; длина резки регулируется сменой числа ножей от двух до шести и скоростью подачи, качество резки уступает барабанным, а энергии на выброс тратится больше. За барабаном ставят доизмельчающие устройства: V-образные жалюзи-стекатели для стеблей, зерновой доизмельчитель для кукурузы — пару рифлёных вальцов со спиральными желобками и разной окружной скоростью, зазор регулируют 1–4 мм, и доизмельчители соломы-половы. При регулировке ножи точат до кромки 0,15–0,30 мм, у современных машин автоматически из кабины, и выставляют шаблоном; пластину при износе переворачивают или меняют и ставят с зазором 0,5–1 мм: увеличенный зазор даёт мочаловку массы и перерасход энергии, нулевой — задевание ножей. При застое массы питательный аппарат реверсируют, а окончательный подбор пары „число ножей — скорость подачи“ делают по гранулометрическому составу проб».</p></div></details>
+</div></section>
+<section class="q" id="q3"><div class="qh"><span class="qn">3</span><div style="flex:1"><h2>Комплексная механизация и автоматизация птицеводства</h2><div class="sub">Животноводство · билет 3 · вопрос 3</div></div><label class="learn" data-id="3-3"><input type="checkbox"> Выучено</label></div><div class="qb">
+<div class="box tldr big"><div class="bt">🎯 Суть за 30 секунд</div>
+<p>Птицеводство — самая <b>«индустриальная»</b> отрасль: клеточная и напольная технологии требуют полной автоматизации. Механизация охватывает <span class="hl">раздачу кормов, поение, сбор и первичную обработку яиц, удаление помёта, микроклимат и убой-приёмку молодняка</span>, а управляет всем этим <b>компьютер с технологическими картами</b> для каждого зала.</p></div>
+
+<h3>1. Кормление</h3>
+<div class="tw"><table>
+<thead><tr><th>Технология</th><th>Оборудование</th><th>Как работает</th></tr></thead>
+<tbody>
+<tr><td rowspan="3"><b>Клеточная</b> (птицефабрики)</td><td><b>Штоковые кормораздатчики БКМ-3Б</b></td><td>мобильный бункерный раздатчик со штоковым движителем, дозирует корм в кормушки клеточных батарей</td></tr>
+<tr><td><b>Цепно-шайбовые линии РКЦ</b></td><td>закрытая шайбово-цепная магистраль с бункерами</td></tr>
+<tr><td><b>Спиральные и шнековые раздатчики</b></td><td>подача из бункера по трубе спиралью</td></tr>
+<tr><td><b>Напольная</b></td><td>бункерные кормушки + <b>спирально-пружинные транспортёры РС-3М</b>, серии «Цепь-диск»</td><td>линейки бункеров с <b>автоматическим выключением по датчику уровня</b></td></tr>
+</tbody></table></div>
+<p><b>Норма раздачи</b> регулируется <b>скоростью подачи</b> и <b>высотой шторок</b>. Корм хранится в <b>наружных загрузочных бункерах</b>, контроль веса — «по последнему килограмму».</p>
+
+<h3>2. Поение</h3>
+<ul class="dash">
+<li><b>Желобковые проточные</b> — <b>ЖСП</b>, <b>ЖСС-2</b> с поплавками-регуляторами уровня.</li>
+<li><b>Чашечные</b> — <b>ПДС-1а</b>, <b>ПЧ-3П</b>.</li>
+<li><b>Ниппельные (капельные)</b> — с регулятором давления: <b>исключают расплёскивание и загрязнение</b> воды; норма <span class="f">1 ниппель на 8–12 птиц</span>.</li>
+</ul>
+<p>Автопоение — <b>круглосуточное, без обслуживания</b>.</p>
+
+<h3>3. Сбор и первичная обработка яиц</h3>
+<ol class="flow">
+<li>Яйцо скатывается из клетки на <b>продольные ленточные транспортёры</b> под батареями (<b>ЛС-4М</b>, <b>Р-1000</b>).</li>
+<li>Транспортёр подаёт яйца на <b>наклонный элеватор</b>, поднимающий их в <b>яичное отделение</b>.</li>
+<li>Там яйца <b>сортируются по массе</b> — грейдеры <b>ОВО-160</b>, <b>МОВА</b>, затем <b>маркируются и упаковываются</b>.</li>
+</ol>
+
+<h3>4. Удаление помёта</h3>
+<ul class="dash">
+<li>Под клетками — <b>скребковые установки ТС-1</b> (штанги со скребками движутся взад-вперёд).</li>
+<li><b>Ленточные транспортёры</b>, в том числе <b>двухъярусные с просушкой помёта воздухом</b> при прохождении (подсушенный помёт легче вывозить и он меньше пахнет).</li>
+<li><b>Вертикальные элеваторы ТСН</b> — подъём на транспорт.</li>
+<li>Дальше: из помётоприёмника <b>насосами и транспортёрами</b> в отстойники и установки переработки — <b>сушка, гранулирование в удобрение</b>.</li>
+</ul>
+
+<h3>5. Микроклимат и автоматизация</h3>
+<ul class="tick">
+<li><b>Принудительная вентиляция</b> — осевые вентиляторы <b>ВО-7,1</b>.</li>
+<li><b>Автоматические регуляторы температуры и влажности</b>, <b>газоанализаторы</b> (аммиак, CO₂).</li>
+<li><b>Программируемые регуляторы светового режима</b> — «законы птичьего дня»: свет управляет яйценоскостью.</li>
+<li><b>Автоматы включения раздачи и поения</b> по программе.</li>
+<li><b>Компьютерное управление</b>: контроллеры ведут <b>технологические карты кормления и освещения для каждого зала</b>, учёт <b>яйценоскости и падежа</b>, <b>сигнализацию отказов</b>.</li>
+</ul>
+
+<div class="nums">
+<div class="num"><b>0,3–0,5 чел·ч</b><span>затраты труда на 1000 яиц после комплексной механизации</span></div>
+<div class="num"><b>1 : 8–12</b><span>ниппелей на птиц</span></div>
+<div class="num"><b>24/7</b><span>автопоение без обслуживания</span></div>
+</div>
+
+<div class="box mem"><div class="bt">🧠 Как запомнить</div>
+<p>Шесть подсистем по кругу жизни птицы: <b>покормили → напоили → собрали яйцо → убрали помёт → держим климат → всем управляет компьютер</b>.</p>
+<p>Марки-якоря: <b>БКМ-3Б</b> (корм, штоковый), <b>ЖСС-2</b> (вода), <b>ЛС-4М</b> (яйцо), <b>ТС-1</b> (помёт), <b>ВО-7,1</b> (воздух), <b>ОВО-160</b> (сортировка яиц).</p></div>
+
+<div class="box trap"><div class="bt">⚠️ Частые ловушки</div>
+<ul class="tick">
+<li>Слово «<b>автоматизация</b>» в вопросе — значит обязательно расскажите про <b>датчики уровня, регуляторы, контроллеры и технологические карты</b>, а не только про транспортёры.</li>
+<li>Различайте <b>клеточную</b> (яйцесборные транспортёры, ТС-1 под клетками) и <b>напольную</b> (бункерные кормушки, спиральные транспортёры) технологии — оборудование разное.</li>
+<li>Цифра эффекта: <b>0,3–0,5 чел·ч на 1000 яиц</b> — назовите её в конце, это «точка» ответа.</li>
+</ul></div>
+
+<details><summary>🗣 Мини-ответ на 1 минуту</summary><div class="dc">
+<p>«Птицеводческие предприятия работают по интенсивной клеточной и напольной технологиям, поэтому комплексная механизация охватывает раздачу кормов, поение, сбор и первичную обработку яиц, удаление помёта, микроклимат и убой-приёмку молодняка. На клеточных птицефабриках корм раздают мобильными бункерными раздатчиками: штоковыми БКМ-3Б, цепно-шайбовыми линиями РКЦ, спиральными и шнековыми; на напольном содержании — бункерными кормушками с подачей спирально-пружинными транспортёрами РС-3М и линейками бункеров с автоматическим выключением по датчику уровня. Норма раздачи регулируется скоростью подачи и высотой шторок, корм хранится в наружных загрузочных бункерах. Поение автоматическое: желобковые проточные поилки ЖСП и ЖСС-2 с поплавками-регуляторами, чашечные ПДС-1а и ПЧ-3П, ниппельные системы с регулятором давления — они исключают расплёскивание и загрязнение, норма один ниппель на восемь-двенадцать птиц. Сбор яиц на клеточных батареях ведут яйцесборными транспортёрами: продольные ленты ЛС-4М и Р-1000 подают яйцо на наклонный элеватор в яичное отделение, где его сортируют по массе на грейдерах ОВО-160 и МОВА, маркируют и упаковывают. Помёт удаляют скребковыми установками ТС-1 под клетками, ленточными двухъярусными транспортёрами с просушкой помёта воздухом и вертикальными элеваторами ТСН, затем насосами подают в отстойники и на переработку — сушку и гранулирование в удобрение. Микроклимат обеспечивает принудительная вентиляция осевыми вентиляторами ВО-7,1, авторегуляторы температуры и влажности, газоанализаторы и программируемые регуляторы светового режима; современные комплексы оснащены компьютерным управлением: контроллеры ведут технологические карты кормления и освещения для каждого зала, учёт яйценоскости и падежа, сигнализацию отказов. Комплексная механизация снижает затраты труда до 0,3–0,5 человеко-часа на тысячу яиц и повышает продуктивность птицы».</p></div></details>
+</div></section>
+<div class="pn">
+<a href="ticket-02.html"><div class="d">← Предыдущий</div><div class="t">Билет 2: Совмещение операций · Настройка зерноуборочного комбайна · Овцеводство</div></a>
+<a href="index.html"><div class="d">⌂ Оглавление</div><div class="t">Все 17 билетов и 51 вопрос</div></a>
+<a href="ticket-04.html" style="text-align:right"><div class="d">Следующий →</div><div class="t">Билет 4: Удельное тяговое сопротивление · Очистка зерна · Производственные процессы</div></a>
+</div>
+<div class="foot">Разбор подготовлен по конспекту ответов и учебникам: Завражнов А. И. и др. «Эксплуатация машинно-тракторного парка»; «Организация эксплуатации сельскохозяйственной техники в растениеводстве» (Новосибирский ГАУ).</div>
+</main>
+</div>
+<script>
+const DATA={"tickets": [{"n": 1, "theme": "Почвообработка · Кормоуборочные комбайны · Свиноводство", "q": ["Классификация почвообрабатывающих машин и орудий", "Рабочие процессы кормоуборочных комбайнов", "Комплексная механизация технологических процессов в свиноводстве"], "kw": "классификация почвообрабатывающих машин плуг культиватор борона кормоуборочный комбайн КСК свиноферма"}, {"n": 2, "theme": "Совмещение операций · Настройка зерноуборочного комбайна · Овцеводство", "q": ["Совмещение операций обработки почвы", "Регулирование зерноуборочных комбайнов на уборку различных культур", "Механизация технологических процессов в овцеводстве"], "kw": "совмещение операций комбинированный агрегат АПК Обь Кузбасс жатка мотовило молотилка очистка решёта стрижка овец МСУ-200"}, {"n": 3, "theme": "Качество обработки почвы · Измельчающие устройства · Птицеводство", "q": ["Качественные показатели обработки почвы", "Типы и регулирование измельчающих устройств кормоуборочных комбайнов", "Комплексная механизация и автоматизация птицеводства"], "kw": "качественные показатели глубина крошение гребнистость заделка стерни ножевой барабан дисковый измельчитель доизмельчитель птицефабрика"}, {"n": 4, "theme": "Удельное тяговое сопротивление · Очистка зерна · Производственные процессы", "q": ["Удельное тяговое сопротивление рабочих органов и машин", "Рабочие процессы машин первичной и вторичной очистки зерна", "Понятие о производственных процессах и операциях"], "kw": "удельное сопротивление формула Горячкина k=R/b k0 ворохоочиститель ЗАВ-20 ОВС-25 триер производственный процесс технологический процесс операция"}, {"n": 5, "theme": "Технологии обработки почвы · Сушка зерна · Классификация МТА", "q": ["Основные технологии обработки почвы", "Процесс сушки зерна", "Классификация машинно-тракторных агрегатов (МТА)"], "kw": "отвальная вспашка безотвальная почвозащитная культивация No-till сушка зерна шахтная сушилка МТА классификация"}, {"n": 6, "theme": "Операционные технологии обработки · Тепловой баланс сушилки · Эксплуатационные свойства машин", "q": ["Операционные технологии машинной обработки почвы", "Тепловой баланс сушильного агрегата", "Эксплуатационные свойства сельскохозяйственных машин"], "kw": "операционная технология вспашка дискование боронование культивация прикатывание тепловой баланс сушилки КПД эксплуатационные свойства эргономические"}, {"n": 7, "theme": "Внесение удобрений · Требования к зерну · Удельное сопротивление машин-орудий", "q": ["Машины для внесения органических и минеральных удобрений", "Требования к очистке и сушке семенного, продовольственного и фуражного зерна", "Удельное сопротивление сельскохозяйственных машин-орудий"], "kw": "навозоразбрасыватель ПРТ РОУ-6 РУМ-5 центробежный разбрасыватель КАС АНЖ-2,5 семенное продовольственное фуражное зерно удельное сопротивление kэ αk βk γk δk"}, {"n": 8, "theme": "Внесение удобрений и защита растений · Комплексы ЗАВ/КЗС · Удельное сопротивление плуга", "q": ["Операционные технологии внесения в почву удобрений и защиты растений", "Современные комплексы для очистки, сортирования и сушки зерна", "Удельное сопротивление плуга"], "kw": "опрыскивание ОП-2000 норма расхода рабочей жидкости ЗАВ-20 КЗС-20Ш ДСП-32 Петкус удельное сопротивление плуга k0 формула Горячкина-Летошнёва"}, {"n": 9, "theme": "Безопасность при работе с пестицидами · Овощные машины · Сопротивление и скорость", "q": ["Техника безопасности и средства защиты при работе с удобрениями и ядохимикатами", "Рабочие органы и машины для посадки, обработки и уборки овощей", "Зависимость удельного сопротивления машин-орудий от скорости движения"], "kw": "техника безопасности пестициды СИЗ респиратор противогаз рассадопосадочная машина СКН-4А картофелесажалка КСМ-4А КТН-2В ККУ-2А зависимость сопротивления от скорости ак"}, {"n": 10, "theme": "Посев зерновых · Послеуборочная обработка овощей · Сопротивление плуга и влажность", "q": ["Способы посева зерновых культур, агротехнические требования", "Очистка, сортирование и транспортирование овощей", "Характер изменения удельного сопротивления плуга от влажности почвы"], "kw": "способы посева рядовой узкорядный перекрёстный норма высева глубина заделки очистка сортирование калибровка овощей U-образная зависимость k0 влажность физическая спелость"}, {"n": 11, "theme": "Высевающие аппараты · Машины для заготовки кормов · Тяговое сопротивление", "q": ["Высевающие аппараты для рядового и гнездового посева", "Машины для заготовки кормов", "Тяговое сопротивление машин-орудий"], "kw": "высевающий аппарат катушечный дисковый пневматический ложечно-дисковый СУПН-8А СПЧ-6М косилка пресс-подборщик ПР-Ф-145 тяговое сопротивление R"}, {"n": 12, "theme": "Совмещение при посеве · Кормоприготовление · Приведённое сопротивление (ВОМ)", "q": ["Совмещение операций при посеве зерновых культур", "Машины и оборудование для переработки и приготовления кормов", "Приведённое сопротивление машин, потребляющих часть мощности двигателя через ВОМ"], "kw": "совмещение операций посев СЗП-3,6А Кузбасс Обь Омич кормоцех дробилка ДКМ-5 экструдер ИСР-12 TMR приведённое сопротивление ВОМ Rпр"}, {"n": 13, "theme": "Подготовка сеялок · Раздача кормов · Неравномерность сопротивления", "q": ["Подготовка посевных и посадочных машин к работе", "Машины и оборудование для раздачи кормов", "Неравномерность сопротивления машин-орудий"], "kw": "подготовка сеялок откатка норма высева маркёры следоуказатели кормораздатчик ТК-5А КС-1,5 КТУ-10А ИСР-12 неравномерность сопротивления случайный процесс коэффициент вариации"}, {"n": 14, "theme": "Пропашные культуры · Погрузочно-транспортные работы · Влияние глубины и числа машин на неравномерность", "q": ["Посев (посадка) и обработка пропашных культур", "Механизация погрузочно-разгрузочных и транспортных работ в сельском хозяйстве", "Влияние на неравномерность сопротивления глубины обработки и количества машин-орудий (корпусов плуга)"], "kw": "пропашные культуры СУПН-8А пунктирный квадратно-гнёздовой погрузчик ПЭ-0,8Б ЗС-40 транспорт β γ маршруты VΣ=V1/√n глубина обработки"}, {"n": 15, "theme": "Уборка зерновых и трав · Дилерский сервис · Сопротивление сцепок", "q": ["Способы уборки зерновых культур и трав", "Маркетинг и дилерская система технического сервиса", "Сопротивление сцепок"], "kw": "прямое комбайнирование раздельная уборка валок ЖВП-4,9 сенаж силос дилерская система 3S телематика сцепка С-11У СП-16А фронт сцепки"}, {"n": 16, "theme": "Зональные технологии уборки · Навоз: удаление и переработка · Общее сопротивление агрегата", "q": ["Зональные технологии уборки зерновых и комплексы машин", "Технологии и оборудование для удаления и переработки навоза", "Общее сопротивление агрегата"], "kw": "зональные технологии уборки АКРОС ТОРУМ ВЕКТОР Енисей Lexion навоз ТСН-160 УС-15 УТ-80 УС-250 компостирование лагуна метантенк Ra общее сопротивление агрегата"}, {"n": 17, "theme": "Рабочие процессы зерноуборочных комбайнов · Доение коров · Пути снижения сопротивления", "q": ["Рабочие процессы зерноуборочных комбайнов", "Технологии и оборудование для доения коров и первичной обработки молока", "Пути снижения сопротивления машин-орудий"], "kw": "рабочие процессы комбайна жатка мотовило бичевой барабан подбарабанье соломотряс очистка бункер доение АДМ-8А Волга АДУ-1-03 АД-2 Елочка Карусель ОЦМ ТОМ-2А пути снижения сопротивления"}]};
+const LS_T='shp-theme',LS_L='shp-learn';
+function theme(){return localStorage.getItem(LS_T)||'light'}
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
+  const b=document.getElementById('tbtn');if(b)b.textContent=t==='dark'?'☀':'☾'}
+(function(){try{applyTheme(theme())}catch(e){}})();
+function learned(){try{return JSON.parse(localStorage.getItem(LS_L)||'{}')}catch(e){return{}}}
+function saveLearn(o){try{localStorage.setItem(LS_L,JSON.stringify(o))}catch(e){}}
+function qid(t,q){return t+'-'+q}
+document.addEventListener('DOMContentLoaded',()=>{
+  const L=learned();
+  // learned toggles
+  document.querySelectorAll('label.learn').forEach(lb=>{
+    const id=lb.dataset.id;
+    if(L[id])lb.classList.add('done');
+    const cb=lb.querySelector('input');if(cb)cb.checked=!!L[id];
+    lb.addEventListener('click',e=>{
+      if(e.target.tagName!=='INPUT'){e.preventDefault();cb.checked=!cb.checked}
+      const o=learned();
+      if(cb.checked)o[id]=1;else delete o[id];
+      saveLearn(o);lb.classList.toggle('done',cb.checked);
+      document.dispatchEvent(new CustomEvent('learn',{detail:o}));
+    });
+  });
+  // theme
+  const tb=document.getElementById('tbtn');
+  if(tb)tb.addEventListener('click',()=>{const t=theme()==='dark'?'light':'dark';
+    try{localStorage.setItem(LS_T,t)}catch(e){}applyTheme(t)});
+  // mobile menu
+  const bg=document.getElementById('bd');
+  const toggleMenu=()=>document.body.classList.toggle('menu');
+  ['burger','closeSide'].forEach(i=>{const el=document.getElementById(i);if(el)el.addEventListener('click',toggleMenu)});
+  if(bg)bg.addEventListener('click',()=>document.body.classList.remove('menu'));
+  document.querySelectorAll('.snav a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('menu')));
+  // sidebar build
+  const cur=document.body.dataset.ticket?parseInt(document.body.dataset.ticket,10):0;
+  const sn=document.getElementById('snav');
+  if(sn){
+    let h='<a href="index.html"'+(cur===0?' class="on"':'')+'><span class="n">≡</span>Индекс · все билеты</a>';
+    DATA.tickets.forEach(t=>{
+      const done=t.q.filter((q,i)=>L[qid(t.n,i+1)]).length;
+      h+='<a href="ticket-'+String(t.n).padStart(2,'0')+'.html"'+(cur===t.n?' class="on"':'')+
+         '><span class="n">'+t.n+'</span>Билет '+t.n+(done?' <em style="margin-left:auto;font-style:normal;font-size:.7rem;opacity:.7">'+done+'/3</em>':'')+'</a>';
+      if(cur===t.n){t.q.forEach((q,i)=>{
+        h+='<div class="sub"><a href="#q'+(i+1)+'">'+(L[qid(t.n,i+1)]?'✓ ':'')+q+'</a></div>'})}
+    });
+    sn.innerHTML=h;
+  }
+  // sidebar progress
+  function updProg(){
+    const o=learned();const total=DATA.tickets.length*3;
+    let n=0;DATA.tickets.forEach(t=>t.q.forEach((q,i)=>{if(o[qid(t.n,i+1)])n++}));
+    document.querySelectorAll('[data-prog]').forEach(e=>e.textContent=Math.round(n/total*100)+'%');
+    document.querySelectorAll('[data-progn]').forEach(e=>e.textContent=n+' / '+total);
+    const bp=document.getElementById('bprog');
+    if(bp){const c=document.body.dataset.ticket?parseInt(document.body.dataset.ticket,10):0;
+      let d=0;if(c){for(let i=1;i<=3;i++)if(o[c+'-'+i])d++}
+      bp.textContent=d+'/3 выучено';bp.style.color=d===3?'var(--acc)':''}
+  }
+  updProg();document.addEventListener('learn',updProg);
+  // search
+  const q=document.getElementById('q');
+  if(q){q.addEventListener('input',()=>{
+    const v=q.value.toLowerCase().trim();
+    document.querySelectorAll('[data-s]').forEach(el=>{
+      const hay=(el.dataset.s||'').toLowerCase();
+      el.classList.toggle('hidem',v.length>1&&hay.indexOf(v)<0);
+    });
+    document.querySelectorAll('#snav .sub').forEach(el=>el.classList.add('hidem'));
+  })}
+  // index filters
+  document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('[data-filter]').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    const f=b.dataset.filter;
+    document.querySelectorAll('[data-topic]').forEach(c=>{
+      c.classList.toggle('hidem',f!=='all'&&c.dataset.topic!==f)});
+  }));
+  // scroll progress
+  const pi=document.querySelector('.prog i');
+  if(pi){addEventListener('scroll',()=>{
+    const h=document.documentElement.scrollHeight-innerHeight;
+    pi.style.width=(h>0?scrollY/h*100:0)+'%';},{passive:true})}
+  // ticket selector
+  const sel=document.getElementById('tsel');
+  if(sel){sel.value=document.body.dataset.ticket||'';
+    sel.addEventListener('change',()=>{if(sel.value)location.href='ticket-'+String(sel.value).padStart(2,'0')+'.html'})}
+});
+</script>
+</body></html>

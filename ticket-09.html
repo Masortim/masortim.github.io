@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Билет 9 — Безопасность при работе с пестицидами · Овощные машины · Сопротивление и скорость</title>
+<meta name="description" content="Техника безопасности и средства защиты при работе с удобрениями и ядохимикатами; Рабочие органы и машины для посадки, обработки и уборки овощей; Зависимость удельного сопротивления машин-орудий от скорости движения">
+<style>
+:root{
+  --bg:#f4f6f3; --bg2:#ffffff; --ink:#141a17; --ink2:#4a5a51; --line:#dbe3dc;
+  --acc:#1f7a4d; --acc2:#0f5c39; --accsoft:#e6f3eb; --gold:#b8860b; --goldsoft:#fdf4dc;
+  --red:#a5342b; --redsoft:#fbeae7; --blue:#215c8a; --bluesoft:#e8f1f8;
+  --shadow:0 1px 2px rgba(16,32,24,.06),0 8px 24px rgba(16,32,24,.07);
+  --r:14px;
+}
+[data-theme=dark]{
+  --bg:#101613; --bg2:#171f1b; --ink:#e8efe9; --ink2:#a6b6ac; --line:#28332d;
+  --acc:#5cc98d; --acc2:#8fe0b1; --accsoft:#17301f; --gold:#e0b95c; --goldsoft:#2c2413;
+  --red:#ef8d80; --redsoft:#331d19; --blue:#7db6e0; --bluesoft:#152531;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  font-feature-settings:"liga" 1;overflow-wrap:break-word}
+a{color:var(--acc2);text-decoration:none}a:hover{text-decoration:underline}
+h1,h2,h3,h4,h5{line-height:1.25;margin:0 0 .5em;font-weight:750;letter-spacing:-.01em}
+p{margin:.55em 0}
+code,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em;
+  background:var(--accsoft);color:var(--acc2);padding:.1em .38em;border-radius:6px}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:60;background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.82));
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+[data-theme=dark] .top{background:linear-gradient(180deg,rgba(23,31,27,.95),rgba(23,31,27,.8))}
+.topin{max-width:1400px;margin:0 auto;padding:.5rem .9rem;display:flex;align-items:center;gap:.6rem}
+.brand{font-weight:800;font-size:.98rem;letter-spacing:-.02em;white-space:nowrap;display:flex;align-items:center;gap:.5rem}
+.brand .logo{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#fff;display:grid;place-items:center;font-size:.8rem;flex:0 0 auto}
+.brand small{display:block;font-weight:600;color:var(--ink2);font-size:.7rem;letter-spacing:.02em}
+.spacer{flex:1}
+.ib{border:1px solid var(--line);background:var(--bg2);color:var(--ink);border-radius:10px;
+  padding:.34rem .6rem;font-size:.82rem;font-weight:650;cursor:pointer;white-space:nowrap}
+.ib:hover{border-color:var(--acc);color:var(--acc2);text-decoration:none}
+.ib.icon{padding:.34rem .5rem;font-size:.95rem}
+select.ib{padding-right:1.6rem}
+.prog{height:3px;background:transparent}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--gold));transition:width .1s}
+.burger{display:none}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:290px minmax(0,1fr);gap:1.6rem;
+  padding:1.3rem .9rem 4rem}
+main{min-width:0}
+.side{position:sticky;top:62px;align-self:start;max-height:calc(100vh - 84px);overflow:auto;
+  background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:.85rem;box-shadow:var(--shadow);
+  scrollbar-width:thin}
+.side h6{margin:.9rem 0 .4rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2)}
+.side h6:first-child{margin-top:.1rem}
+.snav a{display:flex;gap:.5rem;align-items:baseline;padding:.3rem .45rem;border-radius:9px;font-size:.85rem;color:var(--ink)}
+.snav a:hover{background:var(--accsoft);text-decoration:none}
+.snav a.on{background:var(--acc);color:#fff;font-weight:700}
+[data-theme=dark] .snav a.on{color:#08130c}
+.snav .n{font-variant-numeric:tabular-nums;font-weight:800;font-size:.72rem;opacity:.65;min-width:1.4em}
+.snav .sub{padding-left:1.5rem;font-size:.79rem;color:var(--ink2)}
+.snav .sub a{color:var(--ink2);padding:.16rem .4rem}
+#q{width:100%;padding:.45rem .6rem;border:1px solid var(--line);border-radius:10px;background:var(--bg);
+  color:var(--ink);font-size:.85rem;margin-bottom:.5rem}
+#q:focus{outline:2px solid var(--acc);outline-offset:1px}
+.hidem{display:none!important}
+
+/* ---------- cards ---------- */
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+  padding:1.15rem 1.3rem;margin-bottom:1.15rem}
+.hero{background:linear-gradient(135deg,var(--acc) 0%,var(--acc2) 60%,#0a4029 100%);color:#fff;border:none}
+[data-theme=dark] .hero{background:linear-gradient(135deg,#1c4a30,#123021 60%,#0b1f15)}
+.hero h1{font-size:1.55rem;margin-bottom:.25em}
+.hero .muted{color:rgba(255,255,255,.82)}
+.hero .tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
+.tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);border-radius:999px;
+  padding:.16rem .62rem;font-size:.76rem;font-weight:650}
+
+/* question block */
+.q{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+  margin-bottom:1.35rem;overflow:hidden;scroll-margin-top:74px}
+.qh{display:flex;gap:.85rem;align-items:flex-start;padding:1.05rem 1.3rem;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,var(--accsoft),transparent)}
+.qn{flex:0 0 auto;width:38px;height:38px;border-radius:11px;background:var(--acc);color:#fff;display:grid;
+  place-items:center;font-weight:800;font-size:1.02rem}
+[data-theme=dark] .qn{color:#08130c}
+.qh h2{font-size:1.18rem;margin:0}
+.qh .sub{font-size:.78rem;color:var(--ink2);margin-top:.2rem;font-weight:600}
+.qb{padding:1.15rem 1.3rem}
+.q h3{font-size:1.02rem;margin:1.5rem 0 .45rem;padding-left:.7rem;border-left:4px solid var(--acc);color:var(--ink)}
+.q h3:first-child{margin-top:.2rem}
+.q h4{font-size:.92rem;margin:1.1rem 0 .3rem;color:var(--acc2);text-transform:uppercase;letter-spacing:.05em}
+
+/* info boxes */
+.box{border-radius:12px;padding:.75rem .95rem;margin:.85rem 0;border:1px solid var(--line);background:var(--bg)}
+.box>.bt{display:flex;align-items:center;gap:.4rem;font-weight:800;font-size:.76rem;text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:.35rem}
+.box p:first-of-type{margin-top:0}.box p:last-child{margin-bottom:0}
+.box.tldr{background:var(--accsoft);border-color:transparent}.box.tldr>.bt{color:var(--acc2)}
+.box.mem{background:var(--goldsoft);border-color:transparent}.box.mem>.bt{color:var(--gold)}
+.box.trap{background:var(--redsoft);border-color:transparent}.box.trap>.bt{color:var(--red)}
+.box.def{background:var(--bluesoft);border-color:transparent}.box.def>.bt{color:var(--blue)}
+.box.big{font-size:1.03rem}
+
+/* lists */
+ul,ol{margin:.45em 0 .8em;padding-left:1.25em}
+li{margin:.28em 0}
+ul.dash{list-style:none;padding-left:.1em}
+ul.dash>li{position:relative;padding-left:1.15em}
+ul.dash>li:before{content:"—";position:absolute;left:0;color:var(--acc);font-weight:700}
+ul.tick{list-style:none;padding-left:.1em}
+ul.tick>li{position:relative;padding-left:1.45em}
+ul.tick>li:before{content:"✓";position:absolute;left:0;top:.05em;color:var(--acc);font-weight:800}
+ol.flow{counter-reset:f;list-style:none;padding-left:0}
+ol.flow>li{position:relative;padding-left:2.15em;margin:.5em 0}
+ol.flow>li:before{counter-increment:f;content:counter(f);position:absolute;left:0;top:.1em;width:1.5rem;height:1.5rem;
+  border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-size:.78rem;font-weight:800}
+[data-theme=dark] ol.flow>li:before{color:#08130c}
+b,strong{font-weight:750}
+.hl{background:linear-gradient(transparent 62%,var(--goldsoft) 62%);padding:0 .12em;font-weight:700}
+
+/* tables */
+.tw{overflow-x:auto;margin:.8rem 0;border-radius:12px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;background:var(--bg2)}
+th,td{padding:.5rem .7rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:var(--accsoft);color:var(--acc2);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;
+  white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:rgba(127,127,127,.045)}
+td.c,th.c{text-align:center}
+.f{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+
+/* formula */
+.formula{background:var(--bg2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;
+  padding:.8rem 1rem;margin:.8rem 0;font-size:1.02rem}
+.formula .fx{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.02rem;font-weight:700;
+  letter-spacing:.01em;overflow-x:auto;white-space:nowrap}
+.formula .lg{font-size:.84rem;color:var(--ink2);margin-top:.45rem}
+.formula .lg b{color:var(--ink)}
+
+/* numbers grid */
+.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem;margin:.8rem 0}
+.num{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem}
+.num b{display:block;font-size:1.12rem;color:var(--acc2);font-variant-numeric:tabular-nums;line-height:1.2}
+.num span{font-size:.78rem;color:var(--ink2);display:block;margin-top:.15rem}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:.34rem;margin:.5rem 0}
+.chip{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.14rem .5rem;font-size:.78rem;
+  font-weight:650;color:var(--ink2);font-family:ui-monospace,Menlo,Consolas,monospace}
+
+/* details / recite */
+details{border:1px solid var(--line);border-radius:12px;background:var(--bg);margin:.8rem 0;overflow:hidden}
+details>summary{cursor:pointer;padding:.6rem .9rem;font-weight:750;font-size:.86rem;list-style:none;
+  display:flex;align-items:center;gap:.5rem;color:var(--acc2)}
+details>summary::-webkit-details-marker{display:none}
+details>summary:before{content:"▸";transition:transform .15s}
+details[open]>summary:before{transform:rotate(90deg)}
+details>.dc{padding:0 .95rem .85rem}
+
+/* learned checkbox */
+.learn{display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:700;color:var(--ink2);
+  cursor:pointer;border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:.24rem .7rem;
+  user-select:none;margin-left:auto}
+.learn input{accent-color:var(--acc);width:15px;height:15px}
+.learn.done{background:var(--acc);color:#fff;border-color:var(--acc)}
+[data-theme=dark] .learn.done{color:#08130c}
+
+/* ticket grid on index */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1rem}
+.tcard{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+  padding:.95rem 1.05rem;display:flex;flex-direction:column;gap:.5rem;transition:border-color .15s,transform .15s}
+.tcard:hover{border-color:var(--acc);transform:translateY(-2px)}
+.tcard .th{display:flex;align-items:center;gap:.6rem}
+.tcard .tno{width:40px;height:40px;border-radius:12px;background:var(--accsoft);color:var(--acc2);display:grid;
+  place-items:center;font-weight:800;flex:0 0 auto}
+.tcard.done{border-color:var(--acc);background:linear-gradient(180deg,var(--accsoft),var(--bg2) 45%)}
+.tcard ol{margin:.1rem 0 0;padding-left:1.3rem;font-size:.87rem;color:var(--ink2)}
+.tcard ol li{margin:.22rem 0}
+.tcard ol li a{color:var(--ink)}
+.bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:.2rem}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--gold));width:0;transition:width .25s}
+.themetag{font-size:.72rem;color:var(--ink2);font-weight:650}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem;margin:.9rem 0}
+.kpi{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:.7rem .85rem}
+.kpi b{display:block;font-size:1.5rem;color:var(--acc2);line-height:1.1}
+.kpi span{font-size:.78rem;color:var(--ink2)}
+.sectitle{display:flex;align-items:center;gap:.6rem;margin:1.6rem 0 .7rem}
+.sectitle h2{margin:0;font-size:1.15rem}
+.sectitle .rule{flex:1;height:1px;background:var(--line)}
+.foot{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line);color:var(--ink2);font-size:.82rem}
+.pn{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
+.pn a{flex:1 1 220px;border:1px solid var(--line);background:var(--bg2);border-radius:12px;padding:.7rem .9rem;
+  box-shadow:var(--shadow)}
+.pn a:hover{border-color:var(--acc);text-decoration:none}
+.pn .d{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);font-weight:750}
+.pn .t{font-weight:700;font-size:.92rem}
+svg{max-width:100%;height:auto}
+.fig{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:.8rem;margin:.85rem 0;text-align:center}
+.fig .cap{font-size:.78rem;color:var(--ink2);margin-top:.4rem}
+@media(max-width:980px){
+  .wrap{grid-template-columns:1fr;padding:.9rem .7rem 3rem}
+  .side{position:fixed;top:0;left:0;height:100vh;max-height:100vh;width:min(320px,88vw);z-index:80;border-radius:0;
+    transform:translateX(-102%);transition:transform .22s;padding-top:3.4rem}
+  body.menu .side{transform:none;box-shadow:0 0 60px rgba(0,0,0,.4)}
+  .burger{display:inline-block}
+  .hero h1{font-size:1.28rem}
+  .qb,.qh,.card{padding-left:1rem;padding-right:1rem}
+  .brand small{display:none}
+  .hideS{display:none}
+}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:70;opacity:0;pointer-events:none;transition:.2s}
+body.menu .backdrop{opacity:1;pointer-events:auto}
+@media print{
+  .top,.side,.pn,.learn,.backdrop,.burger{display:none!important}
+  .wrap{display:block;padding:0}
+  body{background:#fff;font-size:11.5pt}
+  .q,.card{box-shadow:none;border-color:#bbb;break-inside:avoid}
+  details{display:block}details>summary{display:none}details>.dc{padding:0}
+  a{color:#000}
+}
+</style>
+</head>
+<body data-ticket="9">
+<div class="top"><div class="topin">
+  <button class="ib icon burger" id="burger" aria-label="Меню">☰</button>
+  <a class="brand" href="index.html" style="color:inherit"><span class="logo">А</span>
+    <span>Шпаргалки<small>Эксплуатация с/х техники · 17 билетов</small></span></a>
+  <span class="spacer"></span>
+  <select class="ib hideS" id="tsel" aria-label="Перейти к билету">
+    <option value="">Билет…</option><option value="1">Билет 1</option><option value="2">Билет 2</option><option value="3">Билет 3</option><option value="4">Билет 4</option><option value="5">Билет 5</option><option value="6">Билет 6</option><option value="7">Билет 7</option><option value="8">Билет 8</option><option value="9">Билет 9</option><option value="10">Билет 10</option><option value="11">Билет 11</option><option value="12">Билет 12</option><option value="13">Билет 13</option><option value="14">Билет 14</option><option value="15">Билет 15</option><option value="16">Билет 16</option><option value="17">Билет 17</option></select>
+  <span class="ib hideS" id="bprog" style="cursor:default"></span>
+  <a class="ib icon" href="index.html" title="Индекс">⌂</a>
+  <button class="ib icon" id="tbtn" title="Тема">☾</button>
+  <button class="ib icon" onclick="window.print()" title="Печать / PDF">⎙</button>
+</div><div class="prog"><i></i></div></div>
+<div class="backdrop" id="bd"></div>
+<div class="wrap">
+<aside class="side">
+  <button class="ib icon" id="closeSide" style="position:absolute;top:.5rem;right:.6rem">✕</button>
+  <h6>Поиск</h6>
+  <input id="q" type="search" placeholder="Поиск по вопросам…" autocomplete="off">
+  <h6>Готовность <span data-prog style="float:right;color:var(--acc2)"></span></h6>
+  <div class="bar"><i data-progbar></i></div>
+  <div style="font-size:.75rem;color:var(--ink2);margin-top:.25rem">Отмечено: <span data-progn></span> вопросов</div>
+  <h6>Билеты</h6>
+  <nav class="snav" id="snav"></nav>
+</aside>
+<main>
+<div class="card hero"><div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap"><div style="font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;opacity:.85">Экзаменационный билет</div></div><h1>Билет № 9</h1><div class="muted">Безопасность при работе с пестицидами · Овощные машины · Сопротивление и скорость</div><div class="tags">
+<a class="tag" href="#q1" style="color:#fff">1. Охрана труда</a>
+<a class="tag" href="#q2" style="color:#fff">2. Овощеводство</a>
+<a class="tag" href="#q3" style="color:#fff">3. Энергетика МТА</a>
+</div></div>
+<div class="card"><h3 style="border:0;padding:0;margin-top:0">Что в билете</h3><ol>
+<li><a href="#q1"><b>Техника безопасности и средства защиты при работе с удобрениями и ядохимикатами</b></a><br><span style="color:var(--ink2);font-size:.87rem">Классы опасности, допуск людей, СИЗ, правила работ, обработка после, первая помощь.</span></li>
+<li><a href="#q2"><b>Рабочие органы и машины для посадки, обработки и уборки овощей</b></a><br><span style="color:var(--ink2);font-size:.87rem">Три группы машин: посадка → уход → уборка, по каждой культуре.</span></li>
+<li><a href="#q3"><b>Зависимость удельного сопротивления машин-орудий от скорости движения</b></a><br><span style="color:var(--ink2);font-size:.87rem">Почему k растёт со скоростью, формулы пересчёта, коэффициенты ак по орудиям, практические выводы.</span></li>
+</ol>
+<div class="box def"><div class="bt">🔗 Связь между вопросами</div><p>Первый вопрос — <b>безопасность человека</b>, второй — <b>машины самой трудоёмкой отрасли</b>, третий — <b>энергетика: как скорость влияет на сопротивление</b>. Общее: везде важна «точность и мера» — доза, глубина, скорость.</p></div>
+</div>
+<section class="q" id="q1"><div class="qh"><span class="qn">1</span><div style="flex:1"><h2>Техника безопасности и средства защиты при работе с удобрениями и ядохимикатами</h2><div class="sub">Охрана труда · билет 9 · вопрос 1</div></div><label class="learn" data-id="9-1"><input type="checkbox"> Выучено</label></div><div class="qb">
+<div class="box tldr big"><div class="bt">🎯 Суть за 30 секунд</div>
+<p>Пестициды и часть минеральных удобрений <b>токсичны, пожароопасны, раздражают кожу и дыхательные пути</b>. Безопасность строится на четырёх блоках: <span class="hl">① допуск людей ② СИЗ ③ правила выполнения работ ④ мероприятия после работы + первая помощь</span>.</p></div>
+
+<h3>1. Чем опасно и как классифицируют</h3>
+<ul class="dash">
+<li><b>Пестициды</b>: гербициды, фунгициды, инсектициды.</li>
+<li><b>Часть минеральных удобрений</b>: аммиачная вода, азотные, известковые материалы.</li>
+<li>Опасности: <b>токсичность, пожароопасность, раздражение кожи и дыхательных путей</b>, при нарушениях — <b>отравления</b>.</li>
+<li><b>Классификация по степени опасности — 4 класса</b>: <b>I — чрезвычайно опасные … IV — малоопасные</b>. По каждому препарату действует <b>регламент</b> с указанием норм безопасности.</li>
+</ul>
+
+<h3>2. Допуск и организация работ</h3>
+<ul class="tick">
+<li>Допускаются лица <b>не моложе 18 лет</b>, прошедшие <b>медосмотр, обучение и инструктаж</b> по типам работ.</li>
+<li>Работник должен знать <b>степень токсичности препаратов</b>, <b>правила приготовления рабочих растворов</b> и <b>меры первой помощи</b>.</li>
+<li><b>Не допускаются</b>: подростки, беременные и кормящие женщины.</li>
+<li>Продолжительность работы с пестицидами <b>I–II классов — не более 4–6 ч</b> с учётом регламента.</li>
+<li>Работы ведут <b>по наряду-заданию</b> с указанием <b>препарата, нормы, площади</b> и <b>сигнальных ограждений</b>.</li>
+</ul>
+
+<h3>3. Средства индивидуальной защиты (СИЗ)</h3>
+<div class="tw"><table>
+<thead><tr><th>Что</th><th>Марки / типы</th><th>Когда</th></tr></thead>
+<tbody>
+<tr><td><b>Одежда</b></td><td>комбинезоны, спецодежда из ткани с <b>плотным переплетением</b> (<b>КЗС</b>), <b>прорезиненые</b></td><td>прорезиненые — <b>при приготовлении растворов</b></td></tr>
+<tr><td><b>Обувь и руки</b></td><td>резиновые сапоги и перчатки</td><td>всегда</td></tr>
+<tr><td><b>Глаза</b></td><td>защитные очки <b>ПО-2, ПО-3</b></td><td>всегда</td></tr>
+<tr><td><b>Дыхание</b></td><td>респираторы <b>«Лепесток», РПГ-67, РУ-60М</b> или <b>противогазы</b> с маркой коробки <b>А, В</b></td><td><b>против паров и аэрозолей</b></td></tr>
+<tr><td><b>Протравливание</b></td><td><b>противогазы, фартуки</b></td><td>самая опасная операция</td></tr>
+</tbody></table></div>
+<p><b>После работы</b>: СИЗ <b>обезвреживают</b> (моют, проветривают), кожу лица и рук <b>моют с мылом</b>, <b>полощут рот</b>.</p>
+
+<h3>4. Правила безопасности при выполнении работ</h3>
+<h4>Приготовление растворов</h4>
+<ul class="dash">
+<li>Только на <b>специальных заправочных площадках с твёрдым покрытием</b>.</li>
+<li>Удаление от <b>жилых помещений, водоёмов и мест выпаса — не менее 200 м</b>.</li>
+<li>От <b>пасек — 3–5 км</b>, с <b>предупреждением пасечников за 2–3 суток</b>.</li>
+</ul>
+<h4>Опрыскивание</h4>
+<ul class="dash">
+<li>Разрешено при <b>скорости ветра до 3–4 (5) м/с</b>, в <b>безоблачную сухую погоду или при росе</b>.</li>
+<li>Работы ведут <b>навстречу ветру</b>, двигаясь <b>по уже обработанной полосе</b> (иначе оператор идёт в облаке аэрозоля).</li>
+<li><b>Заправка бака — не выше уровня (95 %)</b>.</li>
+<li><b>Запрещена эксплуатация машин с истёкшими/подтекающими коммуникациями</b>.</li>
+</ul>
+<div class="box trap"><div class="bt">🚫 Категорически запрещается</div>
+<p>Курить, принимать пищу и воду во время работы · всасывать ртом жидкость из шлангов · снимать СИЗ на поле · блокировать предохранители · работать ночью без освещения.</p></div>
+<p><b>После обработки:</b> участки <b>ограждают сигнальными знаками</b>; доступ животных и людей <b>без СИЗ — не ранее 3–5 суток</b>.</p>
+
+<h3>5. Мероприятия после работы</h3>
+<ul class="tick">
+<li>Машины и ёмкости <b>моют водой с добавлением извести/каустика</b> и обезвреживают в отведённых местах.</li>
+<li>Внутренние полости перед постановкой на хранение <b>освобождают от остатков, промывают и обезжиривают</b>.</li>
+<li><b>Бункеры, баки, трубо- и тукопроводы продувают</b>.</li>
+<li><b>Тара</b> из-под препаратов сдаётся, промывается и <b>не используется для других целей</b>.</li>
+<li><b>Остатки растворов закапывают в специальных ямах по согласованию с СЭС</b>.</li>
+</ul>
+
+<h3>6. Первая помощь при отравлении (порядок действий)</h3>
+<ol class="flow">
+<li><b>Вывести пострадавшего на свежий воздух.</b></li>
+<li><b>Снять загрязнённую одежду.</b></li>
+<li><b>Промыть кожу и глаза водой.</b></li>
+<li>При попадании внутрь — <b>вызвать рвоту тёплой солёной водой</b>, дать <b>активированный уголь</b>.</li>
+<li><b>Обеспечить покой и немедленно обратиться к врачу.</b></li>
+</ol>
+
+<div class="nums">
+<div class="num"><b>18 лет</b><span>минимальный возраст допуска</span></div>
+<div class="num"><b>4–6 ч</b><span>максимум работы с пестицидами I–II классов</span></div>
+<div class="num"><b>200 м</b><span>от жилья, водоёмов, мест выпаса</span></div>
+<div class="num"><b>3–5 км</b><span>от пасек (предупредить за 2–3 суток)</span></div>
+<div class="num"><b>3–4 м/с</b><span>предельный ветер при опрыскивании</span></div>
+<div class="num"><b>3–5 суток</b><span>допуск людей и животных без СИЗ</span></div>
+</div>
+
+<div class="box mem"><div class="bt">🧠 Как запомнить</div>
+<p>Пять блоков: <b>«Опасно → Допустили → Одели → Работаем → Убрали и спасли»</b>.</p>
+<p>Цифры в порядке роста расстояния: <b>200 м</b> (люди, вода, скот) → <b>3–5 км</b> (пчёлы). Время: <b>4–6 ч</b> работа, <b>2–3 суток</b> предупредить пасечников, <b>3–5 суток</b> карантин.</p></div>
+
+<details><summary>🗣 Мини-ответ на 1 минуту</summary><div class="dc">
+<p>«Пестициды — гербициды, фунгициды, инсектициды — и часть минеральных удобрений, аммиачная вода, азотные и известковые материалы, токсичны, пожароопасны, вызывают раздражение кожи и дыхательных путей, а при нарушениях — отравления. По степени опасности пестициды делят на четыре класса: первый — чрезвычайно опасные, четвёртый — малоопасные; по каждому препарату действует регламент с нормами безопасности. К работам допускаются лица не моложе восемнадцати лет, прошедшие медосмотр, обучение и инструктаж, знающие токсичность препаратов, правила приготовления растворов и меры первой помощи; подростки, беременные и кормящие женщины не допускаются. Работа с пестицидами первого-второго классов — не более четырёх-шести часов; работы ведут по наряду-заданию с указанием препарата, нормы, площади и сигнальных ограждений. Средства индивидуальной защиты: комбинезоны и спецодежда из ткани плотного переплетения, при приготовлении растворов прорезиненые, резиновые сапоги и перчатки, очки ПО-2 и ПО-3, респираторы „Лепесток“, РПГ-67, РУ-60М или противогазы с маркой коробки А и В против паров и аэрозолей; при протравливании — противогазы и фартуки. После работы СИЗ обезвреживают, кожу моют с мылом, полощут рот. Растворы готовят только на специальных площадках с твёрдым покрытием, удалённых от жилья, водоёмов и мест выпаса не менее чем на двести метров, а от пасек — на три-пять километров с предупреждением пасечников за двое-трое суток. Опрыскивание разрешено при ветре до трёх-четырёх метров в секунду, в сухую безоблачную погоду или по росе; работают навстречу ветру, двигаясь по обработанной полосе, бак заправляют не выше девяноста пяти процентов. Запрещается курить, есть и пить во время работы, всасывать жидкость ртом, снимать СИЗ на поле, блокировать предохранители и работать ночью без освещения; обработанные участки ограждают знаками, доступ людей и животных без СИЗ — не ранее трёх-пяти суток. После работы машины и ёмкости моют водой с известью или каустиком, полости освобождают от остатков и обезжиривают, бункеры и тукопроводы продувают, тару сдают и не используют для других целей, остатки растворов закапывают в специальных ямах по согласованию с СЭС. Первая помощь: вывести на свежий воздух, снять загрязнённую одежду, промыть кожу и глаза водой, при попадании внутрь вызвать рвоту тёплой солёной водой, дать активированный уголь, обеспечить покой и немедленно обратиться к врачу».</p></div></details>
+</div></section>
+<section class="q" id="q2"><div class="qh"><span class="qn">2</span><div style="flex:1"><h2>Рабочие органы и машины для посадки, обработки и уборки овощей</h2><div class="sub">Овощеводство · билет 9 · вопрос 2</div></div><label class="learn" data-id="9-2"><input type="checkbox"> Выучено</label></div><div class="qb">
+<div class="box tldr big"><div class="bt">🎯 Суть за 30 секунд</div>
+<p>Овощеводство — <b>трудоёмкая отрасль</b> с <b>широким набором специализированных машин по культурам</b>. Ответ удобно строить по трём этапам: <span class="hl">посадка → обработка (уход) → уборка</span>, а внутри каждого этапа — по культурам: капуста/томаты, лук/чеснок, картофель, мелкосемянные, корнеплоды.</p></div>
+
+<h3>1. Посадка</h3>
+<h4>Рассадопосадочные машины (капуста, томаты, перец)</h4>
+<p>Полунавесные <b>СКН-4А</b>, <b>СКН-6А</b>, <b>МРУ-2</b> с <b>ложечными (блюдцевыми) посадочными аппаратами</b>.</p>
+<ol class="flow">
+<li><b>Рассада укладывается корнями вниз в ложечки</b> секционной цепи.</li>
+<li><b>Сошник</b> (ранковой или дисковой) <b>прорезает бороздку</b>.</li>
+<li><b>Ложечки опускают корни</b> в бороздку.</li>
+<li><b>Прижимные катки прикатывают</b> почву.</li>
+<li><b>Шнеки полива</b> вносят приствольную воду для лучшего укоренения — <span class="f">150–250 мл на растение</span>.</li>
+</ol>
+<div class="nums">
+<div class="num"><b>2–4 км/ч</b><span>рабочая скорость</span></div>
+<div class="num"><b>150–250 мл</b><span>воды на растение</span></div>
+</div>
+<p class="themetag">Обслуга — <b>посадчицы</b> (вручную подают рассаду в ложечки).</p>
+
+<h4>Остальные посадочные машины</h4>
+<div class="tw"><table>
+<thead><tr><th>Культура</th><th>Машины</th><th>Особенности</th></tr></thead>
+<tbody>
+<tr><td><b>Лук, чеснок</b></td><td>луковысаживающие и чесночные машины, <b>СЛ-8 «Люсиль»</b></td><td>дисковые сошники и <b>укладчики луковиц</b></td></tr>
+<tr><td><b>Картофель</b></td><td>картофелесажалки <b>КСМ-4А / 6А / 8</b>; для гребневой посадки — <b>КСМ-3А, КСМГ</b></td><td><b>ложечно-ременный аппарат</b>; междурядье <span class="f">70 см</span>, глубина <span class="f">8–12 см</span>, норма <span class="f">2,5–3 т/га</span></td></tr>
+<tr><td><b>Мелкосемянные овощи</b> (морковь, лук, свёкла столовая)</td><td>сеялки точного высева <b>СО-4,2</b>, <b>СО-2,8</b></td><td><b>ременные и дисковые гнездовые аппараты</b>, полосовой посев</td></tr>
+</tbody></table></div>
+
+<h3>2. Обработка (уход)</h3>
+<ul class="dash">
+<li><b>Междурядная обработка</b> — пропашные культиваторы <b>КОН-2,8ПМ</b>, <b>КРН-4,2Г</b>, <b>КРН-5,6</b> с комплектами: <b>бритвенные и рыхлительные лапы, окучники, односторонние полольные лапы</b> для защитных зон (<span class="f">10–12 см</span>), <b>проволочные боронки и ротационные игольчатые диски</b> в рядках.</li>
+<li><b>Гребнеобразователи и окучиватели ОКН</b>; для картофеля — <b>КОН-2,8ПМ с окучивающими корпусами</b>.</li>
+<li><b>Фрезы ФИС</b>.</li>
+<li><b>Машины для мульчирования и укрытия плёнкой</b> — <b>МП-1,4, МРУ</b>.</li>
+<li><b>Опрыскиватели</b> полевые и овощеводческие — <b>ОН-400</b>.</li>
+<li><b>Дождевальные машины</b> <b>ДДА-100МА</b>, «Фрегат» — для орошения.</li>
+</ul>
+
+<h3>3. Уборка</h3>
+<div class="tw"><table>
+<thead><tr><th>Культура</th><th>Машины</th><th>Принцип рабочего процесса</th></tr></thead>
+<tbody>
+<tr><td><b>Картофель</b></td><td>копатели-валкоукладчики <b>КТН-2В</b>; комбайны двухрядные <b>ККУ-2А «Рол»</b>, <b>КСК-4-1</b>, <b>Grimme</b></td><td><b>КТН-2В</b> — <b>подкапывание без отделения</b> (клубни остаются в валке на дозревание/просушку). Комбайн: <b>разделяющий копающий орган</b> (лемехи + <b>элеваторный транспортёр-решето</b>), <b>шевелящие вальцы</b>, <b>хламовые транспортёры</b>, <b>сортировочный стол</b></td></tr>
+<tr><td><b>Корнеплоды</b> (свёкла столовая, морковь)</td><td>копатели <b>ОКК-2-4</b>, ботвоудалители <b>БМ-4</b>, теребильно-копающие комбайны <b>АС-1</b>, <b>ММС-1</b></td><td><b>БМ-4</b> — копирующий ротор или лентами <b>срезает ботву</b>; <b>теребильные</b> — <b>роторные вытягиватели захватывают корнеплоды за ботву</b>; либо <b>подкапывающие элеваторные копатели</b> с товарными транспортёрами</td></tr>
+<tr><td><b>Капуста</b></td><td><b>МСК-1</b> и платформенные машины с транспортёрной лентой</td><td>при <b>ручной срезке</b> кочанов с подачей на платформу</td></tr>
+<tr><td><b>Лук, чеснок</b></td><td>подкапывающие машины <b>ЛКГ-1,4</b></td><td><b>валкование</b> и последующий <b>подбор</b></td></tr>
+<tr><td><b>Томаты</b></td><td>комбайны <b>СТМ</b>, «Poznan»</td><td>уборка с удалением и сортировкой по окраске</td></tr>
+</tbody></table></div>
+<h4>Общие приёмы овощеуборочных машин</h4>
+<ul class="tick">
+<li><b>Подкапывание чизельными лапами-кронштейнами</b>.</li>
+<li><b>Копирование гряд башмаками</b> (гряды неровные — машина должна «плыть» по рельефу).</li>
+<li><b>Бережная транспортировка резинотканными лентами</b>.</li>
+<li><b>Укладка в ящики</b>.</li>
+</ul>
+
+<div class="box mem"><div class="bt">🧠 Как запомнить</div>
+<p>Три этапа × культуры. Якорь по маркам: <b>посадка — «СКН, КСМ, СО»</b>; <b>уход — «КОН/КРН, ОКН, МП, ОН, ДДА»</b>; <b>уборка — «КТН/ККУ, ОКК/БМ/АС, МСК, ЛКГ, СТМ»</b>.</p>
+<p>Логика рабочих органов: <b>ложечки</b> — для рассады и клубней (бережно берут «предмет»), <b>дисковые сошники</b> — для бороздки, <b>теребильные вытягиватели</b> — когда нужно тянуть за ботву.</p></div>
+
+<div class="box trap"><div class="bt">⚠️ Частые ловушки</div>
+<ul class="tick">
+<li>Разница <b>копателя-валкоукладчика</b> и <b>комбайна</b>: первый только <b>подкапывает и укладывает в валок</b> (без отделения примесей), второй <b>отделяет клубни от почвы и ботвы</b> и подаёт на сортировочный стол.</li>
+<li>Почему рассадопосадочная машина идёт всего <b>2–4 км/ч</b> и с <b>посадчицами</b>? — процесс частично ручной: важно не повредить корневую систему и точно попасть в бороздку.</li>
+<li>Защитные зоны <b>10–12 см</b> у пропашных культиваторов — та же цифра, что в билете 3. Скажите, зачем: <b>не повредить корни культурного растения</b>.</li>
+</ul></div>
+
+<details><summary>🗣 Мини-ответ на 1 минуту</summary><div class="dc">
+<p>«Овощеводство — трудоёмкая отрасль с широким набором специализированных машин по культурам. Для посадки капусты, томатов и перца применяют полунавесные рассадопосадочные машины СКН-4А, СКН-6А и МРУ-2 с ложечными, или блюдцевыми, посадочными аппаратами: рассада укладывается корнями вниз в ложечки секционной цепи, сошник — ранковой или дисковой — прорезает бороздку, ложечки опускают корни, прижимные катки прикатывают почву, а шнеки полива вносят приствольную воду объёмом 150–250 мл на растение; скорость два-четыре километра в час, обслуга — посадчицы. Для лука и чеснока — луковысаживающие машины СЛ-8 „Люсиль“ с дисковыми сошниками и укладчиками луковиц; картофель сажают картофелесажалками КСМ-4А, 6А и 8 с ложечно-ременным аппаратом, междурядье семьдесят сантиметров, глубина восемь-двенадцать, норма 2,5–3 тонны на гектар, для гребневой посадки — КСМ-3А и КСМГ; мелкосемянные овощи — морковь, лук, свёклу — сеют сеялками точного высева СО-4,2 и СО-2,8 с ременными и дисковыми гнездовыми аппаратами. Уход ведут пропашными культиваторами КОН-2,8ПМ, КРН-4,2Г и КРН-5,6 с комплектами бритвенных и рыхлительных лап, окучников, односторонних полольных лап для защитных зон десять-двенадцать сантиметров, проволочных боронок и ротационных игольчатых дисков; применяют гребнеобразователи и окучиватели ОКН, фрезы ФИС, машины для мульчирования и укрытия плёнкой МП-1,4, опрыскиватели ОН-400 и дождевальные машины ДДА-100МА и „Фрегат“. Уборка: картофель — копателями-валкоукладчиками КТН-2В, работающими без отделения, и комбайнами ККУ-2А „Рол“, КСК-4-1, Grimme с разделяющим копающим органом из лемехов и элеваторного транспортёра-решета, шевелящими вальцами, хламовыми транспортёрами и сортировочным столом; корнеплоды — копателями ОКК-2-4, ботвоудалителями БМ-4 и теребильно-копающими комбайнами АС-1 и ММС-1, у которых роторные вытягиватели захватывают корнеплоды за ботву; капусту — машинами МСК-1 и платформенными с транспортёрной лентой при ручной срезке; лук и чеснок — подкапывающими машинами ЛКГ-1,4 с валкованием и последующим подбором; томаты — комбайнами СТМ и „Poznan“. Общие приёмы: подкапывание чизельными лапами-кронштейнами, копирование гряд башмаками, бережная транспортировка резинотканными лентами и укладка в ящики».</p></div></details>
+</div></section>
+<section class="q" id="q3"><div class="qh"><span class="qn">3</span><div style="flex:1"><h2>Зависимость удельного сопротивления машин-орудий от скорости движения</h2><div class="sub">Энергетика МТА · билет 9 · вопрос 3</div></div><label class="learn" data-id="9-3"><input type="checkbox"> Выучено</label></div><div class="qb">
+<div class="box tldr big"><div class="bt">🎯 Суть за 30 секунд</div>
+<p>С ростом рабочей скорости <b>удельное сопротивление растёт</b>. Причина — <b>инерционная составляющая</b> (в формуле Горячкина — член <b>ε·a·b·v²</b>), рост трения и скорости деформации пласта, более интенсивное сбрасывание почвы органами. Для расчётов используют <b>линейную эмпирическую поправку</b> от эталонной скорости <span class="f">V₀ = 5 км/ч</span> с коэффициентом <b>а<sub>к</sub></b>, индивидуальным для каждого типа орудия.</p></div>
+
+<h3>Почему растёт сопротивление (три причины)</h3>
+<ol class="flow">
+<li><b>Инерционная составляющая</b>: формула Горячкина — Летошнёва, член <b>ε·a·b·v²</b> — кинетическая энергия растёт <b>с квадратом скорости</b>.</li>
+<li><b>Увеличение трения</b> и <b>скорости деформации пласта</b>.</li>
+<li><b>Более интенсивное сбрасывание почвы</b> рабочими органами.</li>
+</ol>
+
+<h3>Формулы пересчёта</h3>
+<div class="formula"><div class="fx">k<sub>v</sub> = k · [1 + a<sub>k</sub> · (V<sub>р</sub> − V₀)]</div>
+<div class="lg">для <b>машин-орудий</b> (на 1 м захвата); <b>V₀ = 5 км/ч</b> — эталонная скорость, <b>V<sub>р</sub></b> — фактическая рабочая скорость.</div></div>
+<div class="formula"><div class="fx">k₀<sub>v</sub> = k₀ · [1 + 0,006 · (V<sub>р</sub> − V₀)]</div>
+<div class="lg">для <b>плугов</b> (удельное сопротивление пласта); здесь а<sub>к</sub> принято равным <b>0,006</b>.</div></div>
+<div class="box def"><div class="bt">📘 Что такое а<sub>к</sub></div><p><b>Коэффициент темпа приращения сопротивления на 1 км/ч</b>, зависящий от <b>типа орудия</b>. Чем он больше, тем «невыгоднее» разгонять агрегат.</p></div>
+
+<h3>Значения коэффициента а<sub>к</sub> и эффект разгона</h3>
+<div class="tw"><table>
+<thead><tr><th>Орудие</th><th class="c">а<sub>к</sub></th><th>Прирост сопротивления при V: 5 → 9 км/ч</th></tr></thead>
+<tbody>
+<tr><td><b>Плуги</b></td><td class="c f">0,006…0,016</td><td class="f">5–7 %</td></tr>
+<tr><td><b>Дисковые лущильники и дисковые бороны</b></td><td class="c f">0,003…0,015</td><td>небольшой</td></tr>
+<tr><td><b>Культиваторы сплошной обработки</b></td><td class="c f">0,02…0,03</td><td class="f">8–12 %</td></tr>
+<tr><td><b>Пропашные культиваторы</b></td><td class="c f">0,02…0,04</td><td>умеренный</td></tr>
+<tr><td><b>Сеялки</b></td><td class="c f">0,03…0,09</td><td class="f">12–20 %</td></tr>
+<tr><td><b>Бороны</b> (зубовые, тем более сетчатые)</td><td class="c f">0,05…0,07</td><td><b>наибольший скоростной прирост</b></td></tr>
+<tr><td><b>Косилки</b></td><td class="c f">0,02…0,05</td><td>умеренный</td></tr>
+</tbody></table></div>
+
+<p><b>Графически</b> зависимость <b>k = f(V)</b> — <b>плавно возрастающая кривая</b>. Для быстроходных диапазонов учитывают <b>квадратичный член</b>: <span class="f">ε·a·b·(V<sub>р</sub>² − V₀²)</span>, что при значительном росте скорости усиливает прирост.</p>
+
+<h3>Практическое значение зависимости (4 вывода)</h3>
+<ol class="flow">
+<li><b>При комплектовании агрегата сопротивление машин обязательно пересчитывают на планируемую скорость выбранной передачи:</b> <span class="f">R = k<sub>v</sub> · b · n</span> — иначе агрегат окажется <b>перегруженным</b>.</li>
+<li><b>Повышение скорости — резерв роста производительности</b>: <span class="f">W = 0,1 · B<sub>р</sub> · V<sub>р</sub> · τ</span>, но <b>каждый процент прироста скорости увеличивает расход энергии и топлива на тягу</b>. Поэтому скорость выбирают <b>по совместному критерию</b>: ограничения агротехники (брызжение почвы, качество процесса, буксование), <b>пропускная способность машины</b>, <b>тяговый расчёт</b>.</li>
+<li><b>Наиболее выгодны повышенные скорости там, где а<sub>к</sub> мало</b> (плуги, тяжёлые орудия); а для <b>сеялок точного высева, косилок, борон</b> скорость ограничена <b>верхним агротехническим пределом</b>.</li>
+<li><b>Интенсификация процессов требует энергонасыщенных тракторов</b> и <b>конструктивно совершенных рабочих органов с малым приростом сопротивления</b> (износостойкие покрытия, самоочищающиеся поверхности) — это направление снижения удельных энергозатрат при высокой производительности.</li>
+</ol>
+
+<div class="box mem"><div class="bt">🧠 Как запомнить</div>
+<p>Порядок а<sub>к</sub> по «нежности» орудия: <b>плуг 0,006 → культиватор 0,02 → сеялка 0,03 → борона 0,05</b>. Логика: чем <b>мельче и «поверхностнее»</b> орган, тем сильнее на него влияет скорость (он работает «по воздуху» и бьёт по частицам почвы).</p>
+<p>Парадокс для ответа: <b>тяжёлый плуг разгонять выгодно, лёгкую борону и сеялку — нет</b>.</p></div>
+
+<div class="box trap"><div class="bt">⚠️ Частые ловушки</div>
+<ul class="tick">
+<li>Почему зависимость <b>линейная</b>, а в физике член <b>квадратичный</b>? — в рабочем диапазоне скоростей (5–12 км/ч) квадратичную кривую <b>аппроксимируют прямой</b>; квадратичный член добавляют только для быстроходных диапазонов.</li>
+<li>«Что ограничивает скорость сеялки?» — не сопротивление, а <b>качество высева</b>: точность раскладки семян и глубина заделки.</li>
+<li>Формула <b>W = 0,1·B<sub>р</sub>·V<sub>р</sub>·τ</b>: <b>B<sub>р</sub></b> — рабочая ширина захвата, м; <b>V<sub>р</sub></b> — рабочая скорость, км/ч; <b>τ</b> — коэффициент использования сменного времени. Множитель 0,1 переводит м·км/ч в га/ч.</li>
+</ul></div>
+
+<details><summary>🗣 Мини-ответ на 1 минуту</summary><div class="dc">
+<p>«Удельное сопротивление машин-орудий с увеличением рабочей скорости возрастает. Причина — рост инерционной составляющей сопротивления по формуле Горячкина–Летошнёва, член ε·a·b·v², увеличение трения и скорости деформации пласта, а также более интенсивное сбрасывание почвы рабочими органами: кинетическая энергия растёт с квадратом скорости. Для практических расчётов при пересчёте удельных сопротивлений, полученных при эталонной скорости пять километров в час, на фактическую рабочую скорость используют линейные эмпирические зависимости: kv = k·[1 + ak·(Vр − V0)] для машин-орудий по метру захвата и k₀v = k₀·[1 + 0,006·(Vр − V0)] для плугов, где ak — коэффициент темпа приращения сопротивления на один километр в час, зависящий от типа орудия. Ориентировочно: для плугов 0,006–0,016, для дисковых лущильников и борон 0,003–0,015, для культиваторов сплошной обработки 0,02–0,03, для пропашных культиваторов 0,02–0,04, для сеялок 0,03–0,09, для борон 0,05–0,07, для косилок 0,02–0,05. То есть при увеличении скорости с пяти до девяти километров в час сопротивление плуга возрастает на 5–7 %, культиватора — на 8–12 %, сеялки — на 12–20 %. Графически зависимость k от V выражается плавно возрастающей кривой, а для быстроходных диапазонов учитывают квадратичный член ε·a·b·(Vр² − V₀²). Практическое значение: во-первых, при комплектовании агрегата сопротивление машин обязательно пересчитывают на планируемую скорость выбранной передачи R = kv·b·n, иначе агрегат окажется перегруженным; во-вторых, повышение скорости — резерв роста производительности W = 0,1·Bр·Vр·τ, но каждый процент прироста скорости увеличивает расход энергии и топлива, поэтому скорость выбирают по совместному критерию — ограничения агротехники, пропускная способность машины и тяговый расчёт; в-третьих, наиболее выгодны повышенные скорости там, где ak мало, то есть на плугах и тяжёлых орудиях, а для сеялок точного высева, косилок и борон скорость ограничена верхним агротехническим пределом; в-четвёртых, интенсификация требует энергонасыщенных тракторов и конструктивно совершенных рабочих органов с малым приростом сопротивления — износостойких покрытий и самоочищающихся поверхностей».</p></div></details>
+</div></section>
+<div class="pn">
+<a href="ticket-08.html"><div class="d">← Предыдущий</div><div class="t">Билет 8: Внесение удобрений и защита растений · Комплексы ЗАВ/КЗС · Удельное сопротивление плуга</div></a>
+<a href="index.html"><div class="d">⌂ Оглавление</div><div class="t">Все 17 билетов и 51 вопрос</div></a>
+<a href="ticket-10.html" style="text-align:right"><div class="d">Следующий →</div><div class="t">Билет 10: Посев зерновых · Послеуборочная обработка овощей · Сопротивление плуга и влажность</div></a>
+</div>
+<div class="foot">Разбор подготовлен по конспекту ответов и учебникам: Завражнов А. И. и др. «Эксплуатация машинно-тракторного парка»; «Организация эксплуатации сельскохозяйственной техники в растениеводстве» (Новосибирский ГАУ).</div>
+</main>
+</div>
+<script>
+const DATA={"tickets": [{"n": 1, "theme": "Почвообработка · Кормоуборочные комбайны · Свиноводство", "q": ["Классификация почвообрабатывающих машин и орудий", "Рабочие процессы кормоуборочных комбайнов", "Комплексная механизация технологических процессов в свиноводстве"], "kw": "классификация почвообрабатывающих машин плуг культиватор борона кормоуборочный комбайн КСК свиноферма"}, {"n": 2, "theme": "Совмещение операций · Настройка зерноуборочного комбайна · Овцеводство", "q": ["Совмещение операций обработки почвы", "Регулирование зерноуборочных комбайнов на уборку различных культур", "Механизация технологических процессов в овцеводстве"], "kw": "совмещение операций комбинированный агрегат АПК Обь Кузбасс жатка мотовило молотилка очистка решёта стрижка овец МСУ-200"}, {"n": 3, "theme": "Качество обработки почвы · Измельчающие устройства · Птицеводство", "q": ["Качественные показатели обработки почвы", "Типы и регулирование измельчающих устройств кормоуборочных комбайнов", "Комплексная механизация и автоматизация птицеводства"], "kw": "качественные показатели глубина крошение гребнистость заделка стерни ножевой барабан дисковый измельчитель доизмельчитель птицефабрика"}, {"n": 4, "theme": "Удельное тяговое сопротивление · Очистка зерна · Производственные процессы", "q": ["Удельное тяговое сопротивление рабочих органов и машин", "Рабочие процессы машин первичной и вторичной очистки зерна", "Понятие о производственных процессах и операциях"], "kw": "удельное сопротивление формула Горячкина k=R/b k0 ворохоочиститель ЗАВ-20 ОВС-25 триер производственный процесс технологический процесс операция"}, {"n": 5, "theme": "Технологии обработки почвы · Сушка зерна · Классификация МТА", "q": ["Основные технологии обработки почвы", "Процесс сушки зерна", "Классификация машинно-тракторных агрегатов (МТА)"], "kw": "отвальная вспашка безотвальная почвозащитная культивация No-till сушка зерна шахтная сушилка МТА классификация"}, {"n": 6, "theme": "Операционные технологии обработки · Тепловой баланс сушилки · Эксплуатационные свойства машин", "q": ["Операционные технологии машинной обработки почвы", "Тепловой баланс сушильного агрегата", "Эксплуатационные свойства сельскохозяйственных машин"], "kw": "операционная технология вспашка дискование боронование культивация прикатывание тепловой баланс сушилки КПД эксплуатационные свойства эргономические"}, {"n": 7, "theme": "Внесение удобрений · Требования к зерну · Удельное сопротивление машин-орудий", "q": ["Машины для внесения органических и минеральных удобрений", "Требования к очистке и сушке семенного, продовольственного и фуражного зерна", "Удельное сопротивление сельскохозяйственных машин-орудий"], "kw": "навозоразбрасыватель ПРТ РОУ-6 РУМ-5 центробежный разбрасыватель КАС АНЖ-2,5 семенное продовольственное фуражное зерно удельное сопротивление kэ αk βk γk δk"}, {"n": 8, "theme": "Внесение удобрений и защита растений · Комплексы ЗАВ/КЗС · Удельное сопротивление плуга", "q": ["Операционные технологии внесения в почву удобрений и защиты растений", "Современные комплексы для очистки, сортирования и сушки зерна", "Удельное сопротивление плуга"], "kw": "опрыскивание ОП-2000 норма расхода рабочей жидкости ЗАВ-20 КЗС-20Ш ДСП-32 Петкус удельное сопротивление плуга k0 формула Горячкина-Летошнёва"}, {"n": 9, "theme": "Безопасность при работе с пестицидами · Овощные машины · Сопротивление и скорость", "q": ["Техника безопасности и средства защиты при работе с удобрениями и ядохимикатами", "Рабочие органы и машины для посадки, обработки и уборки овощей", "Зависимость удельного сопротивления машин-орудий от скорости движения"], "kw": "техника безопасности пестициды СИЗ респиратор противогаз рассадопосадочная машина СКН-4А картофелесажалка КСМ-4А КТН-2В ККУ-2А зависимость сопротивления от скорости ак"}, {"n": 10, "theme": "Посев зерновых · Послеуборочная обработка овощей · Сопротивление плуга и влажность", "q": ["Способы посева зерновых культур, агротехнические требования", "Очистка, сортирование и транспортирование овощей", "Характер изменения удельного сопротивления плуга от влажности почвы"], "kw": "способы посева рядовой узкорядный перекрёстный норма высева глубина заделки очистка сортирование калибровка овощей U-образная зависимость k0 влажность физическая спелость"}, {"n": 11, "theme": "Высевающие аппараты · Машины для заготовки кормов · Тяговое сопротивление", "q": ["Высевающие аппараты для рядового и гнездового посева", "Машины для заготовки кормов", "Тяговое сопротивление машин-орудий"], "kw": "высевающий аппарат катушечный дисковый пневматический ложечно-дисковый СУПН-8А СПЧ-6М косилка пресс-подборщик ПР-Ф-145 тяговое сопротивление R"}, {"n": 12, "theme": "Совмещение при посеве · Кормоприготовление · Приведённое сопротивление (ВОМ)", "q": ["Совмещение операций при посеве зерновых культур", "Машины и оборудование для переработки и приготовления кормов", "Приведённое сопротивление машин, потребляющих часть мощности двигателя через ВОМ"], "kw": "совмещение операций посев СЗП-3,6А Кузбасс Обь Омич кормоцех дробилка ДКМ-5 экструдер ИСР-12 TMR приведённое сопротивление ВОМ Rпр"}, {"n": 13, "theme": "Подготовка сеялок · Раздача кормов · Неравномерность сопротивления", "q": ["Подготовка посевных и посадочных машин к работе", "Машины и оборудование для раздачи кормов", "Неравномерность сопротивления машин-орудий"], "kw": "подготовка сеялок откатка норма высева маркёры следоуказатели кормораздатчик ТК-5А КС-1,5 КТУ-10А ИСР-12 неравномерность сопротивления случайный процесс коэффициент вариации"}, {"n": 14, "theme": "Пропашные культуры · Погрузочно-транспортные работы · Влияние глубины и числа машин на неравномерность", "q": ["Посев (посадка) и обработка пропашных культур", "Механизация погрузочно-разгрузочных и транспортных работ в сельском хозяйстве", "Влияние на неравномерность сопротивления глубины обработки и количества машин-орудий (корпусов плуга)"], "kw": "пропашные культуры СУПН-8А пунктирный квадратно-гнёздовой погрузчик ПЭ-0,8Б ЗС-40 транспорт β γ маршруты VΣ=V1/√n глубина обработки"}, {"n": 15, "theme": "Уборка зерновых и трав · Дилерский сервис · Сопротивление сцепок", "q": ["Способы уборки зерновых культур и трав", "Маркетинг и дилерская система технического сервиса", "Сопротивление сцепок"], "kw": "прямое комбайнирование раздельная уборка валок ЖВП-4,9 сенаж силос дилерская система 3S телематика сцепка С-11У СП-16А фронт сцепки"}, {"n": 16, "theme": "Зональные технологии уборки · Навоз: удаление и переработка · Общее сопротивление агрегата", "q": ["Зональные технологии уборки зерновых и комплексы машин", "Технологии и оборудование для удаления и переработки навоза", "Общее сопротивление агрегата"], "kw": "зональные технологии уборки АКРОС ТОРУМ ВЕКТОР Енисей Lexion навоз ТСН-160 УС-15 УТ-80 УС-250 компостирование лагуна метантенк Ra общее сопротивление агрегата"}, {"n": 17, "theme": "Рабочие процессы зерноуборочных комбайнов · Доение коров · Пути снижения сопротивления", "q": ["Рабочие процессы зерноуборочных комбайнов", "Технологии и оборудование для доения коров и первичной обработки молока", "Пути снижения сопротивления машин-орудий"], "kw": "рабочие процессы комбайна жатка мотовило бичевой барабан подбарабанье соломотряс очистка бункер доение АДМ-8А Волга АДУ-1-03 АД-2 Елочка Карусель ОЦМ ТОМ-2А пути снижения сопротивления"}]};
+const LS_T='shp-theme',LS_L='shp-learn';
+function theme(){return localStorage.getItem(LS_T)||'light'}
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
+  const b=document.getElementById('tbtn');if(b)b.textContent=t==='dark'?'☀':'☾'}
+(function(){try{applyTheme(theme())}catch(e){}})();
+function learned(){try{return JSON.parse(localStorage.getItem(LS_L)||'{}')}catch(e){return{}}}
+function saveLearn(o){try{localStorage.setItem(LS_L,JSON.stringify(o))}catch(e){}}
+function qid(t,q){return t+'-'+q}
+document.addEventListener('DOMContentLoaded',()=>{
+  const L=learned();
+  // learned toggles
+  document.querySelectorAll('label.learn').forEach(lb=>{
+    const id=lb.dataset.id;
+    if(L[id])lb.classList.add('done');
+    const cb=lb.querySelector('input');if(cb)cb.checked=!!L[id];
+    lb.addEventListener('click',e=>{
+      if(e.target.tagName!=='INPUT'){e.preventDefault();cb.checked=!cb.checked}
+      const o=learned();
+      if(cb.checked)o[id]=1;else delete o[id];
+      saveLearn(o);lb.classList.toggle('done',cb.checked);
+      document.dispatchEvent(new CustomEvent('learn',{detail:o}));
+    });
+  });
+  // theme
+  const tb=document.getElementById('tbtn');
+  if(tb)tb.addEventListener('click',()=>{const t=theme()==='dark'?'light':'dark';
+    try{localStorage.setItem(LS_T,t)}catch(e){}applyTheme(t)});
+  // mobile menu
+  const bg=document.getElementById('bd');
+  const toggleMenu=()=>document.body.classList.toggle('menu');
+  ['burger','closeSide'].forEach(i=>{const el=document.getElementById(i);if(el)el.addEventListener('click',toggleMenu)});
+  if(bg)bg.addEventListener('click',()=>document.body.classList.remove('menu'));
+  document.querySelectorAll('.snav a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('menu')));
+  // sidebar build
+  const cur=document.body.dataset.ticket?parseInt(document.body.dataset.ticket,10):0;
+  const sn=document.getElementById('snav');
+  if(sn){
+    let h='<a href="index.html"'+(cur===0?' class="on"':'')+'><span class="n">≡</span>Индекс · все билеты</a>';
+    DATA.tickets.forEach(t=>{
+      const done=t.q.filter((q,i)=>L[qid(t.n,i+1)]).length;
+      h+='<a href="ticket-'+String(t.n).padStart(2,'0')+'.html"'+(cur===t.n?' class="on"':'')+
+         '><span class="n">'+t.n+'</span>Билет '+t.n+(done?' <em style="margin-left:auto;font-style:normal;font-size:.7rem;opacity:.7">'+done+'/3</em>':'')+'</a>';
+      if(cur===t.n){t.q.forEach((q,i)=>{
+        h+='<div class="sub"><a href="#q'+(i+1)+'">'+(L[qid(t.n,i+1)]?'✓ ':'')+q+'</a></div>'})}
+    });
+    sn.innerHTML=h;
+  }
+  // sidebar progress
+  function updProg(){
+    const o=learned();const total=DATA.tickets.length*3;
+    let n=0;DATA.tickets.forEach(t=>t.q.forEach((q,i)=>{if(o[qid(t.n,i+1)])n++}));
+    document.querySelectorAll('[data-prog]').forEach(e=>e.textContent=Math.round(n/total*100)+'%');
+    document.querySelectorAll('[data-progn]').forEach(e=>e.textContent=n+' / '+total);
+    const bp=document.getElementById('bprog');
+    if(bp){const c=document.body.dataset.ticket?parseInt(document.body.dataset.ticket,10):0;
+      let d=0;if(c){for(let i=1;i<=3;i++)if(o[c+'-'+i])d++}
+      bp.textContent=d+'/3 выучено';bp.style.color=d===3?'var(--acc)':''}
+  }
+  updProg();document.addEventListener('learn',updProg);
+  // search
+  const q=document.getElementById('q');
+  if(q){q.addEventListener('input',()=>{
+    const v=q.value.toLowerCase().trim();
+    document.querySelectorAll('[data-s]').forEach(el=>{
+      const hay=(el.dataset.s||'').toLowerCase();
+      el.classList.toggle('hidem',v.length>1&&hay.indexOf(v)<0);
+    });
+    document.querySelectorAll('#snav .sub').forEach(el=>el.classList.add('hidem'));
+  })}
+  // index filters
+  document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('[data-filter]').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    const f=b.dataset.filter;
+    document.querySelectorAll('[data-topic]').forEach(c=>{
+      c.classList.toggle('hidem',f!=='all'&&c.dataset.topic!==f)});
+  }));
+  // scroll progress
+  const pi=document.querySelector('.prog i');
+  if(pi){addEventListener('scroll',()=>{
+    const h=document.documentElement.scrollHeight-innerHeight;
+    pi.style.width=(h>0?scrollY/h*100:0)+'%';},{passive:true})}
+  // ticket selector
+  const sel=document.getElementById('tsel');
+  if(sel){sel.value=document.body.dataset.ticket||'';
+    sel.addEventListener('change',()=>{if(sel.value)location.href='ticket-'+String(sel.value).padStart(2,'0')+'.html'})}
+});
+</script>
+</body></html>

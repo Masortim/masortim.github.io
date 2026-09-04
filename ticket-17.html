@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Билет 17 — Рабочие процессы зерноуборочных комбайнов · Доение коров · Пути снижения сопротивления</title>
+<meta name="description" content="Рабочие процессы зерноуборочных комбайнов; Технологии и оборудование для доения коров и первичной обработки молока; Пути снижения сопротивления машин-орудий">
+<style>
+:root{
+  --bg:#f4f6f3; --bg2:#ffffff; --ink:#141a17; --ink2:#4a5a51; --line:#dbe3dc;
+  --acc:#1f7a4d; --acc2:#0f5c39; --accsoft:#e6f3eb; --gold:#b8860b; --goldsoft:#fdf4dc;
+  --red:#a5342b; --redsoft:#fbeae7; --blue:#215c8a; --bluesoft:#e8f1f8;
+  --shadow:0 1px 2px rgba(16,32,24,.06),0 8px 24px rgba(16,32,24,.07);
+  --r:14px;
+}
+[data-theme=dark]{
+  --bg:#101613; --bg2:#171f1b; --ink:#e8efe9; --ink2:#a6b6ac; --line:#28332d;
+  --acc:#5cc98d; --acc2:#8fe0b1; --accsoft:#17301f; --gold:#e0b95c; --goldsoft:#2c2413;
+  --red:#ef8d80; --redsoft:#331d19; --blue:#7db6e0; --bluesoft:#152531;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  font-feature-settings:"liga" 1;overflow-wrap:break-word}
+a{color:var(--acc2);text-decoration:none}a:hover{text-decoration:underline}
+h1,h2,h3,h4,h5{line-height:1.25;margin:0 0 .5em;font-weight:750;letter-spacing:-.01em}
+p{margin:.55em 0}
+code,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em;
+  background:var(--accsoft);color:var(--acc2);padding:.1em .38em;border-radius:6px}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:60;background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.82));
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+[data-theme=dark] .top{background:linear-gradient(180deg,rgba(23,31,27,.95),rgba(23,31,27,.8))}
+.topin{max-width:1400px;margin:0 auto;padding:.5rem .9rem;display:flex;align-items:center;gap:.6rem}
+.brand{font-weight:800;font-size:.98rem;letter-spacing:-.02em;white-space:nowrap;display:flex;align-items:center;gap:.5rem}
+.brand .logo{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+  color:#fff;display:grid;place-items:center;font-size:.8rem;flex:0 0 auto}
+.brand small{display:block;font-weight:600;color:var(--ink2);font-size:.7rem;letter-spacing:.02em}
+.spacer{flex:1}
+.ib{border:1px solid var(--line);background:var(--bg2);color:var(--ink);border-radius:10px;
+  padding:.34rem .6rem;font-size:.82rem;font-weight:650;cursor:pointer;white-space:nowrap}
+.ib:hover{border-color:var(--acc);color:var(--acc2);text-decoration:none}
+.ib.icon{padding:.34rem .5rem;font-size:.95rem}
+select.ib{padding-right:1.6rem}
+.prog{height:3px;background:transparent}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--gold));transition:width .1s}
+.burger{display:none}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:290px minmax(0,1fr);gap:1.6rem;
+  padding:1.3rem .9rem 4rem}
+main{min-width:0}
+.side{position:sticky;top:62px;align-self:start;max-height:calc(100vh - 84px);overflow:auto;
+  background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:.85rem;box-shadow:var(--shadow);
+  scrollbar-width:thin}
+.side h6{margin:.9rem 0 .4rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2)}
+.side h6:first-child{margin-top:.1rem}
+.snav a{display:flex;gap:.5rem;align-items:baseline;padding:.3rem .45rem;border-radius:9px;font-size:.85rem;color:var(--ink)}
+.snav a:hover{background:var(--accsoft);text-decoration:none}
+.snav a.on{background:var(--acc);color:#fff;font-weight:700}
+[data-theme=dark] .snav a.on{color:#08130c}
+.snav .n{font-variant-numeric:tabular-nums;font-weight:800;font-size:.72rem;opacity:.65;min-width:1.4em}
+.snav .sub{padding-left:1.5rem;font-size:.79rem;color:var(--ink2)}
+.snav .sub a{color:var(--ink2);padding:.16rem .4rem}
+#q{width:100%;padding:.45rem .6rem;border:1px solid var(--line);border-radius:10px;background:var(--bg);
+  color:var(--ink);font-size:.85rem;margin-bottom:.5rem}
+#q:focus{outline:2px solid var(--acc);outline-offset:1px}
+.hidem{display:none!important}
+
+/* ---------- cards ---------- */
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+  padding:1.15rem 1.3rem;margin-bottom:1.15rem}
+.hero{background:linear-gradient(135deg,var(--acc) 0%,var(--acc2) 60%,#0a4029 100%);color:#fff;border:none}
+[data-theme=dark] .hero{background:linear-gradient(135deg,#1c4a30,#123021 60%,#0b1f15)}
+.hero h1{font-size:1.55rem;margin-bottom:.25em}
+.hero .muted{color:rgba(255,255,255,.82)}
+.hero .tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
+.tag{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);border-radius:999px;
+  padding:.16rem .62rem;font-size:.76rem;font-weight:650}
+
+/* question block */
+.q{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+  margin-bottom:1.35rem;overflow:hidden;scroll-margin-top:74px}
+.qh{display:flex;gap:.85rem;align-items:flex-start;padding:1.05rem 1.3rem;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,var(--accsoft),transparent)}
+.qn{flex:0 0 auto;width:38px;height:38px;border-radius:11px;background:var(--acc);color:#fff;display:grid;
+  place-items:center;font-weight:800;font-size:1.02rem}
+[data-theme=dark] .qn{color:#08130c}
+.qh h2{font-size:1.18rem;margin:0}
+.qh .sub{font-size:.78rem;color:var(--ink2);margin-top:.2rem;font-weight:600}
+.qb{padding:1.15rem 1.3rem}
+.q h3{font-size:1.02rem;margin:1.5rem 0 .45rem;padding-left:.7rem;border-left:4px solid var(--acc);color:var(--ink)}
+.q h3:first-child{margin-top:.2rem}
+.q h4{font-size:.92rem;margin:1.1rem 0 .3rem;color:var(--acc2);text-transform:uppercase;letter-spacing:.05em}
+
+/* info boxes */
+.box{border-radius:12px;padding:.75rem .95rem;margin:.85rem 0;border:1px solid var(--line);background:var(--bg)}
+.box>.bt{display:flex;align-items:center;gap:.4rem;font-weight:800;font-size:.76rem;text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:.35rem}
+.box p:first-of-type{margin-top:0}.box p:last-child{margin-bottom:0}
+.box.tldr{background:var(--accsoft);border-color:transparent}.box.tldr>.bt{color:var(--acc2)}
+.box.mem{background:var(--goldsoft);border-color:transparent}.box.mem>.bt{color:var(--gold)}
+.box.trap{background:var(--redsoft);border-color:transparent}.box.trap>.bt{color:var(--red)}
+.box.def{background:var(--bluesoft);border-color:transparent}.box.def>.bt{color:var(--blue)}
+.box.big{font-size:1.03rem}
+
+/* lists */
+ul,ol{margin:.45em 0 .8em;padding-left:1.25em}
+li{margin:.28em 0}
+ul.dash{list-style:none;padding-left:.1em}
+ul.dash>li{position:relative;padding-left:1.15em}
+ul.dash>li:before{content:"—";position:absolute;left:0;color:var(--acc);font-weight:700}
+ul.tick{list-style:none;padding-left:.1em}
+ul.tick>li{position:relative;padding-left:1.45em}
+ul.tick>li:before{content:"✓";position:absolute;left:0;top:.05em;color:var(--acc);font-weight:800}
+ol.flow{counter-reset:f;list-style:none;padding-left:0}
+ol.flow>li{position:relative;padding-left:2.15em;margin:.5em 0}
+ol.flow>li:before{counter-increment:f;content:counter(f);position:absolute;left:0;top:.1em;width:1.5rem;height:1.5rem;
+  border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-size:.78rem;font-weight:800}
+[data-theme=dark] ol.flow>li:before{color:#08130c}
+b,strong{font-weight:750}
+.hl{background:linear-gradient(transparent 62%,var(--goldsoft) 62%);padding:0 .12em;font-weight:700}
+
+/* tables */
+.tw{overflow-x:auto;margin:.8rem 0;border-radius:12px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;background:var(--bg2)}
+th,td{padding:.5rem .7rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:var(--accsoft);color:var(--acc2);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;
+  white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:rgba(127,127,127,.045)}
+td.c,th.c{text-align:center}
+.f{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:700}
+
+/* formula */
+.formula{background:var(--bg2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;
+  padding:.8rem 1rem;margin:.8rem 0;font-size:1.02rem}
+.formula .fx{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.02rem;font-weight:700;
+  letter-spacing:.01em;overflow-x:auto;white-space:nowrap}
+.formula .lg{font-size:.84rem;color:var(--ink2);margin-top:.45rem}
+.formula .lg b{color:var(--ink)}
+
+/* numbers grid */
+.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem;margin:.8rem 0}
+.num{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem}
+.num b{display:block;font-size:1.12rem;color:var(--acc2);font-variant-numeric:tabular-nums;line-height:1.2}
+.num span{font-size:.78rem;color:var(--ink2);display:block;margin-top:.15rem}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:.34rem;margin:.5rem 0}
+.chip{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.14rem .5rem;font-size:.78rem;
+  font-weight:650;color:var(--ink2);font-family:ui-monospace,Menlo,Consolas,monospace}
+
+/* details / recite */
+details{border:1px solid var(--line);border-radius:12px;background:var(--bg);margin:.8rem 0;overflow:hidden}
+details>summary{cursor:pointer;padding:.6rem .9rem;font-weight:750;font-size:.86rem;list-style:none;
+  display:flex;align-items:center;gap:.5rem;color:var(--acc2)}
+details>summary::-webkit-details-marker{display:none}
+details>summary:before{content:"▸";transition:transform .15s}
+details[open]>summary:before{transform:rotate(90deg)}
+details>.dc{padding:0 .95rem .85rem}
+
+/* learned checkbox */
+.learn{display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:700;color:var(--ink2);
+  cursor:pointer;border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:.24rem .7rem;
+  user-select:none;margin-left:auto}
+.learn input{accent-color:var(--acc);width:15px;height:15px}
+.learn.done{background:var(--acc);color:#fff;border-color:var(--acc)}
+[data-theme=dark] .learn.done{color:#08130c}
+
+/* ticket grid on index */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1rem}
+.tcard{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+  padding:.95rem 1.05rem;display:flex;flex-direction:column;gap:.5rem;transition:border-color .15s,transform .15s}
+.tcard:hover{border-color:var(--acc);transform:translateY(-2px)}
+.tcard .th{display:flex;align-items:center;gap:.6rem}
+.tcard .tno{width:40px;height:40px;border-radius:12px;background:var(--accsoft);color:var(--acc2);display:grid;
+  place-items:center;font-weight:800;flex:0 0 auto}
+.tcard.done{border-color:var(--acc);background:linear-gradient(180deg,var(--accsoft),var(--bg2) 45%)}
+.tcard ol{margin:.1rem 0 0;padding-left:1.3rem;font-size:.87rem;color:var(--ink2)}
+.tcard ol li{margin:.22rem 0}
+.tcard ol li a{color:var(--ink)}
+.bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:.2rem}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--gold));width:0;transition:width .25s}
+.themetag{font-size:.72rem;color:var(--ink2);font-weight:650}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem;margin:.9rem 0}
+.kpi{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:.7rem .85rem}
+.kpi b{display:block;font-size:1.5rem;color:var(--acc2);line-height:1.1}
+.kpi span{font-size:.78rem;color:var(--ink2)}
+.sectitle{display:flex;align-items:center;gap:.6rem;margin:1.6rem 0 .7rem}
+.sectitle h2{margin:0;font-size:1.15rem}
+.sectitle .rule{flex:1;height:1px;background:var(--line)}
+.foot{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line);color:var(--ink2);font-size:.82rem}
+.pn{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
+.pn a{flex:1 1 220px;border:1px solid var(--line);background:var(--bg2);border-radius:12px;padding:.7rem .9rem;
+  box-shadow:var(--shadow)}
+.pn a:hover{border-color:var(--acc);text-decoration:none}
+.pn .d{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);font-weight:750}
+.pn .t{font-weight:700;font-size:.92rem}
+svg{max-width:100%;height:auto}
+.fig{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:.8rem;margin:.85rem 0;text-align:center}
+.fig .cap{font-size:.78rem;color:var(--ink2);margin-top:.4rem}
+@media(max-width:980px){
+  .wrap{grid-template-columns:1fr;padding:.9rem .7rem 3rem}
+  .side{position:fixed;top:0;left:0;height:100vh;max-height:100vh;width:min(320px,88vw);z-index:80;border-radius:0;
+    transform:translateX(-102%);transition:transform .22s;padding-top:3.4rem}
+  body.menu .side{transform:none;box-shadow:0 0 60px rgba(0,0,0,.4)}
+  .burger{display:inline-block}
+  .hero h1{font-size:1.28rem}
+  .qb,.qh,.card{padding-left:1rem;padding-right:1rem}
+  .brand small{display:none}
+  .hideS{display:none}
+}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:70;opacity:0;pointer-events:none;transition:.2s}
+body.menu .backdrop{opacity:1;pointer-events:auto}
+@media print{
+  .top,.side,.pn,.learn,.backdrop,.burger{display:none!important}
+  .wrap{display:block;padding:0}
+  body{background:#fff;font-size:11.5pt}
+  .q,.card{box-shadow:none;border-color:#bbb;break-inside:avoid}
+  details{display:block}details>summary{display:none}details>.dc{padding:0}
+  a{color:#000}
+}
+</style>
+</head>
+<body data-ticket="17">
+<div class="top"><div class="topin">
+  <button class="ib icon burger" id="burger" aria-label="Меню">☰</button>
+  <a class="brand" href="index.html" style="color:inherit"><span class="logo">А</span>
+    <span>Шпаргалки<small>Эксплуатация с/х техники · 17 билетов</small></span></a>
+  <span class="spacer"></span>
+  <select class="ib hideS" id="tsel" aria-label="Перейти к билету">
+    <option value="">Билет…</option><option value="1">Билет 1</option><option value="2">Билет 2</option><option value="3">Билет 3</option><option value="4">Билет 4</option><option value="5">Билет 5</option><option value="6">Билет 6</option><option value="7">Билет 7</option><option value="8">Билет 8</option><option value="9">Билет 9</option><option value="10">Билет 10</option><option value="11">Билет 11</option><option value="12">Билет 12</option><option value="13">Билет 13</option><option value="14">Билет 14</option><option value="15">Билет 15</option><option value="16">Билет 16</option><option value="17">Билет 17</option></select>
+  <span class="ib hideS" id="bprog" style="cursor:default"></span>
+  <a class="ib icon" href="index.html" title="Индекс">⌂</a>
+  <button class="ib icon" id="tbtn" title="Тема">☾</button>
+  <button class="ib icon" onclick="window.print()" title="Печать / PDF">⎙</button>
+</div><div class="prog"><i></i></div></div>
+<div class="backdrop" id="bd"></div>
+<div class="wrap">
+<aside class="side">
+  <button class="ib icon" id="closeSide" style="position:absolute;top:.5rem;right:.6rem">✕</button>
+  <h6>Поиск</h6>
+  <input id="q" type="search" placeholder="Поиск по вопросам…" autocomplete="off">
+  <h6>Готовность <span data-prog style="float:right;color:var(--acc2)"></span></h6>
+  <div class="bar"><i data-progbar></i></div>
+  <div style="font-size:.75rem;color:var(--ink2);margin-top:.25rem">Отмечено: <span data-progn></span> вопросов</div>
+  <h6>Билеты</h6>
+  <nav class="snav" id="snav"></nav>
+</aside>
+<main>
+<div class="card hero"><div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap"><div style="font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;opacity:.85">Экзаменационный билет</div></div><h1>Билет № 17</h1><div class="muted">Рабочие процессы зерноуборочных комбайнов · Доение коров · Пути снижения сопротивления</div><div class="tags">
+<a class="tag" href="#q1" style="color:#fff">1. Уборочные машины</a>
+<a class="tag" href="#q2" style="color:#fff">2. Животноводство</a>
+<a class="tag" href="#q3" style="color:#fff">3. Энергетика МТА</a>
+</div></div>
+<div class="card"><h3 style="border:0;padding:0;margin-top:0">Что в билете</h3><ol>
+<li><a href="#q1"><b>Рабочие процессы зерноуборочных комбайнов</b></a><br><span style="color:var(--ink2);font-size:.87rem">6 последовательных звеньев: жатка → обмолот → сепарация → очистка → бункер → незерновая часть. Плюс агротребования и регулировки.</span></li>
+<li><a href="#q2"><b>Технологии и оборудование для доения коров и первичной обработки молока</b></a><br><span style="color:var(--ink2);font-size:.87rem">Привязное содержание → беспривязное (залы) → сан-гигиена → первичная обработка молока → требования ГОСТ.</span></li>
+<li><a href="#q3"><b>Пути снижения сопротивления машин-орудий</b></a><br><span style="color:var(--ink2);font-size:.87rem">4 группы мер: конструктивные, технологические, эксплуатационные, организационно-агротехнические. Итог — 20–40 % экономии.</span></li>
+</ol>
+<div class="box def"><div class="bt">🔗 Связь между вопросами</div><p>Финальный билет. Первый вопрос — <b>поток массы в комбайне</b> (6 звеньев), второй — <b>поток молока</b> от вымени до танка, третий — <b>итоговый практический вывод всего курса</b>: как снизить то самое сопротивление, которое мы считали во всех предыдущих билетах.</p></div>
+</div>
+<section class="q" id="q1"><div class="qh"><span class="qn">1</span><div style="flex:1"><h2>Рабочие процессы зерноуборочных комбайнов</h2><div class="sub">Уборочные машины · билет 17 · вопрос 1</div></div><label class="learn" data-id="17-1"><input type="checkbox"> Выучено</label></div><div class="qb">
+<div class="box tldr big"><div class="bt">🎯 Суть за 30 секунд</div>
+<p>Зерноуборочный комбайн <b>комплексно выполняет весь цикл уборки</b>: <b>срез хлеба, обмолот, сепарация зерна из соломы, очистка зерна, сбор его в бункер и обработка незерновой части</b>. Конструктивно выполнен как <b>самоходная машина</b> (прицепные — редкость).</p></div>
+
+<div class="fig"><svg viewBox="0 0 900 150" role="img" aria-label="Поток массы в комбайне">
+<defs><marker id="ah" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#4b5563"/></marker></defs>
+<g font-size="11.5" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="middle">
+<rect x="6" y="42" width="122" height="46" rx="8" fill="#eef4ff" stroke="#3b5bdb"/><text x="67" y="62" fill="#1e3a8a" font-weight="700">1 Жатка</text><text x="67" y="78" fill="#334155">срез + мотовило</text>
+<rect x="152" y="42" width="122" height="46" rx="8" fill="#eef4ff" stroke="#3b5bdb"/><text x="213" y="62" fill="#1e3a8a" font-weight="700">2 Обмолот</text><text x="213" y="78" fill="#334155">барабан + дека</text>
+<rect x="298" y="42" width="122" height="46" rx="8" fill="#eef4ff" stroke="#3b5bdb"/><text x="359" y="62" fill="#1e3a8a" font-weight="700">3 Сепарация</text><text x="359" y="78" fill="#334155">соломотряс</text>
+<rect x="444" y="42" width="122" height="46" rx="8" fill="#eef4ff" stroke="#3b5bdb"/><text x="505" y="62" fill="#1e3a8a" font-weight="700">4 Очистка</text><text x="505" y="78" fill="#334155">воздух + решёта</text>
+<rect x="590" y="42" width="122" height="46" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="651" y="62" fill="#0b5f47" font-weight="700">5 Бункер</text><text x="651" y="78" fill="#334155">6–12 м³, выгрузка</text>
+<rect x="736" y="42" width="152" height="46" rx="8" fill="#fff4e6" stroke="#e8590c"/><text x="812" y="62" fill="#9a3412" font-weight="700">6 Незерновая часть</text><text x="812" y="78" fill="#334155">валок / измельчение</text>
+<g stroke="#4b5563" stroke-width="1.8" marker-end="url(#ah)">
+<path d="M128 65H150"/><path d="M274 65H296"/><path d="M420 65H442"/><path d="M566 65H588"/><path d="M712 65H734"/>
+</g>
+<text x="359" y="122" fill="#64748b">зерно и полова ↓ из соломотряса и деки → на очистку</text>
+<text x="359" y="26" fill="#64748b" font-weight="700">ПОТОК ХЛЕБНОЙ МАССЫ</text>
+</g></svg><div class="cap">Шесть звеньев рабочего процесса комбайна. Солома уходит вбок (звено 6), зерно — в бункер (звено 5).</div></div>
+
+<h3>1. Жатвенная часть (жатка-платформа)</h3>
+<ol class="flow">
+<li><b>Мотовило</b> подводит стебли к <b>режущему аппарату</b> (нож с сегментами, работающий по противорежущим пластинам пальцев) и <b>отгибает их к платформе после среза</b>.</li>
+<li>Срезанная масса <b>поперечным шнеком</b> стягивается к центру жатки и <b>пальцами шнека сбрасывается в окно наклонной камеры</b>.</li>
+<li><b>Мякиново-планчатый транспортёр</b> наклонной камеры (рычажно-планчатый или ленточно-планчатый) подаёт массу в молотилку.</li>
+<li><b>Копирование рельефа — башмаками/полозьями</b>; у рапсовых и зернобобовых культур — <b>боковые вертикальные ножи (делители)</b>.</li>
+</ol>
+
+<h3>2. Обмолот</h3>
+<p>Основная часть — <b>бичевой барабан</b> (бильный): планки-бичи штифтового/пластинчатого типа вращаются с окружной скоростью <span class="f">28–33 м/с</span> на <b>легкообмолачиваемых</b> культурах (меньше — на хрупких) и работают в паре с <b>подбарабаньем (декой)</b> — решётчатым полукожухом.</p>
+<ul class="dash">
+<li>Масса между бичами и решётом <b>притирается</b>: зерно выбивается и <b>просеивается сквозь ячейки деки</b> — это <b>основная часть, до 85–90 % зерна</b>.</li>
+<li>Непромолоченная масса выносится <b>комб-бичом и дебеером</b> (укосным битером удара) к соломотрясу.</li>
+<li><b>Штифтовые бичи</b> — для трудновымолачиваемых и хрупких культур (рис, зернобобовые).</li>
+<li><b>Двухбарабанные и аксиально-роторные</b> молотильные аппараты (<b>ТОРУМ</b>, роторные зарубежные — <b>Lexion</b>) дают <b>повышенную сепарацию за счёт центробежной силы в роторе</b>.</li>
+</ul>
+
+<h3>3. Сепарация соломы</h3>
+<p><b>Соломотряс (клавишный): 4–6 клавишей</b>, совершающих <b>возвратно-качательное движение на разных ступенях</b>: они <b>подбрасывают солому и перемещают её к выходу</b>, а зерно и полова <b>проваливаются сквозь гребёнки</b> на транспортную площадку (транспортёр). У <b>аксиально-роторных</b> комбайнов сепарация идёт <b>в роторном кожухе</b>.</p>
+
+<h3>4. Очистка зерна</h3>
+<p>С транспортной площадки зерновая смесь поступает в <b>аспираторную очистку</b>:</p>
+<ul class="dash">
+<li><b>вентилятор</b> создаёт воздушный поток, <b>выносящий лёгкие примеси (полову)</b> в половонабиватель;</li>
+<li>зерно <b>просеивается сквозь ярусные жалюзийные решёта</b>: <b>верхнее колосковое</b> — солома и колоски, <b>нижнее решето</b> — мелкая фракция;</li>
+<li>очищенное зерно <b>шнеком и норией подаётся в бункер</b> (<span class="f">6–12 м³</span>);</li>
+<li><b>недомолоченные колосья</b> — хвостовым шнеком-норией <b>на домолот</b> (обратно в барабан или домолачивающее устройство).</li>
+</ul>
+
+<h3>5. Бункер и разгрузка</h3>
+<p><b>Выгрузной шнек</b> с <b>разгрузкой «на ходу»</b> в транспортное средство — <span class="f">90–105 л/с</span>.</p>
+
+<h3>6. Незерновая часть</h3>
+<p>Солома с соломотряса <b>либо укладывается в валок</b> (с копнителем), <b>либо измельчается ротационным измельчителем-разбрасывателем</b> (ножевой барабан) и <b>разбрасывается по полю как удобрение</b>.</p>
+
+<h3>Агротребования к работе комбайна</h3>
+<div class="nums">
+<div class="num"><b>≤ 1,5–2,5 %</b><span>суммарные потери (срез + обмолот + очистка)</span></div>
+<div class="num"><b>≤ 1 %</b><span>недомолот</span></div>
+<div class="num"><b>≤ 1–2 %</b><span>дробление зерна</span></div>
+<div class="num"><b>≥ 95–96 %</b><span>чистота зерна в бункере</span></div>
+<div class="num"><b>14–16 %</b><span>влажность зерна в бункере</span></div>
+<div class="num"><b>≤ 20–25 см</b><span>высота стерни</span></div>
+</div>
+
+<h3>Регулировки комбайна</h3>
+<div class="chips"><span class="chip">высота среза</span><span class="chip">обороты и вылет мотовила</span><span class="chip">окружная скорость барабана</span><span class="chip">зазоры барабан – подбарабанье</span><span class="chip">воздушный поток</span><span class="chip">решёта</span><span class="chip">домолотка</span></div>
+<div class="box mem"><div class="bt">🧠 Как запомнить регулировки</div><p>Идите по потоку массы: <b>срез</b> (высота) → <b>подача</b> (мотовило: обороты и вылет) → <b>обмолот</b> (скорость барабана + зазор) → <b>очистка</b> (воздух + решёта) → <b>домолот</b> (возврат недомолота). Семь регулировок — ровно по звеньям процесса.</p></div>
+
+<div class="box trap"><div class="bt">⚠️ Частые ловушки</div>
+<ul class="tick">
+<li>Ключевая цифра: <b>через деку проходит до 85–90 % зерна</b> — то есть основная сепарация идёт <b>ещё в молотильном аппарате</b>, а соломотряс «добирает» остатки.</li>
+<li>Не путайте <b>трёхтактный</b> аппарат доения (сосание — сжатие — отдых) с обмолотом — это вопрос 2.</li>
+<li>«Чистота в бункере ≥ 95–96 %» — это <b>доля зерна</b>, а не влажность; влажность — <b>14–16 %</b>.</li>
+<li>Окружная скорость барабана <b>снижают</b> для хрупких культур, чтобы не дробить зерно.</li>
+</ul></div>
+
+<details><summary>🗣 Мини-ответ на 1 минуту</summary><div class="dc">
+<p>«Зерноуборочный комбайн комплексно выполняет весь цикл уборки: срез хлеба, обмолот, сепарацию зерна из соломы, очистку зерна, сбор его в бункер и обработку незерновой части. Конструктивно он выполнен как самоходная машина, прицепные — редкость. Первое звено — жатвенная часть, жатка-платформа: мотовило подводит стебли к режущему аппарату, где нож с сегментами работает по противорежущим пластинам пальцев, и отгибает их к платформе после среза; срезанная масса поперечным шнеком стягивается к центру жатки и пальцами шнека сбрасывается в окно наклонной камеры; мякиново-планчатый транспортёр наклонной камеры подаёт массу в молотилку; копирование рельефа обеспечивают башмаки и полозья, а у рапсовых и зернобобовых культур ставят боковые вертикальные ножи-делители. Второе звено — обмолот: основная часть — бичевой, или бильный, барабан, у которого планки-бичи штифтового или пластинчатого типа вращаются с окружной скоростью 28–33 м/с на легкообмолачиваемых культурах и меньшей на хрупких, работая в паре с подбарабаньем — декой, решётчатым полукожухом; масса между бичами и решётом притирается, зерно выбивается и просеивается сквозь ячейки деки — это основная часть, до 85–90 % зерна; непромолоченная масса выносится комб-бичом и дебеером, укосным битером удара, к соломотрясу; штифтовые бичи применяют для трудновымолачиваемых и хрупких культур — риса и зернобобовых; двухбарабанные и аксиально-роторные аппараты, ТОРУМ и роторные зарубежные Lexion, дают повышенную сепарацию за счёт центробежной силы в роторе. Третье звено — сепарация соломы: клавишный соломотряс из 4–6 клавишей совершает возвратно-качательное движение на разных ступенях, подбрасывает солому и перемещает её к выходу, а зерно и полова проваливаются сквозь гребёнки на транспортную площадку; у аксиально-роторных машин сепарация идёт в роторном кожухе. Четвёртое звено — очистка зерна: с транспортной площадки зерновая смесь поступает в аспираторную очистку, где вентилятор создаёт воздушный поток, выносящий лёгкие примеси — полову — в половонабиватель, а зерно просеивается сквозь ярусные жалюзийные решёта: верхнее колосковое решето задерживает солому и колоски, нижнее — мелкую фракцию; очищенное зерно шнеком и норией подаётся в бункер объёмом 6–12 м³, а недомолоченные колосья хвостовым шнеком-норией идут на домолот, обратно в барабан или домолачивающее устройство. Пятое звено — бункер и разгрузка: выгрузной шнек обеспечивает разгрузку на ходу в транспортное средство со скоростью 90–105 л/с. Шестое звено — незерновая часть: солома с соломотряса либо укладывается в валок с копнителем, либо измельчается ротационным измельчителем-разбрасывателем с ножевым барабаном и разбрасывается по полю как удобрение. Агротребования: суммарные потери — срез, обмолот и очистка — не более 1,5–2,5 %, недомолот не более 1 %, дробление не более 1–2 %, чистота зерна в бункере не менее 95–96 %, влажность в бункере 14–16 %, высота стерни до 20–25 см. Регулировки: высота среза, обороты и вылет мотовила, окружная скорость барабана, зазоры барабан — подбарабанье, воздушный поток, решёта и домолотка».</p></div></details>
+</div></section>
+<section class="q" id="q2"><div class="qh"><span class="qn">2</span><div style="flex:1"><h2>Технологии и оборудование для доения коров и первичной обработки молока</h2><div class="sub">Животноводство · билет 17 · вопрос 2</div></div><label class="learn" data-id="17-2"><input type="checkbox"> Выучено</label></div><div class="qb">
+<div class="box tldr big"><div class="bt">🎯 Суть за 30 секунд</div>
+<p><b>Машинное доение — центральный процесс молочного скотоводства</b>: до <span class="f">30–35 % трудозатрат фермы</span>. <b>Технологии зависят от системы содержания</b>: привязное — доят в коровнике, беспривязное — в доильных залах. Дальше идёт <b>первичная обработка молока</b>, цель которой — <b>консервация качества</b>.</p></div>
+
+<h3>А. Привязное содержание — доение в коровнике</h3>
+<ol class="flow">
+<li><b>Доение в молокопровод</b> (доильные установки <b>АДМ-8А</b> на <span class="f">100–200 голов</span>): молоко по молокопроводу идёт в молочную установку (<b>вакуумный насос УВУ-60/45</b>, вакуум-баллон, регуляторы), <b>накопление в молочные баки</b>; доильные аппараты подключаются к <b>стационарным молочным вакуумным кранам по фронту станков</b>; стаканы аппарата <b>выполняют также массаж</b>.</li>
+<li><b>Доильные аппараты</b>: <b>трёхтактные «Волга» АДУ-1-03</b> (<b>сосание — сжатие — отдых</b>, оптимальная выдача и бережность), <b>двухтактные АД-2</b> («<b>Майга</b>», <b>АД-2Н</b>) с <b>попарным чередованием тактов сосания и массажа</b>; объёмные и переменно-импульсные пульсаторы. Доение аппаратом завершается <b>машинным додаиванием</b>: стаканы снимают, делают массаж и <b>0,3–0,5 кг додаивают вручную</b>.</li>
+<li><b>Передвижные доильные установки УДА-8А/УДА-16А «Ёлочка»</b> (летние лагеря) — с <b>доением в переносные вёдра</b>.</li>
+</ol>
+
+<h3>Б. Беспривязное содержание — доильные залы</h3>
+<div class="tw"><table>
+<thead><tr><th>Тип зала</th><th>Особенности</th></tr></thead>
+<tbody>
+<tr><td><b>«Ёлочка»</b></td><td>параллельные доильные площадки <b>УДА-24</b>, <b>УДЕ-8А</b>: <b>групповой заход коров с накопительной площадки</b>, установка аппаратов <b>снизу</b>; <b>одна доярка обслуживает 3–4 аппарата одновременно</b></td></tr>
+<tr><td><b>«Карусель»</b></td><td><b>вращающаяся платформа на 16–40 мест</b>, <b>К-40</b>: корова заходит на место, <b>доение за 1 оборот 5–10 мин</b>, <b>полная автоматизация дозирования корма</b></td></tr>
+<tr><td><b>«Тандем», «Скелето», «Параллель»</b></td><td>прочие схемы размещения животных в зале</td></tr>
+</tbody></table></div>
+<p>Доение в залах ведут <b>по распорядку 2–3 раза в сутки</b>. Автоматика: <b>мастер-пульсаторы УА-1</b>, <b>датчики молоковыгона (молокоотдачи)</b> — снятие стаканов при окончании доения, <b>идентификация коров (транспондеры)</b>, <b>автоматический учёт надоя</b>.</p>
+
+<h3>В. Санитарно-гигиенические приёмы доения</h3>
+<ul class="tick">
+<li><b>подмывание и обтирание вымени</b>;</li>
+<li><b>сдаивание первых струй в контрольную плошку</b> — проверка на <b>мастит</b>;</li>
+<li><b>массаж</b>, <b>полная выдавка</b>;</li>
+<li><b>промывка аппаратов и молокопровода после доения</b> — циркуляционная система промывки <b>ТОМ-2А</b>: <b>тёплая вода → моющий раствор 0,5 % → дезраствор → ополаскивание</b>.</li>
+</ul>
+
+<h3>Г. Первичная обработка молока (цель — консервация качества)</h3>
+<ol class="flow">
+<li><b>Очистка</b> — фильтрация через <b>фланелевые/марлевые фильтры</b> при переливе, либо <b>очистители-сепараторы молока ОЦМ</b> (<b>центробежное отделение механических примесей</b>) — для продлённого срока.</li>
+<li><b>Охлаждение — до 4–6 °C в течение 3 ч после выдоя</b> (подавление микрофлоры): <b>пластинчатые охладители ОО-I / ОПТ / ООП</b> (противоток молока и ледяной воды, скорость <span class="f">1000–5000 л/ч</span>), <b>ёмкости-охладители ТОМ-2А (0,2 м³)</b>, <b>горизонтальные танки-охладители 6–10 м³</b> с рубашкой и мешалкой (<b>закрытое доение напрямую в танк</b>), <b>ледогенераторы</b>.</li>
+<li><b>Хранение и учёт</b>: <b>танки-термосы</b>, молочные весы или <b>расходомеры (счётчики молока)</b>, <b>пробы на жир и плотность</b>, сбор <b>молоковозом</b>.</li>
+</ol>
+<div class="fig"><svg viewBox="0 0 900 118" role="img" aria-label="Поток молока">
+<defs><marker id="ah2" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#4b5563"/></marker></defs>
+<g font-size="11.5" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="middle">
+<rect x="8" y="34" width="140" height="46" rx="8" fill="#fff0f6" stroke="#c2255c"/><text x="78" y="54" fill="#a61e4d" font-weight="700">Вымя</text><text x="78" y="70" fill="#334155">подмыв + массаж</text>
+<rect x="176" y="34" width="140" height="46" rx="8" fill="#eef4ff" stroke="#3b5bdb"/><text x="246" y="54" fill="#1e3a8a" font-weight="700">Доильный аппарат</text><text x="246" y="70" fill="#334155">3-такт / 2-такт</text>
+<rect x="344" y="34" width="140" height="46" rx="8" fill="#eef4ff" stroke="#3b5bdb"/><text x="414" y="54" fill="#1e3a8a" font-weight="700">Молокопровод</text><text x="414" y="70" fill="#334155">вакуум УВУ-60/45</text>
+<rect x="512" y="34" width="122" height="46" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="573" y="54" fill="#0b5f47" font-weight="700">Очистка</text><text x="573" y="70" fill="#334155">ОЦМ / фильтр</text>
+<rect x="652" y="34" width="122" height="46" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="713" y="54" fill="#0b5f47" font-weight="700">Охлаждение</text><text x="713" y="70" fill="#334155">4–6 °C за 3 ч</text>
+<rect x="792" y="34" width="100" height="46" rx="8" fill="#fff4e6" stroke="#e8590c"/><text x="842" y="54" fill="#9a3412" font-weight="700">Танк-термос</text><text x="842" y="70" fill="#334155">учёт, молоковоз</text>
+<g stroke="#4b5563" stroke-width="1.8" marker-end="url(#ah2)">
+<path d="M148 57H174"/><path d="M316 57H342"/><path d="M484 57H510"/><path d="M634 57H650"/><path d="M774 57H790"/>
+</g>
+<text x="450" y="18" fill="#64748b" font-weight="700">ПОТОК МОЛОКА: «закрытая» система — от вымени до танка</text>
+<text x="450" y="104" fill="#64748b">после каждого доения — промывка всей линии (ТОМ-2А): тёплая вода → моющий раствор 0,5 % → дезраствор → ополаскивание</text>
+</g></svg><div class="cap">Замкнутая линия: молоко не контактирует с воздухом, поэтому качество сохраняется.</div></div>
+
+<h3>Требования</h3>
+<ul class="tick">
+<li><b>молоко 1 сорта по ГОСТ</b>: <b>кислотность до 16–17 °T</b>, <b>бактериальная обсеменённость ≤ 3·10⁵</b>;</li>
+<li><b>полная выдавка без остатков молока в вымени</b> — предупреждение <b>мастита</b>.</li>
+</ul>
+<div class="nums">
+<div class="num"><b>30–35 %</b><span>доля доения в трудозатратах фермы</span></div>
+<div class="num"><b>100–200 гол.</b><span>обслуживание АДМ-8А</span></div>
+<div class="num"><b>3–4 аппарата</b><span>на одну доярку в «Ёлочке»</span></div>
+<div class="num"><b>5–10 мин</b><span>оборот платформы «Карусель» К-40</span></div>
+<div class="num"><b>4–6 °C / 3 ч</b><span>охлаждение после выдоя</span></div>
+<div class="num"><b>16–17 °T</b><span>кислотность молока 1 сорта</span></div>
+</div>
+
+<div class="box trap"><div class="bt">⚠️ Частые ловушки</div>
+<ul class="tick">
+<li><b>Трёхтактный</b> аппарат «Волга» АДУ-1-03 = <b>сосание — сжатие — отдых</b>; <b>двухтактный</b> АД-2 = <b>попарное чередование сосания и массажа</b>. Такты не путать.</li>
+<li><b>ТОМ-2А</b> встречается дважды: как <b>ёмкость-охладитель (0,2 м³)</b> и как <b>система циркуляционной промывки</b> — скажите про оба назначения.</li>
+<li><b>Машинное додаивание</b> — это не «доить аппаратом дольше»: стаканы снимают, делают массаж и <b>0,3–0,5 кг додаивают вручную</b>.</li>
+<li>Охлаждение обязательно <b>в течение 3 ч</b>: иначе микрофлора успевает размножиться и сортность падает.</li>
+</ul></div>
+
+<details><summary>🗣 Мини-ответ на 1 минуту</summary><div class="dc">
+<p>«Машинное доение — центральный процесс молочного скотоводства, на него приходится до 30–35 % трудозатрат фермы; технологии зависят от системы содержания. При привязном содержании доение ведут в коровнике: первое — доение в молокопровод, доильные установки АДМ-8А на 100–200 голов; молоко по молокопроводу идёт в молочную установку с вакуумным насосом УВУ-60/45, вакуум-баллоном и регуляторами, накапливается в молочные баки; доильные аппараты подключаются к стационарным молочным вакуумным кранам по фронту станков, а стаканы аппарата выполняют также массаж. Второе — доильные аппараты: трёхтактные „Волга“ АДУ-1-03 с тактами сосание, сжатие и отдых, обеспечивающие оптимальную выдачу и бережность, и двухтактные АД-2, „Майга“, АД-2Н, с попарным чередованием тактов сосания и массажа; применяют объёмные и переменно-импульсные пульсаторы. Доение аппаратом завершается машинным додаиванием: стаканы снимают, делают массаж и 0,3–0,5 кг додаивают вручную. Третье — передвижные доильные установки УДА-8А и УДА-16А „Ёлочка“ для летних лагерей, с доением в переносные вёдра. При беспривязном содержании работают доильные залы: „Ёлочка“ — параллельные доильные площадки УДА-24 и УДЕ-8А с групповым заходом коров с накопительной площадки и установкой аппаратов снизу, одна доярка обслуживает 3–4 аппарата одновременно; „Карусель“ — вращающаяся платформа на 16–40 мест, К-40, корова заходит на место, доение за один оборот 5–10 мин, полная автоматизация дозирования корма; а также „Тандем“, „Скелето“ и „Параллель“. Доение в залах ведут по распорядку 2–3 раза в сутки; автоматика включает мастер-пульсаторы УА-1, датчики молоковыгона, то есть молокоотдачи, со снятием стаканов при окончании доения, идентификацию коров транспондерами и автоматический учёт надоя. Санитарно-гигиенические приёмы доения: подмывание и обтирание вымени, сдаивание первых струй в контрольную плошку для проверки на мастит, массаж и полная выдавка; после доения промывают аппараты и молокопровод циркуляционной системой ТОМ-2А: тёплая вода, моющий раствор 0,5 %, дезраствор и ополаскивание. Первичная обработка молока, цель которой — консервация качества: первое — очистка фильтрацией через фланелевые или марлевые фильтры при переливе либо очистителями-сепараторами молока ОЦМ с центробежным отделением механических примесей, что продлевает срок хранения; второе — охлаждение до 4–6 °C в течение 3 ч после выдоя для подавления микрофлоры: пластинчатые охладители ОО-I, ОПТ, ООП с противотоком молока и ледяной воды и скоростью 1000–5000 л/ч, ёмкости-охладители ТОМ-2А на 0,2 м³, горизонтальные танки-охладители 6–10 м³ с рубашкой и мешалкой при закрытом доении напрямую в танк, ледогенераторы; третье — хранение и учёт: танки-термосы, молочные весы или расходомеры, пробы на жир и плотность, сбор молоковозом. Требования: молоко первого сорта по ГОСТ — кислотность до 16–17 °T и бактериальная обсеменённость не более 3·10⁵; обязательна полная выдавка без остатков молока в вымени для предупреждения мастита».</p></div></details>
+</div></section>
+<section class="q" id="q3"><div class="qh"><span class="qn">3</span><div style="flex:1"><h2>Пути снижения сопротивления машин-орудий</h2><div class="sub">Энергетика МТА · билет 17 · вопрос 3</div></div><label class="learn" data-id="17-3"><input type="checkbox"> Выучено</label></div><div class="qb">
+<div class="box tldr big"><div class="bt">🎯 Суть за 30 секунд</div>
+<p>Снижение тягового сопротивления — <b>главный резерв сокращения расхода топлива</b> (на обработку почвы уходит <span class="f">30–40 % энергии растениеводства</span>) и <b>повышения производительности МТА</b>. Пути делят на <b>4 группы: конструктивные, технологические, организационные и эксплуатационные</b>.</p></div>
+
+<h3>1. Конструктивные</h3>
+<ul class="dash">
+<li><b>Совершенствование рабочих органов</b>: рациональная <b>геометрия лемехов и отвалов</b> (культурные, вырезные, с <b>износостойкими покрытиями</b> — хромирование, борирование, наплавки твёрдых сплавов), <b>стойки СибИМЭ для безотвальной обработки</b>, <b>самоочищающиеся поверхности</b> (полимерные и керамические покрытия — снижают <b>залипание и трение</b>), катушечные и ротационные органы.</li>
+<li><b>Замена скольжения качением</b>: опорные колёса, <b>дисковые ножи вместо лап</b>, гладкие поверхности, <b>правильные углы атаки и заточки</b>.</li>
+<li><b>Снижение массы машины и сопротивления перекатыванию</b>: <b>навесные машины вместо прицепных</b> (нет лишнего ходового аппарата), лёгкие узлы, <b>широкопрофильные и сдвоенные шины</b> (меньше глубина колеи).</li>
+<li><b>Приводные рабочие органы</b> (активная фреза) — там, где это <b>энергетически оправдано</b>: энергия берётся <b>напрямую от двигателя, минуя тягу</b>.</li>
+</ul>
+
+<h3>2. Технологические</h3>
+<ul class="dash">
+<li><b>Обработка почвы в состоянии физической спелости</b> (влажность <span class="f">21–22 %</span>): <b>минимум сопротивления — на 20–40 % ниже</b>, чем на пересохшей и переувлажнённой почве.</li>
+<li><b>Почвозащитные и ресурсосберегающие технологии</b>: минимальная и нулевая обработка, <b>плоскорезная вместо отвальной</b>.</li>
+<li><b>Совмещение операций</b> — комбинированные агрегаты: <b>меньше проходов → меньше переуплотнение</b> (а переуплотнение повышает сопротивление последующих обработок на <span class="f">20–30 %</span>) и меньше общих энергозатрат.</li>
+<li><b>Выбор рациональной скорости</b>: сопротивление растёт со скоростью (<span class="f">k<sub>v</sub> = k·[1 + a<sub>k</sub>·(V<sub>р</sub> − 5)]</span>), поэтому скорость назначают <b>по совместному критерию производительности и энергозатрат</b>.</li>
+</ul>
+<div class="tw"><table>
+<thead><tr><th>Способ обработки</th><th>Энергоёмкость, МДж/га</th><th>Экономия</th></tr></thead>
+<tbody>
+<tr><td>Вспашка (отвальная)</td><td class="f">≈ 106</td><td>— базовый уровень</td></tr>
+<tr><td>Безотвальная (плоскорезная)</td><td class="f">≈ 90</td><td>≈ 15 %</td></tr>
+<tr><td>Минимальная</td><td class="f">≈ 46</td><td><b>до 50 % топлива</b></td></tr>
+</tbody></table></div>
+
+<h3>3. Эксплуатационные</h3>
+<ul class="dash">
+<li><b>Содержание в остром заточке режущих кромок</b>: лемехи <span class="f">h = 0,5–1,0 мм</span> — <b>затупление до 3 мм повышает сопротивление на 20–50 %</b>; своевременная замена рабочих органов.</li>
+<li><b>Правильные регулировки</b>: глубина <b>строго по агротребованию</b> (излишняя глубина — прямая трата мощности, <span class="f">R = k₀·h·B</span>), <b>горизонтальность рамы</b>, <b>углы атаки дисков 18–21°</b>, копирование секциями.</li>
+<li><b>Своевременное ТО и смазка узлов</b>; исправные колёса и давление в шинах.</li>
+<li><b>Рациональное комплектование ширины захвата</b> (<span class="f">η<sub>и</sub> = 0,8–0,92</span> — без перегрузки и буксования), правильный балласт трактора — <b>минимально необходимый</b>.</li>
+</ul>
+
+<h3>4. Организационные и агротехнические</h3>
+<ul class="dash">
+<li><b>Предварительная подготовка полей</b>: уборка камней и остатков, выравнивание, планировка, устранение колей и задков.</li>
+<li><b>Правильное направление и способ движения</b>: по гону, <b>под углом к вспашке</b>, диагональные способы; рациональные загоны, работа «<b>вгладь</b>» — меньше поворотов и холостых ходов.</li>
+<li><b>Мелиорация структуры почвы</b>: посевы многолетних трав, <b>известкование</b> — снижают твёрдость и связность почвы <b>на годы</b>; чередование культур с разной плотностью корней.</li>
+</ul>
+
+<div class="fig"><svg viewBox="0 0 900 210" role="img" aria-label="4 группы мер снижения сопротивления">
+<g font-size="11.5" font-family="ui-sans-serif,system-ui,sans-serif">
+<rect x="330" y="86" width="240" height="40" rx="9" fill="#1e3a8a"/><text x="450" y="111" fill="#fff" font-weight="700" text-anchor="middle">СНИЖЕНИЕ СОПРОТИВЛЕНИЯ</text>
+<g fill="#eef4ff" stroke="#3b5bdb"><rect x="20" y="8" width="200" height="36" rx="8"/><rect x="20" y="56" width="200" height="36" rx="8"/><rect x="20" y="150" width="200" height="36" rx="8"/><rect x="20" y="104" width="200" height="36" rx="8"/></g>
+<g fill="#1e3a8a" font-weight="700" text-anchor="middle"><text x="120" y="31">1 КОНСТРУКТИВНЫЕ</text><text x="120" y="79">2 ТЕХНОЛОГИЧЕСКИЕ</text><text x="120" y="127">3 ЭКСПЛУАТАЦИОННЫЕ</text><text x="120" y="173">4 ОРГАНИЗАЦИОННЫЕ</text></g>
+<g stroke="#4b5563" stroke-width="1.6" fill="none"><path d="M220 26H290V106H328"/><path d="M220 74H290V106"/><path d="M220 122H290V106"/><path d="M220 168H290V106H328"/></g>
+<g fill="#0b5f47" text-anchor="middle"><rect x="600" y="52" width="280" height="34" rx="8" fill="#e6fcf5" stroke="#0ca678"/><text x="740" y="74">−20–40 % удельных энергозатрат</text></g>
+<g fill="#9a3412" text-anchor="middle"><rect x="600" y="98" width="280" height="34" rx="8" fill="#fff4e6" stroke="#e8590c"/><text x="740" y="120">качество операций сохраняется</text></g>
+<g fill="#334155" text-anchor="middle"><rect x="600" y="144" width="280" height="34" rx="8" fill="#f1f5f9" stroke="#94a3b8"/><text x="740" y="166">экономия топлива + рост производительности парка</text></g>
+<g stroke="#4b5563" stroke-width="1.6" fill="none"><path d="M570 106H598"/><path d="M570 106H590V115H598"/><path d="M570 106H590V161H598"/></g>
+</g></svg><div class="cap">Итог: только <b>комплексное</b> применение всех четырёх групп даёт 20–40 % снижения удельных энергозатрат.</div></div>
+
+<div class="box tldr"><div class="bt">🎯 Итоговый вывод</div><p><b>Комплексное применение мер даёт снижение удельных энергозатрат на 20–40 % при сохранении качества операций</b> — это прямая экономия топлива и рост производительности парка.</p></div>
+
+<div class="box trap"><div class="bt">⚠️ Частые ловушки</div>
+<ul class="tick">
+<li>Не путайте группы: <b>физическая спелость почвы</b> и <b>выбор скорости</b> — это <b>технологические</b> меры; <b>заточка, регулировки, ТО, балласт</b> — <b>эксплуатационные</b>; <b>направление движения и мелиорация</b> — <b>организационно-агротехнические</b>.</li>
+<li>Цифры-якоря: затупление лемеха до 3 мм → <b>+20–50 %</b> сопротивления; переуплотнение → <b>+20–30 %</b>; физическая спелость → <b>−20–40 %</b>.</li>
+<li>«Приводные рабочие органы» <b>не снижают суммарную потребность в энергии</b> — они переводят её с тяги на ВОМ; применяйте, <b>только если это энергетически оправдано</b>.</li>
+<li>Обязательно начните с того, <b>зачем</b> это нужно: 30–40 % энергии растениеводства уходит на обработку почвы.</li>
+</ul></div>
+
+<details><summary>🗣 Мини-ответ на 1 минуту</summary><div class="dc">
+<p>«Снижение тягового сопротивления — главный резерв сокращения расхода топлива, поскольку на обработку почвы уходит 30–40 % энергии растениеводства, и повышения производительности машинно-тракторного агрегата. Пути делят на конструктивные, технологические, организационные и эксплуатационные. Конструктивные: совершенствование рабочих органов — рациональная геометрия лемехов и отвалов, культурных и вырезных, с износостойкими покрытиями: хромирование, борирование, наплавки твёрдых сплавов; стойки СибИМЭ для безотвальной обработки; самоочищающиеся поверхности — полимерные и керамические покрытия, снижающие залипание и трение; катушечные и ротационные органы. Замена скольжения качением: опорные колёса, дисковые ножи вместо лап, гладкие поверхности, правильные углы атаки и заточки. Снижение массы машины и сопротивления перекатыванию: навесные машины вместо прицепных, поскольку нет лишнего ходового аппарата, лёгкие узлы, широкопрофильные и сдвоенные шины, дающие меньшую глубину колеи. Приводные рабочие органы, например активная фреза, там, где это энергетически оправдано: они берут энергию напрямую от двигателя, минуя тягу. Технологические: обработка почвы в состоянии физической спелости при влажности 21–22 %, когда сопротивление минимально — на 20–40 % ниже, чем на пересохшей и переувлажнённой почве; почвозащитные и ресурсосберегающие технологии — минимальная и нулевая обработка, плоскорезная вместо отвальной, при этом энергоёмкость на гектар составляет примерно 106 МДж при вспашке, 90 МДж при безотвальной и 46 МДж при минимальной, то есть экономия до 50 % топлива; совмещение операций в комбинированных агрегатах: меньше проходов — меньше переуплотнение, а переуплотнение повышает сопротивление последующих обработок на 20–30 %; выбор рациональной скорости, поскольку сопротивление растёт со скоростью по формуле kv = k·[1 + ak·(Vр − 5)], и скорость назначают по совместному критерию производительности и энергозатрат. Эксплуатационные: содержание режущих кромок в остром заточке — лемехи 0,5–1 мм, а затупление до 3 мм повышает сопротивление на 20–50 %, своевременная замена рабочих органов; правильные регулировки — глубина строго по агротребованию, так как излишняя глубина это прямая трата мощности R = k0·h·B, горизонтальность рамы, углы атаки дисков 18–21°, копирование секциями; своевременное техническое обслуживание и смазка узлов, исправные колёса и давление в шинах; рациональное комплектование ширины захвата при коэффициенте использования тягового усилия 0,8–0,92, без перегрузки и буксования, и минимально необходимый балласт трактора. Организационные и агротехнические: предварительная подготовка полей — уборка камней и остатков, выравнивание, планировка, устранение колей и задков; правильное направление и способ движения — по гону, под углом к вспашке, диагональные способы, рациональные загоны, работа вгладь, что уменьшает повороты и холостые ходы; мелиорация структуры почвы — посевы многолетних трав и известкование, снижающие твёрдость и связность почвы на годы, чередование культур с разной плотностью корней. Комплексное применение всех мер даёт снижение удельных энергозатрат на 20–40 % при сохранении качества операций — это прямая экономия топлива и рост производительности парка».</p></div></details>
+</div></section>
+<div class="pn">
+<a href="ticket-16.html"><div class="d">← Предыдущий</div><div class="t">Билет 16: Зональные технологии уборки · Навоз: удаление и переработка · Общее сопротивление агрегата</div></a>
+<a href="index.html"><div class="d">⌂ Оглавление</div><div class="t">Все 17 билетов и 51 вопрос</div></a>
+</div>
+<div class="foot">Разбор подготовлен по конспекту ответов и учебникам: Завражнов А. И. и др. «Эксплуатация машинно-тракторного парка»; «Организация эксплуатации сельскохозяйственной техники в растениеводстве» (Новосибирский ГАУ).</div>
+</main>
+</div>
+<script>
+const DATA={"tickets": [{"n": 1, "theme": "Почвообработка · Кормоуборочные комбайны · Свиноводство", "q": ["Классификация почвообрабатывающих машин и орудий", "Рабочие процессы кормоуборочных комбайнов", "Комплексная механизация технологических процессов в свиноводстве"], "kw": "классификация почвообрабатывающих машин плуг культиватор борона кормоуборочный комбайн КСК свиноферма"}, {"n": 2, "theme": "Совмещение операций · Настройка зерноуборочного комбайна · Овцеводство", "q": ["Совмещение операций обработки почвы", "Регулирование зерноуборочных комбайнов на уборку различных культур", "Механизация технологических процессов в овцеводстве"], "kw": "совмещение операций комбинированный агрегат АПК Обь Кузбасс жатка мотовило молотилка очистка решёта стрижка овец МСУ-200"}, {"n": 3, "theme": "Качество обработки почвы · Измельчающие устройства · Птицеводство", "q": ["Качественные показатели обработки почвы", "Типы и регулирование измельчающих устройств кормоуборочных комбайнов", "Комплексная механизация и автоматизация птицеводства"], "kw": "качественные показатели глубина крошение гребнистость заделка стерни ножевой барабан дисковый измельчитель доизмельчитель птицефабрика"}, {"n": 4, "theme": "Удельное тяговое сопротивление · Очистка зерна · Производственные процессы", "q": ["Удельное тяговое сопротивление рабочих органов и машин", "Рабочие процессы машин первичной и вторичной очистки зерна", "Понятие о производственных процессах и операциях"], "kw": "удельное сопротивление формула Горячкина k=R/b k0 ворохоочиститель ЗАВ-20 ОВС-25 триер производственный процесс технологический процесс операция"}, {"n": 5, "theme": "Технологии обработки почвы · Сушка зерна · Классификация МТА", "q": ["Основные технологии обработки почвы", "Процесс сушки зерна", "Классификация машинно-тракторных агрегатов (МТА)"], "kw": "отвальная вспашка безотвальная почвозащитная культивация No-till сушка зерна шахтная сушилка МТА классификация"}, {"n": 6, "theme": "Операционные технологии обработки · Тепловой баланс сушилки · Эксплуатационные свойства машин", "q": ["Операционные технологии машинной обработки почвы", "Тепловой баланс сушильного агрегата", "Эксплуатационные свойства сельскохозяйственных машин"], "kw": "операционная технология вспашка дискование боронование культивация прикатывание тепловой баланс сушилки КПД эксплуатационные свойства эргономические"}, {"n": 7, "theme": "Внесение удобрений · Требования к зерну · Удельное сопротивление машин-орудий", "q": ["Машины для внесения органических и минеральных удобрений", "Требования к очистке и сушке семенного, продовольственного и фуражного зерна", "Удельное сопротивление сельскохозяйственных машин-орудий"], "kw": "навозоразбрасыватель ПРТ РОУ-6 РУМ-5 центробежный разбрасыватель КАС АНЖ-2,5 семенное продовольственное фуражное зерно удельное сопротивление kэ αk βk γk δk"}, {"n": 8, "theme": "Внесение удобрений и защита растений · Комплексы ЗАВ/КЗС · Удельное сопротивление плуга", "q": ["Операционные технологии внесения в почву удобрений и защиты растений", "Современные комплексы для очистки, сортирования и сушки зерна", "Удельное сопротивление плуга"], "kw": "опрыскивание ОП-2000 норма расхода рабочей жидкости ЗАВ-20 КЗС-20Ш ДСП-32 Петкус удельное сопротивление плуга k0 формула Горячкина-Летошнёва"}, {"n": 9, "theme": "Безопасность при работе с пестицидами · Овощные машины · Сопротивление и скорость", "q": ["Техника безопасности и средства защиты при работе с удобрениями и ядохимикатами", "Рабочие органы и машины для посадки, обработки и уборки овощей", "Зависимость удельного сопротивления машин-орудий от скорости движения"], "kw": "техника безопасности пестициды СИЗ респиратор противогаз рассадопосадочная машина СКН-4А картофелесажалка КСМ-4А КТН-2В ККУ-2А зависимость сопротивления от скорости ак"}, {"n": 10, "theme": "Посев зерновых · Послеуборочная обработка овощей · Сопротивление плуга и влажность", "q": ["Способы посева зерновых культур, агротехнические требования", "Очистка, сортирование и транспортирование овощей", "Характер изменения удельного сопротивления плуга от влажности почвы"], "kw": "способы посева рядовой узкорядный перекрёстный норма высева глубина заделки очистка сортирование калибровка овощей U-образная зависимость k0 влажность физическая спелость"}, {"n": 11, "theme": "Высевающие аппараты · Машины для заготовки кормов · Тяговое сопротивление", "q": ["Высевающие аппараты для рядового и гнездового посева", "Машины для заготовки кормов", "Тяговое сопротивление машин-орудий"], "kw": "высевающий аппарат катушечный дисковый пневматический ложечно-дисковый СУПН-8А СПЧ-6М косилка пресс-подборщик ПР-Ф-145 тяговое сопротивление R"}, {"n": 12, "theme": "Совмещение при посеве · Кормоприготовление · Приведённое сопротивление (ВОМ)", "q": ["Совмещение операций при посеве зерновых культур", "Машины и оборудование для переработки и приготовления кормов", "Приведённое сопротивление машин, потребляющих часть мощности двигателя через ВОМ"], "kw": "совмещение операций посев СЗП-3,6А Кузбасс Обь Омич кормоцех дробилка ДКМ-5 экструдер ИСР-12 TMR приведённое сопротивление ВОМ Rпр"}, {"n": 13, "theme": "Подготовка сеялок · Раздача кормов · Неравномерность сопротивления", "q": ["Подготовка посевных и посадочных машин к работе", "Машины и оборудование для раздачи кормов", "Неравномерность сопротивления машин-орудий"], "kw": "подготовка сеялок откатка норма высева маркёры следоуказатели кормораздатчик ТК-5А КС-1,5 КТУ-10А ИСР-12 неравномерность сопротивления случайный процесс коэффициент вариации"}, {"n": 14, "theme": "Пропашные культуры · Погрузочно-транспортные работы · Влияние глубины и числа машин на неравномерность", "q": ["Посев (посадка) и обработка пропашных культур", "Механизация погрузочно-разгрузочных и транспортных работ в сельском хозяйстве", "Влияние на неравномерность сопротивления глубины обработки и количества машин-орудий (корпусов плуга)"], "kw": "пропашные культуры СУПН-8А пунктирный квадратно-гнёздовой погрузчик ПЭ-0,8Б ЗС-40 транспорт β γ маршруты VΣ=V1/√n глубина обработки"}, {"n": 15, "theme": "Уборка зерновых и трав · Дилерский сервис · Сопротивление сцепок", "q": ["Способы уборки зерновых культур и трав", "Маркетинг и дилерская система технического сервиса", "Сопротивление сцепок"], "kw": "прямое комбайнирование раздельная уборка валок ЖВП-4,9 сенаж силос дилерская система 3S телематика сцепка С-11У СП-16А фронт сцепки"}, {"n": 16, "theme": "Зональные технологии уборки · Навоз: удаление и переработка · Общее сопротивление агрегата", "q": ["Зональные технологии уборки зерновых и комплексы машин", "Технологии и оборудование для удаления и переработки навоза", "Общее сопротивление агрегата"], "kw": "зональные технологии уборки АКРОС ТОРУМ ВЕКТОР Енисей Lexion навоз ТСН-160 УС-15 УТ-80 УС-250 компостирование лагуна метантенк Ra общее сопротивление агрегата"}, {"n": 17, "theme": "Рабочие процессы зерноуборочных комбайнов · Доение коров · Пути снижения сопротивления", "q": ["Рабочие процессы зерноуборочных комбайнов", "Технологии и оборудование для доения коров и первичной обработки молока", "Пути снижения сопротивления машин-орудий"], "kw": "рабочие процессы комбайна жатка мотовило бичевой барабан подбарабанье соломотряс очистка бункер доение АДМ-8А Волга АДУ-1-03 АД-2 Елочка Карусель ОЦМ ТОМ-2А пути снижения сопротивления"}]};
+const LS_T='shp-theme',LS_L='shp-learn';
+function theme(){return localStorage.getItem(LS_T)||'light'}
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
+  const b=document.getElementById('tbtn');if(b)b.textContent=t==='dark'?'☀':'☾'}
+(function(){try{applyTheme(theme())}catch(e){}})();
+function learned(){try{return JSON.parse(localStorage.getItem(LS_L)||'{}')}catch(e){return{}}}
+function saveLearn(o){try{localStorage.setItem(LS_L,JSON.stringify(o))}catch(e){}}
+function qid(t,q){return t+'-'+q}
+document.addEventListener('DOMContentLoaded',()=>{
+  const L=learned();
+  // learned toggles
+  document.querySelectorAll('label.learn').forEach(lb=>{
+    const id=lb.dataset.id;
+    if(L[id])lb.classList.add('done');
+    const cb=lb.querySelector('input');if(cb)cb.checked=!!L[id];
+    lb.addEventListener('click',e=>{
+      if(e.target.tagName!=='INPUT'){e.preventDefault();cb.checked=!cb.checked}
+      const o=learned();
+      if(cb.checked)o[id]=1;else delete o[id];
+      saveLearn(o);lb.classList.toggle('done',cb.checked);
+      document.dispatchEvent(new CustomEvent('learn',{detail:o}));
+    });
+  });
+  // theme
+  const tb=document.getElementById('tbtn');
+  if(tb)tb.addEventListener('click',()=>{const t=theme()==='dark'?'light':'dark';
+    try{localStorage.setItem(LS_T,t)}catch(e){}applyTheme(t)});
+  // mobile menu
+  const bg=document.getElementById('bd');
+  const toggleMenu=()=>document.body.classList.toggle('menu');
+  ['burger','closeSide'].forEach(i=>{const el=document.getElementById(i);if(el)el.addEventListener('click',toggleMenu)});
+  if(bg)bg.addEventListener('click',()=>document.body.classList.remove('menu'));
+  document.querySelectorAll('.snav a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('menu')));
+  // sidebar build
+  const cur=document.body.dataset.ticket?parseInt(document.body.dataset.ticket,10):0;
+  const sn=document.getElementById('snav');
+  if(sn){
+    let h='<a href="index.html"'+(cur===0?' class="on"':'')+'><span class="n">≡</span>Индекс · все билеты</a>';
+    DATA.tickets.forEach(t=>{
+      const done=t.q.filter((q,i)=>L[qid(t.n,i+1)]).length;
+      h+='<a href="ticket-'+String(t.n).padStart(2,'0')+'.html"'+(cur===t.n?' class="on"':'')+
+         '><span class="n">'+t.n+'</span>Билет '+t.n+(done?' <em style="margin-left:auto;font-style:normal;font-size:.7rem;opacity:.7">'+done+'/3</em>':'')+'</a>';
+      if(cur===t.n){t.q.forEach((q,i)=>{
+        h+='<div class="sub"><a href="#q'+(i+1)+'">'+(L[qid(t.n,i+1)]?'✓ ':'')+q+'</a></div>'})}
+    });
+    sn.innerHTML=h;
+  }
+  // sidebar progress
+  function updProg(){
+    const o=learned();const total=DATA.tickets.length*3;
+    let n=0;DATA.tickets.forEach(t=>t.q.forEach((q,i)=>{if(o[qid(t.n,i+1)])n++}));
+    document.querySelectorAll('[data-prog]').forEach(e=>e.textContent=Math.round(n/total*100)+'%');
+    document.querySelectorAll('[data-progn]').forEach(e=>e.textContent=n+' / '+total);
+    const bp=document.getElementById('bprog');
+    if(bp){const c=document.body.dataset.ticket?parseInt(document.body.dataset.ticket,10):0;
+      let d=0;if(c){for(let i=1;i<=3;i++)if(o[c+'-'+i])d++}
+      bp.textContent=d+'/3 выучено';bp.style.color=d===3?'var(--acc)':''}
+  }
+  updProg();document.addEventListener('learn',updProg);
+  // search
+  const q=document.getElementById('q');
+  if(q){q.addEventListener('input',()=>{
+    const v=q.value.toLowerCase().trim();
+    document.querySelectorAll('[data-s]').forEach(el=>{
+      const hay=(el.dataset.s||'').toLowerCase();
+      el.classList.toggle('hidem',v.length>1&&hay.indexOf(v)<0);
+    });
+    document.querySelectorAll('#snav .sub').forEach(el=>el.classList.add('hidem'));
+  })}
+  // index filters
+  document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('[data-filter]').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    const f=b.dataset.filter;
+    document.querySelectorAll('[data-topic]').forEach(c=>{
+      c.classList.toggle('hidem',f!=='all'&&c.dataset.topic!==f)});
+  }));
+  // scroll progress
+  const pi=document.querySelector('.prog i');
+  if(pi){addEventListener('scroll',()=>{
+    const h=document.documentElement.scrollHeight-innerHeight;
+    pi.style.width=(h>0?scrollY/h*100:0)+'%';},{passive:true})}
+  // ticket selector
+  const sel=document.getElementById('tsel');
+  if(sel){sel.value=document.body.dataset.ticket||'';
+    sel.addEventListener('change',()=>{if(sel.value)location.href='ticket-'+String(sel.value).padStart(2,'0')+'.html'})}
+});
+</script>
+</body></html>
