@@ -41,17 +41,12 @@ jobs:
         working-directory: ./graph
         run: npm run build
 
-      # Собираем артефакт сайта:
-      #   /            -> profile/index.html (корневая страница пользователя)
-      #   /profile/    -> та же страница (сохранение старых ссылок)
-      #   /graph/...   -> собранное приложение (vite base = '/graph/')
+      # Публикуем приложение в /graph/ (vite base = '/graph/').
       - name: Assemble Site Artifact
         run: |
           rm -rf _site
-          mkdir -p _site/graph _site/profile
+          mkdir -p _site/graph
           cp -R graph/dist/. _site/graph/
-          cp -R profile/. _site/
-          cp -R profile/. _site/profile/
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v6
