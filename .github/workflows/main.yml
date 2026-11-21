@@ -1,4 +1,4 @@
-name: Deploy Linear Algebra NSU Graph to GitHub Pages
+name: Deploy Developer Diary and Linear Algebra Graph to GitHub Pages
 
 on:
   push:
@@ -41,12 +41,15 @@ jobs:
         working-directory: ./graph
         run: npm run build
 
-      # Публикуем приложение в /graph/ (vite base = '/graph/').
+      # Дневник занимает корень сайта и /diary/; приложение графа остаётся в /graph/.
       - name: Assemble Site Artifact
         run: |
           rm -rf _site
-          mkdir -p _site/graph
+          mkdir -p _site/graph _site/diary _site/tufte
           cp -R graph/dist/. _site/graph/
+          cp diary/index.html _site/index.html
+          cp diary/index.html diary/diary.css diary/diary.js _site/diary/
+          cp tufte/tufte-universal.css _site/tufte/
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v6
