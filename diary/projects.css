@@ -21,7 +21,7 @@
 .archive-columns::after { top:calc(var(--archive-heading-height) + var(--archive-heading-top-padding) + var(--archive-heading-bottom-padding)); }
 .archive-column { min-width:0; min-height:390px; padding:0 .7rem 1.2rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; }
 .archive-column h2 { margin:0 -.7rem 1rem; padding:var(--archive-heading-top-padding) .7rem var(--archive-heading-bottom-padding); font-size:clamp(.72rem,1vw,.92rem); font-weight:800; line-height:var(--archive-heading-height); white-space:nowrap; }
-.archive-column h2 > span[data-language-content] { font-size:clamp(.74rem,1.03vw,.96rem); font-weight:900; }
+.archive-column h2 > span[data-language-content] { font-size:inherit; font-weight:inherit; }
 .project-card { margin:0 0 1.45rem; }
 .project-card h3 { margin:0 0 .25rem; font-size:.83rem; line-height:1.08; }
 .project-card p { margin:.25rem 0; font-size:.7rem; line-height:1.32; }
