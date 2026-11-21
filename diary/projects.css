@@ -58,8 +58,8 @@
 .archive-column h2 > span[data-language-content] { font-size: inherit; font-weight: inherit; }
 .project-card { margin:0 0 22px; overflow-wrap:anywhere; }
 .project-card h3 { margin:0 0 6px; font-size:18px; font-weight:700; line-height:1.15; overflow-wrap:anywhere; }
-.project-card p { margin:0 0 4px; font-size:16px; line-height:1.35; overflow-wrap:anywhere; }
-.project-card .project-meta { margin-top:3px; font-size:14px; font-weight:700; }
+.project-card p { margin:0 0 4px; font-size:14px; line-height:1.4; overflow-wrap:anywhere; }
+.project-card .project-meta { margin-top:3px; font-size:12px; font-weight:700; }
 .archive-view-all { margin:auto 0 8px; font-size:14px; font-weight:700; }
 .archive-bottom { padding-bottom:18px; border-bottom:1px solid #c9c9c9; }
 .archive-bottom section { padding:14px 0 10px; overflow-wrap:anywhere; }
