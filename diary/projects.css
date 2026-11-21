@@ -109,9 +109,11 @@ body.dark-theme.tufte-note { background:#222; }
   counter-reset:sidenote-counter;
 }
 .project-note .note-controls { display:flex; width:max-content; flex-direction:row; align-items:center; gap:.5rem; margin:1rem 0 0 auto; }
-.project-note .language-switch { position:static; display:flex; margin-left:0; padding:.15rem; border:1px solid #d9d5ca; border-radius:999px; box-shadow:none; background:#fffff8; font: .75rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-.project-note .language-switch button { min-width:2.2rem; min-height:1.8rem; padding:.25rem .4rem; border:0; border-radius:999px; color:#514e46; background:transparent; cursor:pointer; font:inherit; }
-.project-note .language-switch button[aria-pressed="true"] { color:#fff; background:#70513e; }
+.project-note .language-switch { position:relative; display:flex; gap:0; margin-left:0; padding:.15rem; border:1px solid #d9d5ca; border-radius:999px; box-shadow:none; background:#fffff8; font:.75rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.project-note .language-switch::before { position:absolute; z-index:0; top:.15rem; bottom:.15rem; left:.15rem; width:calc((100% - .3rem)/2); border-radius:999px; background:#70513e; content:""; transition:transform .22s ease; }
+.project-note .language-switch:has(button[data-language-choice="en"][aria-pressed="true"])::before { transform:translateX(calc(100% + .15rem)); }
+.project-note .language-switch button { position:relative; z-index:1; flex:1; min-width:2.2rem; min-height:1.8rem; padding:.25rem .4rem; border:0; border-radius:999px; color:#514e46; background:transparent; cursor:pointer; font:inherit; transition:color .22s ease; }
+.project-note .language-switch button[aria-pressed="true"] { color:#fff; background:transparent; }
 .project-note .theme-toggle { display:grid; width:2rem; height:2rem; padding:0; place-items:center; position:static; flex:none; align-self:center; margin:0; border:0; border-radius:50%; color:#fff; background:#70513e; cursor:pointer; font:.8rem/1 Arial,sans-serif; }
 .project-note .note-masthead { display:flex; width:55%; justify-content:space-between; gap:1rem; padding-bottom:.7rem; border-bottom:1px solid #d9d5ca; color:#68645c; font:.72rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing:.08em; text-transform:uppercase; }
 .project-note h1 { width:75%; margin:2rem 0 .8rem; font:400 clamp(2.6rem,5vw,3.2rem)/1 Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif; letter-spacing:0; }
@@ -164,8 +166,12 @@ body.dark-theme .archive-search input { border-color: #555; color: #eee; backgro
 body.dark-theme .project-note .note-dek, body.dark-theme .project-note .note-masthead, body.dark-theme .project-note .note-meta { color:#c5c0b7; }
 body.dark-theme .project-note .note-masthead, body.dark-theme .project-note .note-meta, body.dark-theme .project-note .note-footer { border-color:#555; }
 body.dark-theme .project-note .language-switch { border-color:#555; background:#2d2d2a; }
+body.dark-theme .project-note .language-switch::before { background:#d0a17e; }
 body.dark-theme .project-note .language-switch button { color:#ded8cc; }
-body.dark-theme .project-note .language-switch button[aria-pressed="true"] { color:#161513; background:#d0a17e; }
+body.dark-theme .project-note .language-switch button[aria-pressed="true"] { color:#161513; background:transparent; }
+@media (prefers-reduced-motion: reduce) {
+  .project-note .language-switch::before, .project-note .language-switch button { transition:none; }
+}
 body.dark-theme .project-note .note-sidenote, body.dark-theme .project-note .note-marginnote, body.dark-theme .project-note .note-figure figcaption { color:#c5c0b7; }
 body.dark-theme .project-note .note-infographic__item { border-color:#70513e; background:rgba(208,161,126,.08); }
 
