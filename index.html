@@ -19,15 +19,16 @@
         <section class="archive-brand">
           <h1><span data-language-content="ru">Дневник<br>кода<br>Masortim</span><span data-language-content="en" lang="en" hidden>Dev<br>Project<br>Diary</span></h1>
         </section>
-        <p class="archive-intro"><span data-language-content="ru">Заметки о проектах, инструментах и решениях в процессе разработки.</span><span data-language-content="en" lang="en" hidden>Notes on projects, tools, and decisions made while building.</span></p>
-        <blockquote class="archive-quote"><span data-language-content="ru">«Хорошая система сетки — не гарантия. Она помогает увидеть структуру, прежде чем заполнить её содержанием».</span><br><strong>— Дневник разработчика</strong></blockquote>
-        <div class="archive-actions">
-          <div class="language-switch" role="group" aria-label="Language"><button type="button" data-language-choice="ru" aria-pressed="true">RU</button><button type="button" data-language-choice="en" aria-pressed="false">EN</button></div>
-          <button id="grid-toggle" type="button" aria-pressed="false"><span data-language-content="ru">Показать сетку</span><span data-language-content="en" lang="en" hidden>Show grid</span></button>
-          <a class="forum-link" href="https://github.com/Masortim" target="_blank" rel="noopener"><span data-language-content="ru">Репозитории ↗</span><span data-language-content="en" lang="en" hidden>Repositories ↗</span></a>
-          <button id="theme-toggle" type="button" title="Переключить тему" aria-label="Переключить тему">☾</button>
+        <p class="archive-summary"><span data-language-content="ru">Заметки о проектах, инструментах и решениях в процессе разработки.</span><span data-language-content="en" lang="en" hidden>Notes on projects, tools, and decisions made while building.</span></p>
+        <div class="archive-controls">
+          <div class="archive-actions">
+            <div class="language-switch" role="group" aria-label="Language"><button type="button" data-language-choice="ru" aria-pressed="true">RU</button><button type="button" data-language-choice="en" aria-pressed="false">EN</button></div>
+            <button id="grid-toggle" type="button" aria-pressed="false"><span data-language-content="ru">Показать сетку</span><span data-language-content="en" lang="en" hidden>Show grid</span></button>
+            <a class="forum-link" href="https://github.com/Masortim" target="_blank" rel="noopener"><span data-language-content="ru">Репозитории ↗</span><span data-language-content="en" lang="en" hidden>Repositories ↗</span></a>
+            <button id="theme-toggle" type="button" title="Переключить тему" aria-label="Переключить тему">☾</button>
+          </div>
+          <label class="archive-search"><span class="visually-hidden">Поиск проектов / Search projects</span><input id="project-search" type="search" placeholder="Поиск / Search" autocomplete="off"></label>
         </div>
-        <label class="archive-search"><span class="visually-hidden">Поиск проектов / Search projects</span><input id="project-search" type="search" placeholder="Поиск / Search" autocomplete="off"></label>
       </header>
 
       <div class="archive-columns" id="archive">
