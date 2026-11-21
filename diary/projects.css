@@ -108,8 +108,8 @@ body.dark-theme.tufte-note { background:#222; }
   font-family:Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
   counter-reset:sidenote-counter;
 }
-.project-note .note-controls { display:flex; width:max-content; min-height:2.6rem; flex-direction:row; align-items:center; justify-content:flex-end; gap:.5rem; margin:1rem -16.6667% 0 auto; }
-.project-note .language-switch { position:relative; display:flex; gap:0; margin-left:0; padding:.15rem; border:1px solid #d9d5ca; border-radius:999px; box-shadow:none; background:#fffff8; font:.75rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.project-note .note-controls { display:flex; width:100%; min-width:0; min-height:2.6rem; flex-flow:row nowrap; align-items:center; justify-content:flex-end; gap:.5rem; margin:1rem 0 0; }
+.project-note .language-switch { position:relative; display:flex; flex:none; gap:0; margin-left:0; padding:.15rem; border:1px solid #d9d5ca; border-radius:999px; box-shadow:none; background:#fffff8; font:.75rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 .project-note .language-switch::before { position:absolute; z-index:0; top:.15rem; bottom:.15rem; left:.15rem; width:calc((100% - .3rem)/2); border-radius:999px; background:#70513e; content:""; transition:transform .22s ease; }
 .project-note .language-switch:has(button[data-language-choice="en"][aria-pressed="true"])::before { transform:translateX(calc(100% + .15rem)); }
 .project-note .language-switch button { position:relative; z-index:1; flex:1; min-width:2.2rem; min-height:1.8rem; padding:.25rem .4rem; border:0; border-radius:999px; color:#514e46; background:transparent; cursor:pointer; font:inherit; transition:color .22s ease; }
