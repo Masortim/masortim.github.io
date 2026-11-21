@@ -31,7 +31,7 @@
 .archive-bottom section { min-height:100px; padding:.65rem .7rem; }
 .archive-bottom h2 { margin:0 0 .35rem; font-size:.83rem; }
 .archive-bottom p { margin:0; font-size:.7rem; line-height:1.4; }
-.archive-copyright { padding:.65rem 0; font-size:.62rem; }
+.archive-copyright { position:relative; z-index:1; padding:.65rem 0; font-size:.62rem; }
 .project-note { width:min(760px,calc(100% - 3rem)); margin:4.5rem auto 5rem; color:#25231f; font-family:Georgia,'Times New Roman',serif; }
 .project-note .language-switch { position:static; display:flex; margin-left:auto; padding:.15rem; border:1px solid #ddd; border-radius:2px; box-shadow:none; background:transparent; font: .7rem Arial,sans-serif; }
 .project-note .language-switch button { min-width:0; min-height:0; padding:.3rem .45rem; border:0; border-radius:2px; color:#222; background:#eee; cursor:pointer; font:inherit; }
