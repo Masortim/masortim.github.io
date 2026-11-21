@@ -58,7 +58,8 @@ body.archive-home { margin:0; padding:0; }
 .archive-column h2 { margin:0 0 10px; padding:19px 0 18px; font-size:19px; font-weight:700; line-height:19px; white-space:nowrap; }
 .archive-column h2 > span[data-language-content] { font-size: inherit; font-weight: inherit; }
 .project-card { margin:0 0 22px; overflow-wrap:anywhere; }
-.project-card h3 { align-self:flex-start; width:100%; margin:0 0 6px; font-size:18px; font-weight:700; line-height:1.15; overflow-wrap:anywhere; }
+.project-card h3 { align-self:flex-start; width:100%; margin:0 0 6px; font-size:18px; font-weight:700; line-height:1.15; text-align:left; overflow-wrap:anywhere; }
+.project-card h3 > a { display:block; }
 .project-card p { margin:0 0 4px; font-size:14px; line-height:1.4; overflow-wrap:anywhere; }
 .project-card .project-meta { margin-top:3px; margin-bottom:1em; font-size:12px; font-weight:700; }
 .archive-view-all { margin:auto 0 8px; font-size:14px; font-weight:700; }
