@@ -1,7 +1,7 @@
 /* Project archive and individual project notes */
 .project-archive { width: min(1100px, 76%); margin: 2rem auto 4rem; font-family: Arial, Helvetica, sans-serif; color: #171717; }
 .project-archive a, .project-note a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 2px; }
-.archive-top { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-left:1px solid #ddd; border-bottom:1px solid #bbb; }
+.archive-top { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-left:1px solid #ddd; }
 .archive-brand { grid-column:span 2; min-height:155px; padding:1rem .8rem; border-right:1px solid #ddd; }
 .archive-brand h1 { margin:.1rem 0 .5rem; font-size:clamp(2.5rem,5vw,4rem); font-weight:800; letter-spacing:-.08em; line-height:.8; }
 .archive-brand p, .archive-quote, .archive-invite { margin:.2rem 0; font-size:.78rem; line-height:1.4; }
@@ -12,7 +12,7 @@
 .archive-tools .language-switch button { min-width:auto; min-height:0; padding:.3rem .45rem; border-radius:2px; color:#222; background:#eee; }
 .archive-tools .language-switch button[aria-pressed=true] { color:#fff; background:#111; }
 .archive-columns { position:relative; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-left:1px solid #ddd; }
-.archive-columns::before { position:absolute; z-index:1; top:2.156rem; right:0; left:0; height:1px; background:#ddd; content:""; }
+.archive-columns::before { position:absolute; z-index:1; top:0; right:0; left:0; height:1px; background:#ddd; content:""; }
 .archive-column { min-width:0; min-height:390px; padding:0 .7rem 1.2rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; }
 .archive-column h2 { margin:0 -.7rem 1rem; padding:.55rem .7rem; font-size:.88rem; line-height:1.2; }
 .project-card { margin:0 0 1.45rem; }
