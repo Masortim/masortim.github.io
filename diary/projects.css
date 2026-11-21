@@ -199,6 +199,8 @@ body.dark-theme .project-note .note-infographic__item { border-color:#70513e; ba
   .project-note { width: calc(100% - 2rem); }
 }
 
+#grid-toggle[aria-pressed="true"] { outline:none; box-shadow:none; }
+#grid-toggle:focus-visible { outline:2px solid #111; outline-offset:2px; }
 body.show-grid .archive-sheet { --archive-grid-line:rgba(210,40,40,.7); --archive-horizontal-line:rgba(210,40,40,.7); --archive-subtle-line:rgba(210,40,40,.7); }
 .project-card[hidden] { display: none; }
 ''
