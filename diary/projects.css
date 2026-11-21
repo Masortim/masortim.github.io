@@ -1,8 +1,9 @@
 /* Six-column modular archive based on the supplied 2009 reference. */
+body.archive-home { margin:0; padding:0; }
 .project-archive {
   --archive-gutter: 1.5%;
   width: min(960px, 76%);
-  margin: 0 auto 4rem;
+  margin: 0 auto;
   color: #111;
   background: #fff;
   font: 16px/1.2 Arial, Helvetica, sans-serif;
@@ -79,7 +80,7 @@
 .promo-card--grid { color: #111 !important; background-color: #f8f8f4; background-image: linear-gradient(#ddd 1px, transparent 1px), linear-gradient(90deg, #ddd 1px, transparent 1px); background-size: 22px 22px; }
 .promo-card--pink { color: #35103c !important; background: #f4d8df; }
 .archive-promos--second { padding-bottom:18px; border-bottom:1px solid #c9c9c9; }
-.archive-copyright { padding:20px 0 30px; font-size:12px; }
+.archive-copyright { padding:20px 0 0; font-size:12px; }
 
 /* The nine project pages use their own reading layout. */
 .project-note { width: min(760px, calc(100% - 3rem)); margin: 4.5rem auto 5rem; color: #25231f; font-family: Georgia, 'Times New Roman', serif; }
