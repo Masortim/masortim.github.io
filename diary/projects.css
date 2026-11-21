@@ -1,0 +1,56 @@
+/* Project archive and individual project notes */
+.project-archive { width: min(1100px, 76%); margin: 2rem auto 4rem; font-family: Arial, Helvetica, sans-serif; color: #171717; }
+.project-archive a, .project-note a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.archive-top { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-left:1px solid #ddd; }
+.archive-brand { grid-column:span 2; min-height:155px; padding:1rem .8rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; }
+.archive-brand h1 { margin:.1rem 0 .5rem; font-size:clamp(2.5rem,5vw,4rem); font-weight:800; letter-spacing:-.08em; line-height:.8; }
+.archive-brand p, .archive-quote, .archive-invite { margin:.2rem 0; font-size:.78rem; line-height:1.4; }
+.archive-quote { grid-column:span 2; padding:1rem .8rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; font-style:italic; }
+.archive-tools { grid-column:span 2; display:flex; flex-direction:column; gap:.45rem; align-items:flex-start; padding:1rem .8rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; font-size:.75rem; }
+.archive-tools button { border:0; border-radius:2px; padding:.35rem .55rem; color:#fff; background:#111; font:inherit; cursor:pointer; }
+.archive-tools .language-switch { position:static; display:flex; padding:0; border:0; border-radius:0; box-shadow:none; font-size:.7rem; }
+.archive-tools .language-switch button { min-width:auto; min-height:0; padding:.3rem .45rem; border-radius:2px; color:#222; background:#eee; }
+.archive-tools .language-switch button[aria-pressed=true] { color:#fff; background:#111; }
+.archive-columns { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-left:1px solid #ddd; }
+.archive-column { min-width:0; min-height:390px; padding:0 .7rem 1.2rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; }
+.archive-column h2 { margin:0 -.7rem 1rem; padding:.55rem .7rem; border-bottom:1px solid #ddd; font-size:.88rem; }
+.project-card { margin:0 0 1.45rem; }
+.project-card h3 { margin:0 0 .25rem; font-size:.83rem; line-height:1.08; }
+.project-card p { margin:.25rem 0; font-size:.7rem; line-height:1.32; }
+.project-card .project-meta { font-size:.64rem; }
+.project-card a { text-decoration:none; }
+.project-card a:hover h3 { text-decoration:underline; }
+.archive-bottom { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-left:1px solid #ddd; }
+.archive-bottom section { min-height:100px; padding:.65rem .7rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; }
+.archive-bottom h2 { margin:0 0 .35rem; font-size:.83rem; }
+.archive-bottom p { margin:0; font-size:.7rem; line-height:1.4; }
+.archive-copyright { padding:.65rem 0; font-size:.62rem; }
+.project-note { width:min(760px,calc(100% - 3rem)); margin:4.5rem auto 5rem; color:#25231f; font-family:Georgia,'Times New Roman',serif; }
+.project-note .language-switch { position:static; display:flex; margin-left:auto; padding:.15rem; border:1px solid #ddd; border-radius:2px; box-shadow:none; background:transparent; font: .7rem Arial,sans-serif; }
+.project-note .language-switch button { min-width:0; min-height:0; padding:.3rem .45rem; border:0; border-radius:2px; color:#222; background:#eee; cursor:pointer; font:inherit; }
+.project-note .language-switch button[aria-pressed=true] { color:#fff; background:#111; }
+.project-note .theme-toggle { position:static; margin-left:.5rem; padding:.3rem .45rem; border:0; color:#fff; background:#111; cursor:pointer; font: .8rem Arial,sans-serif; }
+.project-note .note-masthead { display:flex; justify-content:space-between; gap:1rem; padding-bottom:.7rem; border-bottom:1px solid #bbb; font: .7rem Arial,sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+.project-note h1 { margin:2rem 0 .6rem; font:700 clamp(2.6rem,7vw,5rem)/.98 Arial,sans-serif; letter-spacing:-.065em; }
+.project-note .note-dek { max-width:38rem; margin:1rem 0 2rem; color:#555; font:1.15rem/1.5 Arial,sans-serif; }
+.project-note .note-meta { display:flex; gap:1.5rem; padding:1rem 0; border-top:1px solid #ddd; border-bottom:1px solid #ddd; font: .72rem Arial,sans-serif; }
+.project-note h2 { margin:2rem 0 .6rem; font:700 1.35rem Arial,sans-serif; }
+.project-note p, .project-note li { font-size:1.08rem; line-height:1.75; }
+.project-note .note-back { display:inline-block; margin-bottom:1.5rem; font: .8rem Arial,sans-serif; }
+.project-note .note-footer { margin-top:3rem; padding-top:1rem; border-top:1px solid #bbb; font:.72rem Arial,sans-serif; }
+body.dark-theme .project-archive, body.dark-theme .project-note { color:#eee; }
+body.dark-theme .archive-top > *, body.dark-theme .archive-columns, body.dark-theme .archive-column, body.dark-theme .archive-bottom, body.dark-theme .archive-bottom section { border-color:#555; }
+body.dark-theme .archive-tools .language-switch button { color:#eee; background:#444; }
+body.dark-theme .archive-tools .language-switch button[aria-pressed=true], body.dark-theme .archive-tools button { color:#111; background:#d0a17e; }
+body.dark-theme .project-note .note-dek { color:#c5c0b7; }
+@media(max-width:900px) { .archive-columns { grid-template-columns:repeat(3,minmax(0,1fr)); } .archive-column { min-height:300px; } .archive-bottom { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media(max-width:560px) { .project-archive { width:calc(100% - 1.5rem); margin-top:4.5rem; } .archive-top { grid-template-columns:repeat(2,minmax(0,1fr)); } .archive-brand,.archive-quote,.archive-tools { grid-column:span 1; min-height:125px; } .archive-brand { grid-column:span 2; } .archive-columns { grid-template-columns:repeat(2,minmax(0,1fr)); } .archive-column { min-height:260px; padding:0 .55rem 1rem; } .archive-column h2 { margin-right:-.55rem; margin-left:-.55rem; padding-left:.55rem; } .archive-bottom { grid-template-columns:repeat(2,minmax(0,1fr)); } .project-card p { font-size:.72rem; } }
+.archive-tools .forum-link { display:inline-block; padding:.35rem .55rem; border-radius:2px; color:#fff; background:#111; text-decoration:none; font-size:.72rem; }
+.archive-tools .archive-search { display:block; width:100%; margin-top:auto; }
+.archive-search input { width:100%; min-width:0; padding:.35rem; border:1px solid #bbb; background:#f4f4f4; font: .7rem Arial,sans-serif; }
+.visually-hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+#grid-toggle[aria-pressed="true"] { outline:2px solid #b16d3c; outline-offset:2px; }
+body.show-grid .project-archive { background-image:repeating-linear-gradient(to right, transparent 0, transparent calc(100% / 6 - 1px), rgba(210,40,40,.13) calc(100% / 6 - 1px), rgba(210,40,40,.13) calc(100% / 6)); }
+.project-card[hidden] { display:none; }
+@media(max-width:900px) { .project-archive { width:90%; } }
+@media(max-width:560px) { .project-archive { width:calc(100% - 1.5rem); } }

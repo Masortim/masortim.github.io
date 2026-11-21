@@ -48,7 +48,7 @@ jobs:
           mkdir -p _site/graph _site/diary _site/tufte
           cp -R graph/dist/. _site/graph/
           cp index.html _site/index.html
-          cp diary/index.html diary/diary.css diary/diary.js diary/home.css _site/diary/
+          cp -R diary/. _site/diary/
           cp tufte/tufte-universal.css _site/tufte/
 
       - name: Setup GitHub Pages
