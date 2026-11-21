@@ -15,12 +15,12 @@
 .archive-tools .language-switch { position:static; display:flex; padding:0; border:0; border-radius:0; box-shadow:none; font-size:.7rem; }
 .archive-tools .language-switch button { min-width:auto; min-height:0; padding:.3rem .45rem; border-radius:2px; color:#222; background:#eee; }
 .archive-tools .language-switch button[aria-pressed=true] { color:#fff; background:#111; }
-.archive-columns { --archive-heading-height:1rem; position:relative; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-left:1px solid #ddd; }
+.archive-columns { --archive-heading-height:1.1rem; position:relative; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-left:1px solid #ddd; }
 .archive-columns::before, .archive-columns::after { position:absolute; z-index:1; right:0; left:0; height:1px; background:#ddd; content:""; }
 .archive-columns::before { top:0; }
-.archive-columns::after { top:calc(var(--archive-heading-height) + .4rem); }
+.archive-columns::after { top:calc(var(--archive-heading-height) + .56rem); }
 .archive-column { min-width:0; min-height:390px; padding:0 .7rem 1.2rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; }
-.archive-column h2 { min-height:var(--archive-heading-height); margin:0 -.7rem 1rem; padding:.2rem .7rem; font-size:clamp(.72rem,1vw,.88rem); line-height:1.1; white-space:nowrap; }
+.archive-column h2 { margin:0 -.7rem 1rem; padding:.28rem .7rem; font-size:clamp(.72rem,1vw,.88rem); line-height:var(--archive-heading-height); white-space:nowrap; }
 .project-card { margin:0 0 1.45rem; }
 .project-card h3 { margin:0 0 .25rem; font-size:.83rem; line-height:1.08; }
 .project-card p { margin:.25rem 0; font-size:.7rem; line-height:1.32; }
