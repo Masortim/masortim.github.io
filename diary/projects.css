@@ -120,6 +120,23 @@ body.dark-theme.tufte-note { background:#222; }
 .project-note p, .project-note li { width:55%; font-size:1.25rem; line-height:2rem; }
 .project-note .note-footer { width:55%; margin-top:3rem; padding-top:1rem; border-top:1px solid #d9d5ca; font:.78rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 .project-note .note-footer a { font-family:inherit; }
+/* Tufte-style margin notes and figures, ready for editorial use where helpful. */
+.project-note .note-sidenote, .project-note .note-marginnote {
+  float:right;
+  clear:right;
+  box-sizing:border-box;
+  width:35%;
+  margin:0 -40% 1rem 1.5rem;
+  color:#68645c;
+  font: .95rem/1.45 Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+}
+.project-note .note-figure { width:55%; margin:2rem 0; clear:both; }
+.project-note .note-figure img, .project-note .note-figure svg { display:block; max-width:100%; height:auto; margin:0 auto; }
+.project-note .note-figure figcaption { margin-top:.65rem; color:#68645c; font:.88rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.project-note .note-infographic { display:grid; width:100%; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.75rem; align-items:stretch; margin:2rem 0; font: .95rem/1.4 Arial, sans-serif; }
+.project-note .note-infographic__item { min-width:0; padding:.8rem; border-top:2px solid #916044; border-bottom:1px solid #d9d5ca; background:rgba(145,96,68,.045); }
+.project-note .note-infographic__item strong { display:block; margin-bottom:.35rem; font-size:1rem; }
+.project-note .note-infographic__arrow { align-self:center; color:#916044; text-align:center; font-size:1.3rem; }
 @media (max-width:760px) {
   .project-note { width:94%; margin:1.5rem auto 2rem; padding-left:0; }
   .project-note .note-masthead, .project-note h1, .project-note .note-dek,
@@ -127,6 +144,10 @@ body.dark-theme.tufte-note { background:#222; }
   .project-note .note-footer { width:100%; }
   .project-note h1 { font-size:clamp(2.3rem,9vw,3.2rem); }
   .project-note .note-meta { gap:.45rem .8rem; }
+  .project-note .note-sidenote, .project-note .note-marginnote { float:none; clear:both; width:100%; margin:1rem 0; padding:.75rem 1rem; border-left:3px solid #916044; background:rgba(145,96,68,.05); }
+  .project-note .note-figure { width:100%; }
+  .project-note .note-infographic { grid-template-columns:1fr; }
+  .project-note .note-infographic__arrow { transform:rotate(90deg); }
 }
 
 body.dark-theme .project-archive, body.dark-theme .project-note { color: #eee; }
@@ -144,6 +165,8 @@ body.dark-theme .project-note .note-masthead, body.dark-theme .project-note .not
 body.dark-theme .project-note .language-switch { border-color:#555; background:#2d2d2a; }
 body.dark-theme .project-note .language-switch button { color:#ded8cc; }
 body.dark-theme .project-note .language-switch button[aria-pressed="true"] { color:#161513; background:#d0a17e; }
+body.dark-theme .project-note .note-sidenote, body.dark-theme .project-note .note-marginnote, body.dark-theme .project-note .note-figure figcaption { color:#c5c0b7; }
+body.dark-theme .project-note .note-infographic__item { border-color:#70513e; background:rgba(208,161,126,.08); }
 
 @media (max-width: 900px) {
   .project-archive { width: 90%; }
