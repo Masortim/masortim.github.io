@@ -1,0 +1,59 @@
+body.diary-home {
+  --ink: #24231f;
+  --paper: #fffff8;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0 clamp(1.25rem, 7.2vw, 7.5rem);
+  color: var(--ink);
+  background: var(--paper);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.diary-home .home-header { padding-top: clamp(7rem, 13vh, 10rem); }
+.home-label, .entry-category, .header-rule, .entry-card time, .entry-number, .home-footer {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .72rem;
+  letter-spacing: .1em;
+}
+.home-label { margin: 0 0 2rem; color: #987050; }
+.home-header h1 { margin: 0; font-size: clamp(4.5rem, 12.5vw, 11rem); font-weight: 500; letter-spacing: -.085em; line-height: .82; }
+.intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(14rem, .42fr); gap: 3rem; align-items: end; margin: 3rem 0 5rem; }
+.intro > p { max-width: 32rem; margin: 0; font-size: clamp(1.2rem, 2.2vw, 1.75rem); line-height: 1.45; }
+.graph-link { justify-self: start; margin-bottom: .25rem; font-size: .95rem; text-underline-offset: .25em; }
+.header-rule { display: flex; justify-content: space-between; padding: 1rem 0; border-top: 1px solid #bbb7ab; color: #77736a; }
+.entry-list { border-top: 1px solid #bbb7ab; }
+.entry-card { margin: 0; border-bottom: 1px solid #bbb7ab; }
+.entry-card__link { display: grid; grid-template-columns: 3rem minmax(8rem, .28fr) 1fr 2rem; gap: 1.5rem; align-items: start; padding: 2.2rem 0 2.5rem; color: inherit; text-decoration: none; }
+.entry-number, .entry-card time { padding-top: .5rem; color: #77736a; }
+.entry-card time { letter-spacing: .04em; }
+.entry-category { margin: 0 0 .75rem; color: #987050; font-size: .68rem; }
+.entry-card h2 { margin: 0 0 .7rem; font-size: clamp(2rem, 4.3vw, 4rem); font-weight: 500; letter-spacing: -.055em; line-height: 1; }
+.entry-summary { max-width: 36rem; margin: 0; color: #666259; font-size: 1.05rem; line-height: 1.55; }
+.entry-arrow { justify-self: end; padding-top: .35rem; font-size: 1.5rem; transition: transform .2s ease; }
+.entry-card__link:hover h2 { color: #987050; }
+.entry-card__link:hover .entry-arrow { transform: translate(3px, -3px); }
+.entry-card__link:focus-visible, .home-footer a:focus-visible { outline: 3px solid #b16d3c; outline-offset: 5px; }
+.home-footer { display: flex; justify-content: space-between; gap: 1rem; margin: 0; padding: 2rem 0 4rem; color: #77736a; font-size: .68rem; }
+.home-footer a { color: inherit; text-underline-offset: .25em; }
+.diary-home.dark-theme { --ink: #eeece4; --paper: #232320; }
+.diary-home.dark-theme .header-rule, .diary-home.dark-theme .entry-list, .diary-home.dark-theme .entry-card { border-color: #55534d; }
+.diary-home.dark-theme .entry-summary { color: #b6b1a6; }
+.diary-home.dark-theme .language-switch { border-color: #55534d; background: rgba(35,35,32,.96); }
+.diary-home.dark-theme .language-switch button { color: #ded8cc; }
+.diary-home.dark-theme .language-switch button[aria-pressed="true"] { color: #161513; background: #d0a17e; }
+.diary-home.dark-theme .language-switch button:hover:not([aria-pressed="true"]) { background: #45433d; }
+@media (max-width: 680px) {
+  body.diary-home { padding-right: 1.25rem; padding-left: 1.25rem; }
+  .diary-home .home-header { padding-top: 7.5rem; }
+  .home-header h1 { font-size: clamp(4rem, 18vw, 7rem); }
+  .intro { grid-template-columns: 1fr; gap: 1.5rem; margin: 2rem 0 3.5rem; }
+  .entry-card__link { grid-template-columns: 2rem 1fr 1.5rem; gap: .75rem; padding: 1.5rem 0 1.8rem; }
+  .entry-card time { grid-column: 2; grid-row: 1; }
+  .entry-number { grid-column: 1; grid-row: 1 / span 3; }
+  .entry-card__copy { grid-column: 2; }
+  .entry-arrow { grid-column: 3; grid-row: 1; }
+  .entry-summary { font-size: .98rem; }
+  .home-footer { flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) { .entry-arrow { transition: none; } }

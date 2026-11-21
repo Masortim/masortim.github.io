@@ -1,12 +1,12 @@
 # Дневник разработчика / Developer diary
 
-Двуязычный дневник публикуется на главной странице сайта и по адресу `/diary/`. Интерактивный граф остаётся доступен по адресу `/graph/`. Страница использует таблицу стилей из `tufte/tufte-universal.css` и не требует отдельного сервера или npm-зависимостей.
+Главная страница сайта — двуязычный архив записей с краткими анонсами и ссылками на полные тексты в `/diary/`. Интерактивный граф доступен по адресу `/graph/`. Подробные записи дневника используют `tufte/tufte-universal.css`; для сайта не нужны отдельный сервер или npm-зависимости.
 
-The bilingual diary is published at the site root and at `/diary/`. The interactive graph remains at `/graph/`. The page uses `tufte/tufte-universal.css` and requires no separate server or npm dependencies.
+The site homepage is a bilingual diary archive with short summaries and links to full entries at `/diary/`. The interactive graph is at `/graph/`. Full diary entries use `tufte/tufte-universal.css`; the site needs no separate server or npm dependencies.
 
 ## Как добавлять записи / Adding entries
 
-1. В `index.html` добавьте новую запись **перед** предыдущей, чтобы свежие заметки шли первыми.
+1. Добавьте полный текст записи в `diary/index.html` **перед** предыдущими записями; свежие заметки идут первыми. Затем добавьте анонс-ссылку на неё в корневой `index.html`.
 2. Добавьте две версии одной записи: русский `<article lang="ru" data-language-content="ru">` и английский `<article lang="en" data-language-content="en" hidden>`. Перевод должен сохранять технический смысл, ссылки и даты.
 3. Используйте одинаковый ISO-идентификатор даты (`datetime="YYYY-MM-DD"`) в обеих версиях. У каждого языка должны быть уникальные `id` у переключателей боковых заметок.
 4. Для заметок на полях используйте пары `label` / `input.margin-toggle` / `.sidenote` из существующих записей. На мобильных номер раскрывает заметку.
