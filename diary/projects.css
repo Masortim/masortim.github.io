@@ -1,12 +1,12 @@
 /* Project archive and individual project notes */
 .project-archive { width: min(1100px, 76%); margin: 2rem auto 4rem; font-family: Arial, Helvetica, sans-serif; color: #171717; }
 .project-archive a, .project-note a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 2px; }
-.archive-top { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-left:1px solid #ddd; }
-.archive-brand { grid-column:span 2; min-height:155px; padding:1rem .8rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; }
+.archive-top { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); border-left:1px solid #ddd; border-bottom:1px solid #bbb; }
+.archive-brand { grid-column:span 2; min-height:155px; padding:1rem .8rem; border-right:1px solid #ddd; }
 .archive-brand h1 { margin:.1rem 0 .5rem; font-size:clamp(2.5rem,5vw,4rem); font-weight:800; letter-spacing:-.08em; line-height:.8; }
 .archive-brand p, .archive-quote, .archive-invite { margin:.2rem 0; font-size:.78rem; line-height:1.4; }
-.archive-quote { grid-column:span 2; padding:1rem .8rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; font-style:italic; }
-.archive-tools { grid-column:span 2; display:flex; flex-direction:column; gap:.45rem; align-items:flex-start; padding:1rem .8rem; border-right:1px solid #ddd; border-bottom:1px solid #bbb; font-size:.75rem; }
+.archive-quote { grid-column:span 2; padding:1rem .8rem; border-right:1px solid #ddd; font-style:italic; }
+.archive-tools { grid-column:span 2; display:flex; flex-direction:column; gap:.45rem; align-items:flex-start; padding:1rem .8rem; border-right:1px solid #ddd; font-size:.75rem; }
 .archive-tools button { border:0; border-radius:2px; padding:.35rem .55rem; color:#fff; background:#111; font:inherit; cursor:pointer; }
 .archive-tools .language-switch { position:static; display:flex; padding:0; border:0; border-radius:0; box-shadow:none; font-size:.7rem; }
 .archive-tools .language-switch button { min-width:auto; min-height:0; padding:.3rem .45rem; border-radius:2px; color:#222; background:#eee; }
@@ -40,7 +40,7 @@
 .project-note .note-back { display:inline-block; margin-bottom:1.5rem; font: .8rem Arial,sans-serif; }
 .project-note .note-footer { margin-top:3rem; padding-top:1rem; border-top:1px solid #bbb; font:.72rem Arial,sans-serif; }
 body.dark-theme .project-archive, body.dark-theme .project-note { color:#eee; }
-body.dark-theme .archive-top > *, body.dark-theme .archive-columns, body.dark-theme .archive-column, body.dark-theme .archive-bottom, body.dark-theme .archive-bottom section { border-color:#555; }
+body.dark-theme .archive-top, body.dark-theme .archive-top > *, body.dark-theme .archive-columns, body.dark-theme .archive-column, body.dark-theme .archive-bottom, body.dark-theme .archive-bottom section { border-color:#555; }
 body.dark-theme .archive-columns::before { background:#555; }
 body.dark-theme .archive-tools .language-switch button { color:#eee; background:#444; }
 body.dark-theme .archive-tools .language-switch button[aria-pressed=true], body.dark-theme .archive-tools button { color:#111; background:#d0a17e; }
