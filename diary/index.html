@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fffff8">
+  <meta name="description" content="Двуязычный дневник разработки интерактивного графа линейной алгебры.">
+  <title>Дневник разработчика · Masortim</title>
+  <link rel="stylesheet" href="/tufte/tufte-universal.css">
+  <link rel="stylesheet" href="/diary/diary.css">
+  <script src="/diary/diary.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#entries">
+    <span data-language-content="ru">Перейти к записям</span>
+    <span data-language-content="en" lang="en" hidden>Skip to entries</span>
+  </a>
+
+  <div class="language-switch" role="group" aria-label="Язык / Language">
+    <button type="button" data-language-choice="ru" lang="ru" aria-pressed="true">RU</button>
+    <button type="button" data-language-choice="en" lang="en" aria-pressed="false">EN</button>
+  </div>
+  <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Включить тёмную тему" title="Включить тёмную тему">☾</button>
+
+  <header class="masthead">
+    <p class="eyebrow">
+      <span data-language-content="ru">ЗАПИСКИ О ПРОЕКТЕ</span>
+      <span data-language-content="en" lang="en" hidden>PROJECT FIELD NOTES</span>
+    </p>
+    <h1 class="title">
+      <span data-language-content="ru">Дневник разработчика</span>
+      <span data-language-content="en" lang="en" hidden>Developer diary</span>
+    </h1>
+    <h3 class="subtitle">
+      <span data-language-content="ru">Как развивается интерактивный граф линейной алгебры.</span>
+      <span data-language-content="en" lang="en" hidden>Notes on building an interactive linear algebra graph.</span>
+    </h3>
+    <p class="dek">
+      <span data-language-content="ru">Короткие записи о технических решениях, интерфейсе и следующих шагах.</span>
+      <span data-language-content="en" lang="en" hidden>Short entries on technical decisions, interface design, and what comes next.</span>
+    </p>
+    <nav class="project-nav" aria-label="Проект / Project">
+      <a href="/graph/">
+        <span data-language-content="ru">Открыть граф</span>
+        <span data-language-content="en" lang="en" hidden>Open the graph</span>
+        <span aria-hidden="true">↗</span>
+      </a>
+      <span class="project-nav__note">
+        <span data-language-content="ru">Линейная алгебра · НГУ</span>
+        <span data-language-content="en" lang="en" hidden>Linear algebra · NSU</span>
+      </span>
+    </nav>
+  </header>
+
+  <main id="entries">
+    <article class="diary-entry" id="entry-2026-11-21" lang="ru" data-language-content="ru">
+      <header class="entry-header">
+        <p class="entry-kicker">ЗАПИСЬ 01 · НАЧАЛО</p>
+        <h2>Начало журнала</h2>
+        <p class="entry-meta"><time datetime="2026-11-21">21 ноября 2026</time><span aria-hidden="true"> · </span>Процесс разработки</p>
+      </header>
+
+      <div class="section level1">
+        <p>
+          <span class="newthought">Это не журнал коммитов.</span>
+          Здесь будут оставаться причины решений, наблюдения за поведением интерфейса и короткие итоги экспериментов.
+          <label for="ru-note-purpose" class="margin-toggle sidenote-number" aria-label="Показать примечание 1">1</label>
+          <input type="checkbox" id="ru-note-purpose" class="margin-toggle">
+          <span class="sidenote"><span class="sidenote-number">1</span> Историю изменений по-прежнему показывает Git; дневник добавляет человеческий контекст.</span>
+        </p>
+
+        <p>
+          Главная страница и адрес <code>/diary/</code> ведут к этому дневнику, а интерактивное приложение остаётся доступно отдельно — по адресу <code>/graph/</code>.
+          <label for="ru-note-routes" class="margin-toggle sidenote-number" aria-label="Показать примечание 2">2</label>
+          <input type="checkbox" id="ru-note-routes" class="margin-toggle">
+          <span class="sidenote"><span class="sidenote-number">2</span> Дневник публикуется вместе с графом через GitHub Pages; для записей не нужны отдельный сервер или база данных.</span>
+        </p>
+
+        <p>
+          Каждая запись будет выходить на русском и английском. Переключатель вверху меняет язык страницы и запоминает выбор в этом браузере.
+          <label for="ru-note-language" class="margin-toggle sidenote-number" aria-label="Показать примечание 3">3</label>
+          <input type="checkbox" id="ru-note-language" class="margin-toggle">
+          <span class="sidenote"><span class="sidenote-number">3</span> На узком экране нажмите на номер примечания, чтобы раскрыть его текст.</span>
+        </p>
+
+        <h3 class="section-title">Что дальше</h3>
+        <p>
+          Следующие записи будут фиксировать устройство графа, работу с предложениями и решения по интерфейсу — вместе с тем, что удалось проверить и что ещё требует внимания.
+        </p>
+      </div>
+    </article>
+
+    <article class="diary-entry" id="entry-2026-11-21-en" lang="en" data-language-content="en" hidden>
+      <header class="entry-header">
+        <p class="entry-kicker">ENTRY 01 · BEGINNING</p>
+        <h2>Starting the log</h2>
+        <p class="entry-meta"><time datetime="2026-11-21">November 21, 2026</time><span aria-hidden="true"> · </span>Development process</p>
+      </header>
+
+      <div class="section level1">
+        <p>
+          <span class="newthought">This is not a commit log.</span>
+          It is a place to record why decisions were made, how the interface behaves, and what short experiments have taught us.
+          <label for="en-note-purpose" class="margin-toggle sidenote-number" aria-label="Show note 1">1</label>
+          <input type="checkbox" id="en-note-purpose" class="margin-toggle">
+          <span class="sidenote"><span class="sidenote-number">1</span> Git still records the changes; the diary adds the human context around them.</span>
+        </p>
+
+        <p>
+          The site root and <code>/diary/</code> lead to this diary, while the interactive application remains available separately at <code>/graph/</code>.
+          <label for="en-note-routes" class="margin-toggle sidenote-number" aria-label="Show note 2">2</label>
+          <input type="checkbox" id="en-note-routes" class="margin-toggle">
+          <span class="sidenote"><span class="sidenote-number">2</span> GitHub Pages publishes the diary alongside the graph; entries need no separate server or database.</span>
+        </p>
+
+        <p>
+          Every entry will be available in Russian and English. The control above switches the page language and remembers the choice in this browser.
+          <label for="en-note-language" class="margin-toggle sidenote-number" aria-label="Show note 3">3</label>
+          <input type="checkbox" id="en-note-language" class="margin-toggle">
+          <span class="sidenote"><span class="sidenote-number">3</span> On a narrow screen, tap a note number to reveal its text.</span>
+        </p>
+
+        <h3 class="section-title">Coming next</h3>
+        <p>
+          Future entries will document how the graph works, how proposals move through the app, and the reasoning behind interface decisions—including what has been verified and what still needs attention.
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p data-language-content="ru">Ведётся в этом репозитории · Новые записи добавляются сверху.</p>
+    <p data-language-content="en" lang="en" hidden>Maintained in this repository · New entries are added at the top.</p>
+  </footer>
+</body>
+</html>
