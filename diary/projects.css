@@ -49,7 +49,7 @@
 .archive-actions .language-switch button[aria-pressed="true"] { color: #111; background: #ddd; }
 .archive-actions #theme-toggle { padding: 2px 5px; font-size: 12px; }
 .archive-search { align-self:stretch; margin-top:0; }
-.archive-search input { display: block; box-sizing: border-box; width: 100%; height: 23px; padding: 3px 6px; border: 1px solid #bbb; border-radius: 6px; background: #f3f3f3; color: #111; font: 12px Arial, sans-serif; }
+.archive-search input { display: block; box-sizing: border-box; width: 100%; height: 23px; padding: 3px 6px; border: 1px solid #bbb; border-radius: 0; background: #f3f3f3; color: #111; font: 12px Arial, sans-serif; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 .archive-columns { position:relative; border-bottom:1px solid #c9c9c9; }
 .archive-columns::before { position:absolute; top:56px; right:0; left:0; height:1px; background:#ddd; content:""; }
