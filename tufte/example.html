@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Пример документа в стиле Tufte</title>
+  
+  <!-- Подключение универсального CSS -->
+  <link href="tufte-universal.css" rel="stylesheet">
+  
+  <!-- Подключение Highlight.js для подсветки синтаксиса (через CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <!-- Подключение дополнительных языков -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  
+  <!-- Подключение универсального JS файла -->
+  <script src="tufte-universal.js"></script>
+</head>
+
+<body>
+
+  <!-- Главный заголовок документа -->
+  <h1 class="title">Пример документа в стиле Tufte</h1>
+  
+  <!-- Подзаголовок -->
+  <h3 class="subtitle">Демонстрация основных возможностей</h3>
+  
+  <!-- Автор и дата -->
+  <h4 class="author">Автор: Иван Иванов</h4>
+  <h4 class="date">2024-01-15</h4>
+
+  <!-- Секция: Введение -->
+  <div id="introduction" class="section level1">
+    <h1>Введение</h1>
+    
+    <p>
+      Стиль Tufte Handout был разработан Эдвардом Тафти для своих книг и раздаточных материалов. 
+      Этот стиль известен широким использованием боковых заметок, тесной интеграцией графики с текстом 
+      и качественной типографикой.
+      <label for="tufte-sn-1" class="margin-toggle sidenote-number">1</label>
+      <input type="checkbox" id="tufte-sn-1" class="margin-toggle">
+      <span class="sidenote">
+        <span class="sidenote-number">1</span> 
+        См. репозитории на GitHub: 
+        <a href="https://github.com/tufte-latex/tufte-latex">tufte-latex</a> и 
+        <a href="https://github.com/edwardtufte/tufte-css">tufte-css</a>
+      </span>
+    </p>
+    
+    <p>
+      <span class="newthought">В своих более поздних книгах</span>
+      <label for="tufte-sn-2" class="margin-toggle sidenote-number">2</label>
+      <input type="checkbox" id="tufte-sn-2" class="margin-toggle">
+      <span class="sidenote">
+        <span class="sidenote-number">2</span> 
+        Например, "Beautiful Evidence"
+      </span>
+      Тафти начинает каждую секцию с небольшого вертикального отступа, 
+      неотступного параграфа и устанавливает первые несколько слов предложения капителью.
+    </p>
+  </div>
+
+  <!-- Секция: Заголовки -->
+  <div id="headings" class="section level1">
+    <h1>Заголовки</h1>
+    
+    <p>
+      Этот стиль предоставляет заголовки первого и второго уровня (то есть <code>h1</code> и <code>h2</code>), 
+      которые демонстрируются в этом разделе. Заголовки автоматически отображаются курсивом.
+    </p>
+    
+    <h2>Заголовок второго уровня</h2>
+    
+    <p>
+      Это пример параграфа под заголовком второго уровня. Обратите внимание на широкие поля 
+      справа, которые используются для размещения боковых заметок и изображений.
+    </p>
+  </div>
+
+  <!-- Секция: Боковые заметки -->
+  <div id="sidenotes" class="section level1">
+    <h1>Боковые заметки</h1>
+    
+    <p>
+      Одной из самых заметных и отличительных особенностей этого стиля является широкое использование 
+      боковых заметок. Есть широкое поле для размещения заметок и небольших изображений. 
+      <label for="tufte-sn-3" class="margin-toggle sidenote-number">3</label>
+      <input type="checkbox" id="tufte-sn-3" class="margin-toggle">
+      <span class="sidenote">
+        <span class="sidenote-number">3</span> 
+        Это боковая заметка, которая была введена с помощью сноски.
+      </span>
+    </p>
+    
+    <p>
+      Если вы хотите разместить дополнительную информацию на полях без номера заметки 
+      (надстрочного числа), вы можете использовать заметку на полях без номера.
+      <label for="tufte-mn-1" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-1" class="margin-toggle">
+      <span class="marginnote">
+        Это заметка на полях. Обратите внимание, что перед ней нет номера.
+      </span>
+    </p>
+  </div>
+
+  <!-- Секция: Изображения -->
+  <div id="figures" class="section level1">
+    <h1>Изображения и фигуры</h1>
+    
+    <h2>Изображение в основном столбце</h2>
+    
+    <p>
+      Изображения могут быть размещены в основном столбце текста. 
+      Это стандартное размещение для большинства иллюстраций.
+    </p>
+    
+    <div class="figure">
+      <img src="img/fig-main-1.png?text=Пример+изображения" 
+           alt="Пример изображения в основном столбце" width="672">
+      <p class="caption marginnote shownote">
+        Пример изображения в основном столбце текста.
+      </p>
+    </div>
+    
+    <h2>Изображение на полях</h2>
+    
+    <p>
+      <span class="marginnote shownote">
+        <img src="img/fig-margin-1.png?text=Изображение+на+полях" 
+             alt="Изображение на полях" width="336">
+        <span style="display: block; margin-top: 0.5rem;">
+          Изображение на полях справа от текста.
+        </span>
+      </span>
+      Изображения также могут быть размещены на полях справа от текста. 
+      Это полезно для небольших иллюстраций, которые дополняют основной текст.
+    </p>
+    
+    <p>
+      Обратите внимание, как это изображение размещено справа от текста, 
+      используя широкое поле, характерное для стиля Tufte.
+    </p>
+    
+    <h2>Полноширинное изображение</h2>
+    
+    <p>
+      Для важных иллюстраций можно использовать полноширинные изображения, 
+      которые занимают почти всю ширину страницы.
+    </p>
+    
+    <div class="figure fullwidth">
+      <img src="img/fig-fullwidth-1.png?text=Полноширинное+изображение" 
+           alt="Полноширинное изображение" width="960">
+      <p class="caption marginnote shownote">
+        Полноширинное изображение, занимающее почти всю ширину страницы.
+      </p>
+    </div>
+  </div>
+
+  <!-- Секция: Код -->
+  <div id="code" class="section level1">
+    <h1>Код и примеры</h1>
+    
+    <p>
+      В стиле Tufte код отображается с использованием моноширинных шрифтов. 
+      Вот пример инлайн кода: <code>const example = "Hello, World!";</code>
+    </p>
+    
+    <p>
+      Также поддерживаются математические формулы: простая инлайн формула \(E = mc^2\) 
+      или более сложная блочная формула:
+    \[\int_{0}^{\infty} e^{-x^2} dx = \frac{\sqrt{\pi}}{2}\]
+    </p>
+    
+    <p>
+      Блоки кода отображаются с сохранением форматирования и подсветкой синтаксиса:
+    </p>
+    
+    <h2>JavaScript</h2>
+    <p>
+      <label for="tufte-mn-3" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-3" class="margin-toggle">
+      <span class="sidenote">
+        Код выводит в консоль приветствие с подставленным именем — в данном случае «Привет, Мир!».
+      </span>
+    <pre><code class="language-javascript">function greet(name) {
+  console.log(`Привет, ${name}!`);
+}
+
+greet("Мир");</code></pre>
+</p>
+    
+    <h2>Python</h2>
+    <p>
+      <label for="tufte-mn-4" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-4" class="margin-toggle">
+      <span class="sidenote">
+        На экран выводится строка: Привет, Мир!
+        <br><br>
+        Функция возвращает список [1, 4, 9, 16, 25] 
+        (но этот результат нигде не сохраняется и не выводится, 
+        так как вызов функции не присвоен переменной и не передан в print()).
+      </span>
+    <pre><code class="language-python">def greet(name):
+    """Приветствие пользователя"""
+    print(f"Привет, {name}!")
+    
+    # Пример работы со списками
+    numbers = [1, 2, 3, 4, 5]
+    squares = [x**2 for x in numbers]
+    return squares
+
+greet("Мир")</code></pre>
+</p>
+    
+    <h2>Java</h2>
+    <p>
+      <label for="tufte-mn-5" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-5" class="margin-toggle">
+      <span class="sidenote">
+        При запуске программы в консоли появится строка: Привет, Мир!
+        <br><br>
+        Ключевые особенности реализации:
+Используется инкапсуляция: поле name закрыто (private), доступ к нему возможен только через методы класса.<br>
+Конструктор обеспечивает инициализацию объекта при создании.<br>
+Метод greet() использует сохранённое состояние объекта (поле name) для формирования вывода.<br>
+Статический метод main демонстрирует создание и использование объекта класса Greeter.
+      </span>
+    <pre><code class="language-java">public class Greeter {
+    private String name;
+    
+    public Greeter(String name) {
+        this.name = name;
+    }
+    
+    public void greet() {
+        System.out.println("Привет, " + name + "!");
+    }
+    
+    public static void main(String[] args) {
+        Greeter greeter = new Greeter("Мир");
+        greeter.greet();
+    }
+}</code></pre>
+</p>
+    
+    <h2>C++</h2>
+    <p>
+      <label for="tufte-mn-6" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-6" class="margin-toggle">
+      <span class="sidenote">
+        При запуске программы в консоли появится строка: Привет, Мир!
+        <br><br>
+        Ключевые особенности:
+Инкапсуляция: поле name приватное (private), доступ только через методы класса.<br>
+Эффективная передача параметров: использование константной ссылки (const std::string&) в конструкторе избегает лишнего копирования строки.<br>
+Инициализация через список: конструктор использует список инициализации (: name(name)), что предпочтительнее присваивания в теле конструктора.<br>
+Стандартные потоки: вывод реализован через std::cout и std::endl из библиотеки &lt;iostream&gt;.
+      </span>
+    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class Greeter {
+private:
+    std::string name;
+    
+public:
+    Greeter(const std::string& name) : name(name) {}
+    
+    void greet() {
+        std::cout << "Привет, " << name << "!" << std::endl;
+    }
+};
+
+int main() {
+    Greeter greeter("Мир");
+    greeter.greet();
+    return 0;
+}</code></pre>
+</p>
+    
+    <h2>SQL</h2>
+    <p>
+      <label for="tufte-mn-7" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-7" class="margin-toggle">
+      <span class="sidenote">
+        Код создаёт структуру для хранения пользователей, 
+        добавляет одного пользователя и формирует отчёт о количестве заказов для каждого пользователя 
+        (включая тех, у кого заказов нет).
+      </span>
+    <pre><code class="language-sql">-- Создание таблицы пользователей
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Вставка данных
+INSERT INTO users (name, email) 
+VALUES ('Иван', 'ivan@example.com');
+
+-- Запрос с JOIN
+SELECT u.name, u.email, COUNT(o.id) as order_count
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+GROUP BY u.id, u.name, u.email;</code></pre>
+</p>
+    
+    <h2>HTML и CSS</h2>
+    <p>
+      <label for="tufte-mn-8" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-8" class="margin-toggle">
+      <span class="sidenote">
+        Код создаёт корректную HTML5‑страницу с русским языком, поддержкой кириллицы и базовым адаптивным оформлением.
+      </span>
+    <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Пример&lt;/title&gt;
+    &lt;style&gt;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;h1&gt;Привет, мир!&lt;/h1&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    
+    <p>
+      Код также может быть размещен в боковых заметках для кратких примеров.
+      <label for="tufte-mn-2" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-2" class="margin-toggle">
+      <span class="marginnote">
+        <code>const x = 42;</code><br>
+        Краткий пример кода в боковой заметке.
+      </span>
+    </p>
+  </div>
+
+  <!-- Секция: Таблицы -->
+  <div id="tables" class="section level1">
+    <h1>Таблицы</h1>
+    
+    <p>
+      Таблицы в стиле Tufte имеют простой дизайн с границами сверху и снизу. 
+      Подписи таблиц размещаются на полях, как и подписи к изображениям.
+    </p>
+    
+    <p>
+      <span class="marginnote shownote">Пример таблицы с данными.</span>
+    </p>
+    
+    <table>
+      <thead>
+        <tr class="header">
+          <th align="left">Название</th>
+          <th align="right">Значение 1</th>
+          <th align="right">Значение 2</th>
+          <th align="right">Значение 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td align="left">Элемент A</td>
+          <td align="right">10</td>
+          <td align="right">20</td>
+          <td align="right">30</td>
+        </tr>
+        <tr class="even">
+          <td align="left">Элемент B</td>
+          <td align="right">15</td>
+          <td align="right">25</td>
+          <td align="right">35</td>
+        </tr>
+        <tr class="odd">
+          <td align="left">Элемент C</td>
+          <td align="right">20</td>
+          <td align="right">30</td>
+          <td align="right">40</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Секция: Цитаты -->
+  <div id="block-quotes" class="section level1">
+    <h1>Блочные цитаты</h1>
+    
+    <p>
+      Блочные цитаты в стиле Tufte занимают 50% ширины основного текста и могут 
+      включать подпись автора, выровненную справа.
+    </p>
+    
+    <blockquote>
+      <p>
+        "Если бы не мой адвокат, я бы все еще был в тюрьме. 
+        С двумя людьми копать получалось намного быстрее."
+      </p>
+      <footer>
+        — Джо Мартин
+      </footer>
+    </blockquote>
+    
+    <p>
+      Цитаты также могут быть без подписи автора:
+    </p>
+    
+    <blockquote>
+      <p>
+        "Великие люди говорят об идеях, средние люди говорят о вещах, 
+        а маленькие люди говорят о вине."
+      </p>
+      <p>
+        — Фрэн Лебовиц
+      </p>
+    </blockquote>
+  </div>
+
+  <!-- Секция: Списки -->
+  <div id="lists" class="section level1">
+    <h1>Списки</h1>
+    
+    <p>
+      Списки в стиле Tufte имеют специальное форматирование:
+    </p>
+    
+    <ol>
+      <li>Первый элемент нумерованного списка</li>
+      <li>Второй элемент с дополнительной информацией</li>
+      <li>Третий элемент списка</li>
+    </ol>
+    
+    <p>
+      Маркированные списки также поддерживаются:
+    </p>
+    
+    <ul>
+      <li>Элемент маркированного списка</li>
+      <li>Еще один элемент</li>
+      <li>И еще один элемент</li>
+    </ul>
+  </div>
+
+  <!-- Секция: Адаптивность -->
+  <div id="responsiveness" class="section level1">
+    <h1>Адаптивность</h1>
+    
+    <p>
+      HTML страница адаптивна в том смысле, что когда ширина страницы меньше 760px, 
+      боковые заметки и заметки на полях скрываются по умолчанию. Для боковых заметок 
+      вы можете кликнуть на их номера (надстрочные числа), чтобы переключить их видимость. 
+      Для заметок на полях вы можете кликнуть на символы ⊕, чтобы переключить видимость.
+    </p>
+  </div>
+
+  <!-- Секция: Дополнительные возможности -->
+  <div id="more-features" class="section level1">
+    <h1>Дополнительные возможности</h1>
+    
+    <p>
+      Вы можете использовать <span class="sans">санс-сериф шрифт</span> для выделения текста.
+    </p>
+    
+    <p>
+      Для важных предупреждений можно использовать класс <span class="danger">danger</span>, 
+      который отображает текст красным цветом.
+    </p>
+    
+    <p>
+      Полноширинные блоки могут содержать любой контент:
+    </p>
+    
+    <div class="fullwidth">
+      <p>
+        <em>Это полноширинный блок контента.</em> Он занимает почти всю ширину страницы 
+        и может использоваться для важных объявлений, специальных разделов или 
+        любых других элементов, которые требуют больше места.
+      </p>
+    </div>
+  </div>
+
+  <!-- Навигация между страницами -->
+  <nav class="page-navigation">
+    <span class="nav-item">
+      <a href="example.html">← Основные возможности</a>
+    </span>
+    <span class="nav-separator">|</span>
+    <span class="nav-item">
+      <a href="example2.html">Продвинутые примеры →</a>
+    </span>
+  </nav>
+
+</body>
+</html>

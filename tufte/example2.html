@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Продвинутые примеры в стиле Tufte</title>
+  
+  <!-- Подключение универсального CSS -->
+  <link href="tufte-universal.css" rel="stylesheet">
+  
+  <!-- Подключение Highlight.js для подсветки синтаксиса (через CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <!-- Подключение дополнительных языков -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  
+  <!-- Подключение универсального JS файла -->
+  <script src="tufte-universal.js"></script>
+</head>
+
+<body>
+
+  <!-- Главный заголовок документа -->
+  <h1 class="title">Продвинутые примеры</h1>
+  
+  <!-- Подзаголовок -->
+  <h3 class="subtitle">Дополнительные возможности стиля Tufte</h3>
+  
+  <!-- Автор и дата -->
+  <h4 class="author">Автор: Иван Иванов</h4>
+  <h4 class="date">2024-01-16</h4>
+
+  <!-- Навигация между страницами -->
+  <nav class="page-navigation top">
+    <span class="nav-item">
+      <a href="example.html">← Основные возможности</a>
+    </span>
+    <span class="nav-separator">|</span>
+    <span class="nav-item">
+      <a href="example2.html">Продвинутые примеры</a>
+    </span>
+  </nav>
+
+  <!-- Секция: Математические формулы -->
+  <div id="mathematics" class="section level1">
+    <h1>Математические формулы</h1>
+    
+    <p>
+      Стиль Tufte отлично подходит для документов с математическими формулами. 
+      Формулы могут быть инлайн или блочными.
+      <label for="tufte-sn-1" class="margin-toggle sidenote-number">1</label>
+      <input type="checkbox" id="tufte-sn-1" class="margin-toggle">
+      <span class="sidenote">
+        <span class="sidenote-number">1</span> 
+        MathJax уже подключен в этом документе. Используйте \(...\) для инлайн формул 
+        и \[...\] для блочных формул.
+      </span>
+    </p>
+    
+    <p>
+      Инлайн формула: согласно <em>первой фундаментальной теореме математического анализа</em>, 
+      для \(x\) в \([a, b]\): \(\frac{d}{dx}\left( \int_{a}^{x} f(u)\,du\right)=f(x)\).
+      <label for="tufte-mn-1" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-1" class="margin-toggle">
+      <span class="marginnote">
+        <span style="display: block;">
+          Мы знаем из <em>первой фундаментальной теоремы математического анализа</em>, 
+          что для \(x\) в \([a, b]\):
+          \[\frac{d}{dx}\left( \int_{a}^{x} f(u)\,du\right)=f(x).\]
+        </span>
+      </span>
+    </p>
+    
+    <p>
+      Блочная формула отображается на отдельной строке:
+      \[\frac{d}{dx}\left( \int_{a}^{x} f(u)\,du\right)=f(x).\]
+    </p>
+    
+    <p>
+      Формула Эйнштейна для эквивалентности массы и энергии:
+      \[E = mc^2\]
+    </p>
+    
+    <p>
+      Более сложная формула с интегралом:
+    \[\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}\]
+    </p>
+    
+    <p>
+      Формула может быть размещена в полноширинном блоке:
+    </p>
+    
+    <div class="fullwidth">
+      <p style="text-align: center; padding: 1rem 0;">
+        \[f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n\]
+      </p>
+      <p style="text-align: center; font-size: 1.1rem; margin-top: 0.5rem;">
+        Ряд Тейлора для функции \(f(x)\) в точке \(a\)
+      </p>
+    </div>
+  </div>
+
+  <!-- Секция: Сложные таблицы -->
+  <div id="complex-tables" class="section level1">
+    <h1>Сложные таблицы</h1>
+    
+    <p>
+      Таблицы могут содержать различные типы данных и форматирование. 
+      В стиле Tufte таблицы остаются простыми и читаемыми.
+    </p>
+    
+    <p>
+      <span class="marginnote shownote">Сравнительная таблица характеристик.</span>
+    </p>
+    
+    <table>
+      <thead>
+        <tr class="header">
+          <th align="left">Параметр</th>
+          <th align="right">Вариант A</th>
+          <th align="right">Вариант B</th>
+          <th align="right">Вариант C</th>
+          <th align="right">Единицы</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td align="left">Скорость</td>
+          <td align="right">120</td>
+          <td align="right">150</td>
+          <td align="right">180</td>
+          <td align="right">км/ч</td>
+        </tr>
+        <tr class="even">
+          <td align="left">Мощность</td>
+          <td align="right">75</td>
+          <td align="right">100</td>
+          <td align="right">125</td>
+          <td align="right">л.с.</td>
+        </tr>
+        <tr class="odd">
+          <td align="left">Расход</td>
+          <td align="right">6.5</td>
+          <td align="right">7.2</td>
+          <td align="right">8.1</td>
+          <td align="right">л/100км</td>
+        </tr>
+        <tr class="even">
+          <td align="left">Цена</td>
+          <td align="right">500,000</td>
+          <td align="right">750,000</td>
+          <td align="right">1,000,000</td>
+          <td align="right">₽</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Секция: Вложенные списки -->
+  <div id="nested-lists" class="section level1">
+    <h1>Вложенные списки</h1>
+    
+    <p>
+      Стиль Tufte поддерживает вложенные списки различных типов:
+    </p>
+    
+    <ol>
+      <li>
+        Первый уровень нумерованного списка
+        <ul>
+          <li>Вложенный маркированный элемент</li>
+          <li>Еще один вложенный элемент</li>
+        </ul>
+      </li>
+      <li>
+        Второй уровень с вложенным списком
+        <ol>
+          <li>Вложенный нумерованный элемент</li>
+          <li>Еще один вложенный нумерованный элемент</li>
+        </ol>
+      </li>
+      <li>Третий элемент первого уровня</li>
+    </ol>
+  </div>
+
+  <!-- Секция: Комбинированные элементы -->
+  <div id="combined-elements" class="section level1">
+    <h1>Комбинированные элементы</h1>
+    
+    <p>
+      Различные элементы стиля Tufte можно комбинировать для создания 
+      сложных и информативных документов.
+    </p>
+    
+    <h2>Цитата с боковой заметкой</h2>
+    
+    <blockquote>
+      <p>
+        "Данные не являются информацией, информация не является знанием, 
+        знание не является пониманием, понимание не является мудростью."
+        <label for="tufte-sn-2" class="margin-toggle sidenote-number">2</label>
+        <input type="checkbox" id="tufte-sn-2" class="margin-toggle">
+        <span class="sidenote">
+          <span class="sidenote-number">2</span> 
+          Цитата Клиффорда Столла о данных и информации.
+        </span>
+      </p>
+      <footer>
+        — Клиффорд Столл
+      </footer>
+    </blockquote>
+    
+    <h2>Изображение с несколькими заметками</h2>
+    
+    <p>
+      Одно изображение может сопровождаться несколькими боковыми заметками, 
+      объясняющими различные аспекты иллюстрации.
+    </p>
+    
+    <div class="figure">
+      <img src="img/fig-two-together-1.png?text=Сложная+иллюстрация" 
+           alt="Сложная иллюстрация с заметками" width="672">
+      <label for="tufte-mn-2" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-2" class="margin-toggle">
+      <span class="marginnote">
+        Это первая заметка на полях, которая дополняет изображение.
+      </span>
+      <img src="img/fig-two-together-2.png?text=Сложная+иллюстрация" 
+            alt="Сложная иллюстрация с заметками" width="672">
+      <label for="tufte-mn-2b" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-2b" class="margin-toggle">
+      <span class="marginnote">
+        Иллюстрация с несколькими поясняющими заметками.
+      </span>
+    </div>
+    
+    <p>
+      После изображения может следовать дополнительный текст с еще одной заметкой.
+      <label for="tufte-sn-3" class="margin-toggle sidenote-number">3</label>
+      <input type="checkbox" id="tufte-sn-3" class="margin-toggle">
+      <span class="sidenote">
+        <span class="sidenote-number">3</span> 
+        Это вторая боковая заметка, которая предоставляет дополнительный контекст.
+      </span>
+    </p>
+  </div>
+
+  <!-- Секция: Код с пояснениями -->
+  <div id="code-explanations" class="section level1">
+    <h1>Код с подробными пояснениями</h1>
+    
+    <p>
+      Блоки кода могут сопровождаться боковыми заметками, объясняющими 
+      различные части программы.
+    </p>
+    
+    <p>
+      Блоки кода могут сопровождаться боковыми заметками, объясняющими 
+      различные части программы. Ниже представлены примеры на разных языках:
+    </p>
+    
+    <h2>JavaScript (ES6+)</h2>
+    <p>
+      <label for="tufte-mn-3" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-3" class="margin-toggle">
+      <span class="marginnote">
+        Этот пример демонстрирует использование классов в JavaScript ES6.
+      </span>
+    </p>
+    
+    <pre><code class="language-javascript">// Определение класса для работы с данными
+class DataProcessor {
+  constructor(data) {
+    this.data = data;  // Инициализация данных
+    this.processed = false;  // Флаг обработки
+  }
+  
+  // Метод для обработки данных
+  process() {
+    if (this.processed) {
+      return this.data;  // Возврат, если уже обработано
+    }
+    
+    // Преобразование данных
+    this.data = this.data.map(item => ({
+      ...item,
+      processed: true,
+      timestamp: Date.now()
+    }));
+    
+    this.processed = true;
+    return this.data;
+  }
+  
+  // Метод для получения статистики
+  getStats() {
+    return {
+      count: this.data.length,
+      processed: this.processed
+    };
+  }
+}
+
+// Использование класса
+const processor = new DataProcessor([{id: 1}, {id: 2}]);
+processor.process();
+console.log(processor.getStats());</code></pre>
+    
+    <h2>TypeScript</h2>
+    <pre><code class="language-typescript">interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+class UserService {
+  private users: User[] = [];
+  
+  addUser(user: User): void {
+    this.users.push(user);
+  }
+  
+  findUserById(id: number): User | undefined {
+    return this.users.find(user => user.id === id);
+  }
+  
+  getAllUsers(): User[] {
+    return [...this.users];
+  }
+}
+
+const service = new UserService();
+service.addUser({ id: 1, name: "Иван", email: "ivan@example.com" });
+console.log(service.getAllUsers());</code></pre>
+    
+    <h2>Python (с асинхронностью)</h2>
+    <pre><code class="language-python">import asyncio
+from typing import List, Dict
+
+async def fetch_data(url: str) -> Dict:
+    """Асинхронная загрузка данных"""
+    await asyncio.sleep(1)  # Имитация сетевого запроса
+    return {"url": url, "data": "example"}
+
+async def process_multiple_urls(urls: List[str]) -> List[Dict]:
+    """Обработка нескольких URL параллельно"""
+    tasks = [fetch_data(url) for url in urls]
+    results = await asyncio.gather(*tasks)
+    return results
+
+# Использование
+async def main():
+    urls = ["http://example.com/1", "http://example.com/2"]
+    results = await process_multiple_urls(urls)
+    print(results)
+
+asyncio.run(main())</code></pre>
+    
+    <h2>C</h2>
+    <pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+// Структура для представления точки
+typedef struct {
+    double x;
+    double y;
+} Point;
+
+// Функция для вычисления расстояния между точками
+double distance(Point p1, Point p2) {
+    double dx = p2.x - p1.x;
+    double dy = p2.y - p1.y;
+    return sqrt(dx * dx + dy * dy);
+}
+
+int main() {
+    Point p1 = {0.0, 0.0};
+    Point p2 = {3.0, 4.0};
+    
+    double dist = distance(p1, p2);
+    printf("Расстояние: %.2f\n", dist);
+    
+    return 0;
+}</code></pre>
+    
+    <h2>Bash</h2>
+    <pre><code class="language-bash">#!/bin/bash
+
+# Скрипт для резервного копирования
+BACKUP_DIR="/backup"
+SOURCE_DIR="/home/user/documents"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+# Создание директории для бэкапа
+mkdir -p "$BACKUP_DIR"
+
+# Архивирование
+tar -czf "$BACKUP_DIR/backup_$DATE.tar.gz" "$SOURCE_DIR"
+
+# Проверка успешности
+if [ $? -eq 0 ]; then
+    echo "Резервное копирование успешно завершено"
+    # Удаление старых бэкапов (старше 7 дней)
+    find "$BACKUP_DIR" -name "backup_*.tar.gz" -mtime +7 -delete
+else
+    echo "Ошибка при создании резервной копии"
+    exit 1
+fi</code></pre>
+    
+    <p>
+      Код может быть размещен в боковой заметке для кратких примеров:
+      <label for="tufte-mn-4" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-4" class="margin-toggle">
+      <span class="marginnote">
+        <code style="display: block; margin-bottom: 0.5rem;">
+          const x = 42;<br>
+          const y = x * 2;
+        </code>
+        Краткий пример вычислений в боковой заметке.
+      </span>
+    </p>
+  </div>
+
+  <!-- Секция: Многоуровневые заголовки -->
+  <div id="multi-level-headings" class="section level1">
+    <h1>Многоуровневые заголовки</h1>
+    
+    <p>
+      Документ может содержать несколько уровней заголовков для организации контента.
+    </p>
+    
+    <h2>Заголовок второго уровня</h2>
+    
+    <p>
+      Под заголовком второго уровня может быть текст с боковыми заметками.
+    </p>
+    
+    <h2>Еще один заголовок второго уровня</h2>
+    
+    <p>
+      Каждый раздел может содержать различное количество контента и заметок.
+      <label for="tufte-sn-4" class="margin-toggle sidenote-number">4</label>
+      <input type="checkbox" id="tufte-sn-4" class="margin-toggle">
+      <span class="sidenote">
+        <span class="sidenote-number">4</span> 
+        Заметка, относящаяся к конкретному разделу.
+      </span>
+    </p>
+  </div>
+
+  <!-- Секция: Специальное форматирование -->
+  <div id="special-formatting" class="section level1">
+    <h1>Специальное форматирование текста</h1>
+    
+    <p>
+      В стиле Tufte можно использовать различные способы выделения текста:
+    </p>
+    
+    <ul>
+      <li>
+        <strong>Жирный текст</strong> для важных моментов
+      </li>
+      <li>
+        <em>Курсив</em> для акцента
+      </li>
+      <li>
+        <span class="sans">Санс-сериф шрифт</span> для выделения
+      </li>
+      <li>
+        <code>Моноширинный код</code> для технических терминов
+      </li>
+      <li>
+        <span class="newthought">Капитель</span> для начала новых мыслей
+      </li>
+      <li>
+        <span class="danger">Красный текст</span> для предупреждений
+      </li>
+    </ul>
+    
+    <p>
+      Комбинации форматирования также возможны: 
+      <strong><em>жирный курсив</em></strong>, 
+      <code><strong>жирный код</strong></code>, 
+      и другие варианты.
+    </p>
+  </div>
+
+  <!-- Секция: Видео в боковых заметках -->
+  <div id="video-sidenotes" class="section level1">
+    <h1>Видео в боковых заметках</h1>
+    
+    <p>
+      В стиле Tufte можно встраивать видео в боковые примечания. 
+      Видео плеер автоматически подстраивается под ширину боковой колонки,
+      <label for="tufte-sn-video-1" class="margin-toggle sidenote-number">6</label>
+      <input type="checkbox" id="tufte-sn-video-1" class="margin-toggle">
+      <span class="sidenote">
+        <span class="sidenote-number">6</span>
+        <iframe 
+          src="https://vk.com/video_ext.php?oid=-158491375&id=456239039&hd=2"
+          frameborder="0"
+          allow="autoplay; picture-in-picture; fullscreen"
+          allowfullscreen
+          style="width: 100%; aspect-ratio: 16 / 9; height: auto; display: block; margin-top: 0.5rem; border: 0;">
+        </iframe>
+        <span style="display: block; margin-top: 0.5rem; font-size: 0.9rem;">
+          Это пример боковой заметки с видео из VK. Плеер встроен через официальный VK iframe и адаптируется под ширину колонки.
+        </span>
+      </span>
+      обеспечивая оптимальное восприятие информации.
+    </p>
+
+    <p> 
+      Это особенно полезно для образовательных материалов, презентаций и аналитических отчетов, 
+      где визуальные элементы помогают лучше понять сложные концепции.
+    </p>
+    
+    <h2>Встроенное видео (HTML5)</h2>
+    
+    <p>
+      Можно использовать обычные HTML5 video элементы в боковых заметках.
+      <label for="tufte-mn-video-1" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="tufte-mn-video-1" class="margin-toggle">
+      <span class="marginnote">
+        <video controls width="100%" style="max-width: 100%; height: auto;">
+          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+          Ваш браузер не поддерживает видео тег.
+        </video>
+        <span style="display: block; margin-top: 0.5rem; font-size: 0.9rem;">
+          Пример HTML5 видео в боковой заметке. Видео автоматически подстраивается под ширину колонки.
+        </span>
+      </span>
+      Видео в боковых заметках полезно для демонстрации коротких клипов или анимаций, 
+      которые дополняют основной текст.
+    </p>
+    
+    <h2>Встроенное видео с YouTube</h2>
+    
+    <p>
+      Также можно встраивать видео с YouTube, Vimeo и других платформ в основном текстовом блоке.
+      Видео автоматически подстраивается под ширину текстового блока (55% от ширины страницы).
+    </p>
+    
+    <div class="figure">
+      <p class="caption marginnote shownote">
+        Пример встроенного YouTube видео в основном текстовом блоке. Плеер автоматически адаптируется под ширину текстового блока.
+      </p>
+      <div class="video-container">
+        <iframe 
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+    
+    <p>
+      Встроенные видео с внешних платформ автоматически адаптируются под ширину текстового блока, 
+      сохраняя правильные пропорции и соотношение сторон.
+    </p>
+    
+    <h2>Видео с подписью</h2>
+    
+    <p>
+      Видео в боковых заметках может сопровождаться подписями и дополнительными пояснениями.
+      <label for="tufte-sn-video-2" class="margin-toggle sidenote-number">7</label>
+      <input type="checkbox" id="tufte-sn-video-2" class="margin-toggle">
+      <span class="sidenote">
+        <span class="sidenote-number">7</span>
+        <video controls width="100%" style="max-width: 100%; height: auto; margin-top: 0.5rem;">
+          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+          Ваш браузер не поддерживает видео тег.
+        </video>
+        <span style="display: block; margin-top: 0.5rem; font-size: 0.9rem;">
+          Это видео демонстрирует, как можно размещать видео в боковых заметках с номерами.
+        </span>
+      </span>
+      Такое размещение позволяет читателю видеть видео рядом с соответствующим текстом, 
+      не отвлекаясь от основного контента.
+    </p>
+    
+    <p>
+      Видео в боковых заметках особенно полезно для образовательных материалов, 
+      где визуальные примеры дополняют текстовые объяснения.
+    </p>
+  </div>
+
+  <!-- Секция: Длинный контент -->
+  <div id="long-content" class="section level1">
+    <h1>Работа с длинным контентом</h1>
+    
+    <p>
+      Стиль Tufte отлично подходит для длинных документов с множеством 
+      боковых заметок и иллюстраций. Широкие поля позволяют размещать 
+      дополнительную информацию, не отвлекая от основного текста.
+    </p>
+    
+    <p>
+      Документ может содержать множество секций, каждая со своими 
+      заголовками, параграфами, изображениями и заметками.
+      <label for="tufte-sn-5" class="margin-toggle sidenote-number">5</label>
+      <input type="checkbox" id="tufte-sn-5" class="margin-toggle">
+      <span class="sidenote">
+        <span class="sidenote-number">5</span> 
+        Это пятая боковая заметка в документе, демонстрирующая 
+        возможность множественных ссылок.
+      </span>
+    </p>
+    
+    <p>
+      Полноширинные блоки могут использоваться для важных объявлений 
+      или специальных разделов, которые требуют больше внимания.
+    </p>
+    
+    <div class="fullwidth">
+      <p class="fullwidth-note">
+        <strong>Важное примечание:</strong> Этот блок использует полноширинную 
+        ширину и может содержать любую важную информацию, которая должна 
+        выделяться на странице. Фон и граница помогают привлечь внимание.
+      </p>
+    </div>
+    
+    <p>
+      После полноширинных блоков основной текст продолжается в обычном формате.
+    </p>
+  </div>
+
+  <!-- Навигация между страницами -->
+  <nav class="page-navigation">
+    <span class="nav-item">
+      <a href="example.html">← Основные возможности</a>
+    </span>
+    <span class="nav-separator">|</span>
+    <span class="nav-item">
+      <a href="example2.html">Продвинутые примеры</a>
+    </span>
+  </nav>
+
+</body>
+</html>
