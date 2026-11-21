@@ -62,6 +62,9 @@ body.archive-home { margin:0; padding:0; }
 .project-card h3 > a { display:block; }
 .project-card p { margin:0 0 4px; font-size:14px; line-height:1.4; overflow-wrap:anywhere; }
 .project-card .project-meta { margin-top:3px; margin-bottom:1em; font-size:12px; font-weight:700; }
+@media (min-width: 901px) {
+  .archive-column:nth-child(-n+3) > .project-card:first-of-type { min-height:19rem; }
+}
 .archive-view-all { margin:auto 0 8px; font-size:14px; font-weight:700; }
 .archive-bottom { padding-bottom:18px; border-bottom:1px solid #c9c9c9; }
 .archive-bottom section { padding:14px 0 10px; overflow-wrap:anywhere; }
