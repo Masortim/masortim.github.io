@@ -51,6 +51,10 @@ function createMemoryStore() {
       data = JSON.parse(JSON.stringify(next));
       return true;
     },
+    async remove(email) {
+      data.subscribers = (data.subscribers ?? []).filter((s) => s.email !== email);
+      return true;
+    },
   };
 }
 
@@ -60,7 +64,9 @@ function createMemoryStore() {
  * где именно лежат данные.
  *
  * read() отдаёт { version, subscribers } в том же формате, что и раньше;
- * write() применяет разницу: новые записи добавляет, изменённые обновляет.
+ * write() пишет только изменившиеся строки — иначе две одновременные
+ * подписки перезаписывали бы друг друга, и одно письмо с подтверждением
+ * молча терялось. remove() удаляет строку по адресу.
  */
 function createSupabaseStore({ url, key }) {
   const headers = {
@@ -104,6 +110,7 @@ function createSupabaseStore({ url, key }) {
     return response;
   }
 
+  // Снимок последнего чтения: по нему видно, какие строки изменились.
   let snapshot = new Map();
 
   return {
@@ -117,21 +124,36 @@ function createSupabaseStore({ url, key }) {
     },
 
     /**
-     * Синхронизирует таблицу с переданным состоянием: обновляет существующие
-     * строки и добавляет отсутствующие. Удаления не поддерживаются — история
-     * подписок остаётся в таблице (статус unsubscribed), это осознанно.
+     * Пишет только изменившиеся строки: сравнивает с прошлым чтением.
+     * Раньше здесь переписывались все подписчики подряд, поэтому запрос,
+     * прочитавший состояние до чужой подписки, затирал её токен — человек
+     * получал письмо со ссылкой, которая уже не подтверждала ничего.
      */
     async write(next) {
       const subscribers = Array.isArray(next?.subscribers) ? next.subscribers : [];
       for (const subscriber of subscribers) {
         const row = toRow(subscriber);
+        const previous = snapshot.get(row.email);
+        const unchanged = previous
+          && ['lang', 'status', 'token', 'confirmed_at', 'unsubscribed_at']
+            .every((field) => (previous[field] ?? null) === (row[field] ?? null));
+        if (unchanged) continue;
         // email — первичный ключ дедупликации; upsert по нему.
         await request(`${TABLE}?on_conflict=email`, {
           method: 'POST',
           headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
           body: JSON.stringify([row]),
         });
+        snapshot.set(row.email, row);
       }
+      return true;
+    },
+
+    /** Удаление по адресу — для отписки. */
+    async remove(email) {
+      const address = String(email ?? '');
+      await request(`${TABLE}?email=eq.${encodeURIComponent(address)}`, { method: 'DELETE' });
+      snapshot.delete(address);
       return true;
     },
   };
@@ -252,8 +274,13 @@ async function confirm({ store, token, now = new Date() }) {
 /**
  * Отписка по токену.
  *   { result: 'unsubscribed', subscriber } | { result: 'already' } | { result: 'not_found' }
+ *
+ * Строка удаляется из списка, а не помечается unsubscribed: адрес, который
+ * человек попросил забыть, не должен оставаться в базе. Раньше запись со
+ * статусом unsubscribed блокировала автоматические проверки — временный
+ * пробный адрес навсегда занимал единственно возможное значение.
  */
-async function unsubscribe({ store, token, now = new Date() }) {
+async function unsubscribe({ store, token }) {
   const data = (await store.read()) ?? emptyData();
   const subscriber = (data.subscribers ?? []).find((s) => s.token === token);
   if (!subscriber) return { result: 'not_found' };
@@ -262,8 +289,7 @@ async function unsubscribe({ store, token, now = new Date() }) {
     return { result: 'already', subscriber };
   }
 
-  subscriber.status = 'unsubscribed';
-  subscriber.unsubscribedAt = now.toISOString();
+  data.subscribers = data.subscribers.filter((s) => s !== subscriber);
   await store.write(data);
   return { result: 'unsubscribed', subscriber };
 }
@@ -685,6 +711,15 @@ async function GET(request) {
   }
 
   if (outcome.result === 'not_found') return redirect('/newsletter/?state=invalid&lang=ru');
+
+  // Строку убираем из базы: отписавшийся адрес не должен храниться.
+  try {
+    await store.remove(outcome.subscriber.email);
+  } catch (error) {
+    console.error('unsubscribe cleanup failed', error);
+    return redirect('/newsletter/?state=error&lang=ru');
+  }
+
   const lang = outcome.subscriber?.lang === 'en' ? 'en' : 'ru';
   return redirect(`/newsletter/?state=unsubscribed&lang=${lang}`);
 }
@@ -830,9 +865,11 @@ async function health() {
   const sender = from || 'Masortim <digest@masortim.github.io>';
   const domain = (sender.match(/@([^>\s]+)/) ?? [])[1] ?? '';
 
-  // Resend отправляет письма только с домена, добавленного в аккаунт и
-  // прошедшего проверку DNS. Список доменов — единственный способ узнать
-  // это по API: /domains/{...} принимает ID, а не имя.
+  // resend.dev — общий домен Resend для проверки отправки. В списке доменов
+  // аккаунта его нет и подтвердить его нельзя, но письма с него уходят (пока
+  // только владельцу аккаунта). Поэтому для него проверка домена не нужна.
+  const testSender = domain === 'resend.dev';
+
   let domains = { checked: false };
   if (key) {
     try {
@@ -846,6 +883,7 @@ async function health() {
         const sending = match?.capabilities?.sending ?? 'enabled';
         domains = {
           checked: true,
+          keyValid: true,
           account: list.map((item) => `${item.name} (${item.status})`),
           match: match ? match.status : null,
           verified: Boolean(match)
@@ -853,22 +891,36 @@ async function health() {
               || (match.status === 'partially_verified' && sending === 'enabled')),
         };
       } else {
-        domains = { checked: true, verified: false, error: `resend ${response.status}` };
+        // 401/403 означают, что ключ не принят; прочие коды — проблема на стороне Resend.
+        const rejected = response.status === 401 || response.status === 403;
+        domains = {
+          checked: true,
+          keyValid: !rejected,
+          verified: false,
+          error: `resend ${response.status}`,
+        };
       }
     } catch (error) {
       domains = { checked: true, verified: false, error: 'network' };
     }
   }
 
+  // Домен годится, если он подтверждён в Resend или это тестовый resend.dev.
+  const senderUsable = testSender || domains.verified === true;
+  // Ключ считается рабочим, если Resend его не отверг (401/403).
+  const keyUsable = Boolean(key) && domains.keyValid !== false;
+
   const checks = {
     supabaseUrl: Boolean(env('SUPABASE_URL')),
     supabaseKey: Boolean(env('SUPABASE_SERVICE_ROLE_KEY')),
     resendKey: Boolean(key),
+    resendKeyAccepted: domains.keyValid ?? null,
     fromSet: Boolean(from),
     fromAddress: from || `${sender} (значение по умолчанию)`,
     senderDomain: domain,
-    fromDomainStatus: domains.match ?? null,
-    fromDomainVerified: domains.verified ?? null,
+    senderMode: testSender ? 'test' : 'domain',
+    fromDomainStatus: testSender ? 'not_required (общий домен resend.dev)' : domains.match ?? null,
+    fromDomainVerified: testSender ? true : domains.verified ?? null,
     resendDomains: domains.account ?? null,
     resendError: domains.error ?? null,
     apiBase: env('NEWSLETTER_API_BASE') || '(не задан)',
@@ -876,26 +928,33 @@ async function health() {
     cronSecret: Boolean(env('CRON_SECRET')),
   };
 
-  const ready = checks.supabaseUrl && checks.supabaseKey && checks.resendKey
-    && domains.verified === true;
+  const ready = checks.supabaseUrl && checks.supabaseKey && keyUsable
+    && checks.fromSet && senderUsable;
 
   return new Response(JSON.stringify({
     ready,
     // Что именно осталось сделать — короткими ключами, без лишних слов.
     blocking: [
       !checks.resendKey && 'добавьте RESEND_API_KEY в Vercel и перевыпустите деплой',
+      checks.resendKey && domains.keyValid === false
+        && `Resend отклонил ключ (${domains.error}) — выпустите новый в resend.com/api-keys`,
       !checks.supabaseUrl && 'нет SUPABASE_URL',
       !checks.supabaseKey && 'нет SUPABASE_SERVICE_ROLE_KEY',
       checks.resendKey && !checks.fromSet
         && 'задайте NEWSLETTER_FROM: адрес по умолчанию (digest@masortim.github.io) Resend отклонит',
-      checks.resendKey && checks.fromSet && domains.checked && domains.verified === false
+      checks.resendKey && checks.fromSet && !testSender && domains.checked && domains.verified === false
         && (domains.error
           ? `не удалось проверить домен ${domain} в Resend (${domains.error})`
           : domains.match
             ? `домен ${domain} в Resend в статусе ${domains.match}, нужен verified`
             : `домена ${domain} нет в вашем аккаунте Resend`),
-      checks.resendKey && checks.fromSet && domain === 'resend.dev'
-        && 'onboarding@resend.dev доставляет письма только владельцу аккаунта Resend',
+    ].filter(Boolean),
+    // Не блокируют отправку, но о них надо знать заранее.
+    notes: [
+      testSender
+        && 'тестовый режим: resend.dev доставляет письма только на адрес владельца аккаунта Resend',
+      !testSender && !checks.fromSet
+        && 'адрес по умолчанию digest@masortim.github.io принадлежит GitHub — Resend его отклонит',
     ].filter(Boolean),
     checks,
   }, null, 2), {

@@ -35,6 +35,10 @@ function createMemoryStore() {
       data = JSON.parse(JSON.stringify(next));
       return true;
     },
+    async remove(email) {
+      data.subscribers = (data.subscribers ?? []).filter((s) => s.email !== email);
+      return true;
+    },
   };
 }
 
@@ -44,7 +48,9 @@ function createMemoryStore() {
  * где именно лежат данные.
  *
  * read() отдаёт { version, subscribers } в том же формате, что и раньше;
- * write() применяет разницу: новые записи добавляет, изменённые обновляет.
+ * write() пишет только изменившиеся строки — иначе две одновременные
+ * подписки перезаписывали бы друг друга, и одно письмо с подтверждением
+ * молча терялось. remove() удаляет строку по адресу.
  */
 function createSupabaseStore({ url, key }) {
   const headers = {
@@ -88,6 +94,7 @@ function createSupabaseStore({ url, key }) {
     return response;
   }
 
+  // Снимок последнего чтения: по нему видно, какие строки изменились.
   let snapshot = new Map();
 
   return {
@@ -101,21 +108,36 @@ function createSupabaseStore({ url, key }) {
     },
 
     /**
-     * Синхронизирует таблицу с переданным состоянием: обновляет существующие
-     * строки и добавляет отсутствующие. Удаления не поддерживаются — история
-     * подписок остаётся в таблице (статус unsubscribed), это осознанно.
+     * Пишет только изменившиеся строки: сравнивает с прошлым чтением.
+     * Раньше здесь переписывались все подписчики подряд, поэтому запрос,
+     * прочитавший состояние до чужой подписки, затирал её токен — человек
+     * получал письмо со ссылкой, которая уже не подтверждала ничего.
      */
     async write(next) {
       const subscribers = Array.isArray(next?.subscribers) ? next.subscribers : [];
       for (const subscriber of subscribers) {
         const row = toRow(subscriber);
+        const previous = snapshot.get(row.email);
+        const unchanged = previous
+          && ['lang', 'status', 'token', 'confirmed_at', 'unsubscribed_at']
+            .every((field) => (previous[field] ?? null) === (row[field] ?? null));
+        if (unchanged) continue;
         // email — первичный ключ дедупликации; upsert по нему.
         await request(`${TABLE}?on_conflict=email`, {
           method: 'POST',
           headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
           body: JSON.stringify([row]),
         });
+        snapshot.set(row.email, row);
       }
+      return true;
+    },
+
+    /** Удаление по адресу — для отписки. */
+    async remove(email) {
+      const address = String(email ?? '');
+      await request(`${TABLE}?email=eq.${encodeURIComponent(address)}`, { method: 'DELETE' });
+      snapshot.delete(address);
       return true;
     },
   };
