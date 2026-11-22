@@ -97,9 +97,9 @@ console.log(`собрано: ${target} (${code.length} байт)`);
 
 // vercel.json для деплоя: cron и лимит времени единственной функции.
 const deployDir = resolve(ROOT, 'newsletter/edge');
+// Только cron: настройки функции задаются в проекте Vercel.
 const deployConfig = {
   crons: [{ path: '/api/newsletter/digest', schedule: '0 9 * * 0' }],
-  functions: { 'index.mjs': { maxDuration: 60 } },
 };
 await writeFile(resolve(deployDir, 'vercel.json'), `${JSON.stringify(deployConfig, null, 2)}\n`, 'utf8');
 console.log('собрано: vercel.json');
