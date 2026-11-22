@@ -48,7 +48,22 @@ jobs:
           echo "status: $code"
           cat /tmp/sub.json; echo
           if [ "$code" != "400" ]; then
-            echo "::error::ожидался 400 invalid_email, получен $code"
+            echo "::error::SUB bad-email code=$code body=$(head -c 300 /tmp/sub.json | tr -d '\n')"
+            exit 1
+          fi
+
+      - name: Subscribe accepts a valid address
+        run: |
+          echo '--- POST /api/newsletter/subscribe (valid, expect 200 or 502) ---'
+          code=$(curl -sS -o /tmp/sub2.json -w '%{http_code}' --max-time 25 \
+            -X POST -H 'Content-Type: application/json' \
+            -d '{"email":"probe@example.com","lang":"ru"}' \
+            https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
+          echo "status: $code"
+          cat /tmp/sub2.json; echo
+          # 200 — письмо ушло (есть ключ), 502 — ключа нет, но конвейер работает.
+          if [ "$code" != "200" ] && [ "$code" != "502" ]; then
+            echo "::error::SUB valid code=$code body=$(head -c 300 /tmp/sub2.json | tr -d '\n')"
             exit 1
           fi
 

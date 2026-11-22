@@ -74,5 +74,3 @@ export async function collectNotes({ site, limit = 20 } = {}) {
   }
   return notes.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
-
-<!-- probe trigger -->
