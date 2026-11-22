@@ -28,6 +28,23 @@
 Resend отвечает ошибкой, API возвращает `502 email_failed`. После добавления ключа
 достаточно перевыпустить деплой — код менять не нужно.
 
+### Что нужно от владельца
+
+Единственный шаг, который нельзя выполнить из кода: выпустить ключ Resend.
+
+1. [resend.com/api-keys](https://resend.com/api-keys) → Create API Key (достаточно
+   Sending access).
+2. Vercel → проект `masortim-newsletter` → Settings → Environment Variables →
+   `RESEND_API_KEY` = `re_…` → Production.
+3. Redeploy: Deployments → последний → ⋯ → Redeploy.
+
+Домен отправителя тоже проверяется в Resend (Domains → Add Domain → DNS-записи).
+Пока домена нет, можно отправлять с тестового `onboarding@resend.dev` — но только
+на собственный адрес. `NEWSLETTER_FROM` меняется в тех же переменных.
+
+До появления ключа форма показывает «Адрес принят, но отправка писем ещё
+настраивается» — честно и без ложного «нет связи».
+
 ### Как устроен деплой
 
 Vercel-проект создан в режиме `framework: node`: из корня собирается **одна**
