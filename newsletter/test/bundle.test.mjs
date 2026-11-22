@@ -87,6 +87,27 @@ test('корневой обработчик отвечает на все мар�
   // Секреты наружу не отдаются — только признаки наличия.
   assert.ok(!JSON.stringify(report).includes('SUPABASE_SERVICE_ROLE_KEY='));
 
+  // Тестовый режим Resend: resend.dev — общий домен, его нет в списке
+  // доменов аккаунта, но письма с него уходят. health не должен считать
+  // такой адрес «непроверенным», иначе ready не станет true никогда.
+  const saved = { ...process.env };
+  Object.assign(process.env, {
+    RESEND_API_KEY: 're_test_key',
+    NEWSLETTER_FROM: 'Masortim <onboarding@resend.dev>',
+    SUPABASE_URL: 'https://example.supabase.co',
+    SUPABASE_SERVICE_ROLE_KEY: 'test-key',
+  });
+  const { default: fresh } = await import(`${BUNDLE}?test=${Date.now()}`);
+  const testMode = await (await fresh(new Request('https://example.test/api/newsletter/health'))).json();
+  assert.equal(testMode.checks.senderMode, 'test');
+  assert.equal(testMode.checks.fromDomainVerified, true);
+  assert.equal(testMode.ready, true);
+  assert.ok(Array.isArray(testMode.notes) && testMode.notes.some((n) => n.includes('только на адрес владельца')));
+  for (const key of Object.keys(process.env)) {
+    if (!(key in saved)) delete process.env[key];
+  }
+  Object.assign(process.env, saved);
+
   // Без ключа почты подписка отвечает 502 — важно, что это не 500:
   // значит разбор тела и валидация адреса прошли.
   const bad = await handler(new Request('https://example.test/api/newsletter/subscribe', {

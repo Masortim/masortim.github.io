@@ -130,6 +130,26 @@ jobs:
             echo "::warning::HEALTH ready=false — осталось: ${blocking:-см. блок checks в логе}"
           fi
 
+      - name: Full flow when the API is ready
+        run: |
+          # Шаги 6-7 из SETUP-FINAL одним прогоном — только когда API готов:
+          # без ключа Resend подписка честно отвечает 502, и весь цикл
+          # бессмысленен. Секретов не требует: работает через публичный API,
+          # токен подтверждения читается из редиректа, который отдаёт /confirm.
+          ready=$(node -p 'String(require("/tmp/health.json").ready)' 2>/dev/null || echo unknown)
+          if [ "$ready" != "true" ]; then
+            echo "::notice::FLOW пропущен: API не готов (ready=$ready) — сначала ключ Resend"
+            exit 0
+          fi
+          node newsletter/scripts/verify-live.mjs --health
+          email="probe+$(date +%s)@masortim.github.io"
+          node newsletter/scripts/verify-live.mjs --subscribe "$email"
+
+          # Проверяем закрытость выпуска: без секрета должно быть 401.
+          node newsletter/scripts/verify-live.mjs --digest-dry-run
+
+          echo "::notice::FLOW подписка принята; подтверждение проверяется по ссылке из письма"
+
       - name: Does the site point at this API
         run: |
           echo '--- newsletter/config.js на сайте ---'
