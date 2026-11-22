@@ -1,22 +1,22 @@
 /**
- * Загрузчик для деплоя без git-интеграции.
+ * Loader for deployments without Vercel's git integration.
  *
- * Обычный путь — `vercel deploy` из каталога `newsletter/edge`: тогда
- * собранный `index.mjs` уезжает целиком. Но если деплой создаётся через
- * API с ограничением на размер поля, передать 38 КБ бандла нельзя.
+ * The regular path — `vercel deploy` from `newsletter/edge` — ships the
+ * whole bundled `index.mjs` (38 KB). When a deployment is created through
+ * an API with a per-field size limit, that bundle cannot be passed.
  *
- * Этот файл решает задачу иначе: при первом запросе он скачивает бандл
- * из репозитория, импортирует его и дальше работает как обычная функция.
- * Версия берётся из ветки `main` (как при git-интеграции) или из SHA
- * в NEWSLETTER_BUNDLE_REF, если нужна жёсткая фиксация.
+ * This file solves the problem differently: on the first request it
+ * downloads the bundle from the repository, imports it and then behaves
+ * as an ordinary handler. The version comes from `main` (the same thing
+ * Vercel's git integration would ship) or from a pinned SHA when strict
+ * pinning is wanted.
  *
- * Если GitHub недоступен или отдал не тот файл, функция честно отвечает
- * 503 `bundle_unavailable`, а не 500.
+ *   NEWSLETTER_BUNDLE_REF = main | <commit sha> | <tag>
+ *
+ * If GitHub is unreachable or returns the wrong file, the function
+ * answers 503 `bundle_unavailable` instead of 500.
  */
 
-// Что считается прод-версией API. По умолчанию — бандл из `main`:
-// ровно то, что уехало бы при обычной git-интеграции Vercel. Нужна
-// жёсткая фиксация — задайте NEWSLETTER_BUNDLE_REF с SHA коммита.
 const REF = (process.env.NEWSLETTER_BUNDLE_REF ?? 'main').trim();
 const REPO = 'Masortim/masortim.github.io';
 const PATH = 'newsletter/edge/index.mjs';
@@ -37,7 +37,7 @@ async function load() {
   const response = await fetch(url, { headers: { 'User-Agent': 'masortim-newsletter' } });
   if (!response.ok) throw new Error(`github ${response.status}`);
   const source = await response.text();
-  // Дешёвая проверка, что скачали именно бандл, а не страницу ошибки.
+  // Cheap sanity check: we must have got the bundle, not an error page.
   if (!source.includes('newsletter/health') || !source.includes('export default')) {
     throw new Error('unexpected payload');
   }
