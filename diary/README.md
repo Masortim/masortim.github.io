@@ -27,6 +27,12 @@ Notes (`/diary/<project>/`) are set in Edward Tufte's style: ET Book, 21px/30px 
 - Формула: `\(…\)` — инлайн, `\[…\]` — блочная (нужен MathJax; в заметках дневника подключайте его скрипт при необходимости).
 - Код: `<code>…</code>` — инлайн, `<pre><code class="language-python">…</code></pre>` — блок (подсветка — highlight.js при необходимости).
 
+## Подписка: RSS-фид / Subscription: RSS feed
+
+Фид `/feed.xml` собирается автоматически из самих страниц заметок — отдельного списка записей вести не нужно. Скрипт `scripts/build-feed.mjs` обходит `diary/<slug>/index.html`, берёт `h1`, `note-dek`, `note-meta` и ссылку на репозиторий, сортирует по дате (свежие сверху) и пишет RSS 2.0. В CI шаг «Build RSS Feed» выполняется перед сборкой артефакта на каждый пуш в `main`, поэтому новая папка с заметкой сразу попадает в фид. Локально: `node scripts/build-feed.mjs`. На главной ссылка «Подписаться по RSS» в блоке «Подписка» ведёт на `/feed.xml`; там же объявлен `<link rel="alternate" type="application/rss+xml">` для автообнаружения фида браузером и читалками.
+
+The `/feed.xml` feed is generated automatically from the note pages themselves — there is no separate list of entries to maintain. `scripts/build-feed.mjs` walks `diary/<slug>/index.html`, reads `h1`, `note-dek`, `note-meta`, and the repository link, sorts by date (newest first), and writes RSS 2.0. In CI the “Build RSS Feed” step runs before the artifact is assembled on every push to `main`, so a new note folder appears in the feed immediately. Locally: `node scripts/build-feed.mjs`. On the homepage the “Subscribe via RSS” link in the Subscription block points to `/feed.xml`, and a `<link rel="alternate" type="application/rss+xml">` lets browsers and readers auto-discover it.
+
 ## Как добавить проект / Adding a project
 
 1. Создайте отдельную страницу `diary/<slug>/index.html`. Используйте двуязычные блоки `data-language-content="ru"` и `data-language-content="en"`, подключите `/tufte/tufte-universal.css`, `/diary/diary.css`, `/diary/projects.css` и `/diary/diary.js`.
