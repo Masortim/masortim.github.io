@@ -107,8 +107,12 @@ body.archive-home { margin:0; padding:0; }
 .project-card { margin:0 0 22px; overflow-wrap:break-word; }
 .project-card h3 { align-self:flex-start; width:100%; min-width:0; margin:0 0 6px; font-size:clamp(14px,1.3vw,18px); font-weight:700; line-height:1.15; text-align:left; overflow-wrap:break-word; }
 .project-card h3 > a { display:block; }
-.project-card p { margin:0 0 4px; color:var(--archive-muted); font-size:clamp(12px,1vw,14px); line-height:1.4; overflow-wrap:break-word; }
-.project-card .project-meta { margin-top:3px; margin-bottom:1em; color:var(--archive-muted); font-size:clamp(10px,.85vw,12px); font-weight:700; overflow-wrap:break-word; }
+.project-card p:not(.project-meta) { margin:0 0 4px; color:var(--archive-muted); font-size:clamp(12px,1vw,14px); line-height:1.4; overflow-wrap:break-word; }
+/* Мета-строка (дата · стек) остаётся основной: чёрной в светлой теме,
+   #eee в тёмной. Она исключена из правила .project-card p:not(.project-meta)
+   выше, поэтому цвет берётся из наследования .project-archive, а не из
+   приглушённой переменной --archive-muted. */
+.project-card .project-meta { margin-top:3px; margin-bottom:1em; font-size:clamp(10px,.85vw,12px); font-weight:700; overflow-wrap:break-word; }
 @media (min-width: 901px) {
   .archive-column { display:contents; }
   .archive-column:nth-child(1) > h2, .archive-column:nth-child(1) > .project-card:first-of-type { grid-column:1; }
