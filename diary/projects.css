@@ -281,9 +281,10 @@ body.dark-theme .archive-sheet { --archive-grid-line:transparent; --archive-hori
 body.dark-theme .archive-top, body.dark-theme .archive-columns, body.dark-theme .archive-bottom, body.dark-theme .archive-promos--second, body.dark-theme .archive-promos-flow { border-color:var(--archive-horizontal-line); }
 body.dark-theme .archive-columns::before, body.dark-theme .archive-column h2::after { background:var(--archive-subtle-line); }
 /* Тёмная тема: монохромный серый #b4b4b4.
-   На фоне #222 он даёт контраст 7.5:1 (AA и AAA для обычного текста),
-   оставаясь заметно тише заголовков #eee (13.5:1). Прежний #c7c7c7
-   (8.8:1) был слишком близок к #eee — серый читался как белый. */
+   На фоне #222 контраст 7.67:1 (выше AA 4.5:1 и AAA 7:1 для обычного
+   текста), при этом он заметно тише заголовков #eee (13.71:1).
+   Прежний #c7c7c7 (9.41:1) был слишком близок к #eee — серый читался
+   почти как белый. */
 body.dark-theme .project-archive { --archive-muted: #b4b4b4; }
 body.dark-theme .archive-column h2 { border-color: #555; }
 body.dark-theme .archive-actions .language-switch button { color: #ddd; }
