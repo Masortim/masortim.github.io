@@ -39,6 +39,16 @@ There are two feeds, one per language: `/feed.xml` (Russian) and `/feed-en.xml` 
 
 The built-in browser of the QuiteRSS reader is an old QtWebKit. `diary/diary.js` and `diary/archive.js` must parse as ES5: `?.`, arrow functions, `let`/`const`, `async/await`, and `URLSearchParams` are syntax errors there, and then the whole script never runs — a note opened from the English feed rendered in Russian. Check with `node scripts/check-es5.mjs` (parses the files with acorn at `ecmaVersion: 5`); CI runs it before assembling the artifact.
 
+## Email-рассылка / Email newsletter
+
+Кроме RSS есть email-рассылка: форма на `/newsletter/`, ссылка «Email-рассылка ↗» в колонке «Подписка». Подписка двухшаговая (double opt-in): адрес попадает в список только после перехода по ссылке из письма, отписка — одним кликом из любого письма. Выпуск с новыми записями уходит раз в неделю (`.github/workflows/newsletter.yml`), записи берутся из тех же `diary/<slug>/index.html`, что и фиды.
+
+Сайт статический, поэтому отправка и хранение живут вне GitHub Pages: API-функции на Vercel (`api/newsletter/`) шлют письма через Resend, список подписчиков хранится в отдельном приватном репозитории. Полная инструкция по настройке и ограничения — [newsletter/README.md](../newsletter/README.md).
+
+Besides RSS there is an email newsletter: a form at `/newsletter/` and an “Email newsletter ↗” link in the Subscription column. Subscription is double opt-in: the address is added only after clicking the link in the confirmation email, and every email carries a one-click unsubscribe link. A digest with new notes goes out weekly (`.github/workflows/newsletter.yml`), drawn from the same `diary/<slug>/index.html` pages as the feeds.
+
+The site is static, so sending and storage live outside GitHub Pages: Vercel API functions (`api/newsletter/`) send mail through Resend, and the subscriber list lives in a separate private repository. Setup instructions and limitations: [newsletter/README.md](../newsletter/README.md).
+
 ## Как добавить проект / Adding a project
 
 1. Создайте отдельную страницу `diary/<slug>/index.html`. Используйте двуязычные блоки `data-language-content="ru"` и `data-language-content="en"`, подключите `/tufte/tufte-universal.css`, `/diary/diary.css`, `/diary/projects.css` и `/diary/diary.js`.

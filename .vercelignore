@@ -1,0 +1,11 @@
+# На Vercel уезжает только серверная часть рассылки: API-функции и общие
+# модули. Сайт целиком публикуется через GitHub Pages, дублировать его
+# в Vercel не нужно — это только лишний билд и лишний риск разъезда версий.
+*
+!api/
+!api/newsletter/
+!api/newsletter/*.mjs
+!newsletter/lib/
+!newsletter/lib/*.mjs
+!newsletter/package.json
+!vercel.json

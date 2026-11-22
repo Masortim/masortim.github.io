@@ -1,0 +1,54 @@
+name: Weekly Newsletter Digest
+
+# Выпуск уходит раз в неделю. Записи берутся из тех же страниц заметок,
+# что и RSS-фиды, поэтому новый diary/<slug>/ попадает в выпуск сам.
+on:
+  schedule:
+    # Воскресенье, 09:00 UTC.
+    - cron: '0 9 * * 0'
+  workflow_dispatch:
+    inputs:
+      since:
+        description: 'Отправлять записи начиная с этой даты (YYYY-MM-DD). Пусто — три последние.'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Только показать, что уйдёт, ничего не отправлять'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: 'newsletter-digest'
+  cancel-in-progress: false
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Test Newsletter Logic
+        working-directory: ./newsletter
+        run: npm test
+
+      - name: Send Digest
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          NEWSLETTER_STORE_REPO: ${{ secrets.NEWSLETTER_STORE_REPO }}
+          NEWSLETTER_STORE_TOKEN: ${{ secrets.NEWSLETTER_STORE_TOKEN }}
+          NEWSLETTER_FROM: ${{ secrets.NEWSLETTER_FROM }}
+          NEWSLETTER_SITE: https://masortim.github.io
+        run: |
+          node newsletter/scripts/send-digest.mjs \
+            ${{ github.event.inputs.since != '' && format('--since {0}', github.event.inputs.since) || '' }} \
+            ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
