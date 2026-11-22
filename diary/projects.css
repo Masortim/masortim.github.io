@@ -74,11 +74,15 @@ body.archive-home { margin:0; padding:0; }
   /* Геометрия заголовков колонок вынесена в переменные: одна и та же
      формула задаёт поля заголовка и положение линии сетки под ним. */
   --column-heading-pad: clamp(10px, 1.3vw, 19px);
-  /* Кегль ограничен 17px: самое длинное слово («Исследования») при этом
-     гарантированно влезает в колонку шириной ~148px и не переносится.
-     При 19px оно ломалось на две строки, растягивало строку сетки и
-     добавляло пустое поле под короткими заголовками. */
-  --column-heading-size: clamp(14px, 1.3vw, 17px);
+  /* В шестиколоночной сетке (>900px) ширина колонки — около 148px, и это
+     жёстко ограничивает кегль: самое длинное слово «Исследования» при
+     letter-spacing -0.035em занимает ~8.5 кегля, то есть 17px — уже 141px
+     из 148px. При 19px слово ломалось и растягивало строку сетки.
+     Поэтому базовая формула держит максимум 17px.
+     Ниже 900px сетка трёхколоночная, колонки шире (186–364px), и там
+     кегль поднимается до 18px — иначе заголовок колонки почти не
+     отличается от названий карточек (h3). */
+  --column-heading-size: clamp(12px, 1.3vw, 17px);
   --column-heading-line: 1.12;
   --column-heading-height: calc(2 * var(--column-heading-pad) + var(--column-heading-line) * var(--column-heading-size));
 }
@@ -105,7 +109,20 @@ body.archive-home { margin:0; padding:0; }
 }
 .archive-column h2 > span[data-language-content] { font-size: inherit; font-weight: inherit; }
 .project-card { margin:0 0 22px; overflow-wrap:break-word; }
-.project-card h3 { align-self:flex-start; width:100%; min-width:0; margin:0 0 6px; font-size:clamp(14px,1.3vw,18px); font-weight:700; line-height:1.15; text-align:left; overflow-wrap:break-word; }
+/* Кегль названия карточки держится ниже заголовка колонки (h2).
+   Было clamp(14px,1.3vw,18px): в мобильной раскладке (одна колонка)
+   совпадал с h2 (14px), а с 1280px перерастал его (18px против 17px) —
+   иерархия переворачивалась на обоих концах диапазона.
+   Ниже 760px колонка одна и широкая, поэтому там h3 опускается до 12px;
+   на широких экранах он не поднимается выше 15px, чтобы оставаться
+   заметно меньше h2 (17px при колонке 148px — это её предел). */
+.project-card h3 { align-self:flex-start; width:100%; min-width:0; margin:0 0 6px; font-size:clamp(12px,1.15vw,15px); font-weight:700; line-height:1.15; text-align:left; overflow-wrap:break-word; }
+/* В шестиколоночной сетке от 901px колонка сжата до 105–148px, и h2 там
+   упирается в 12–17px. Чтобы заголовок колонки оставался заметно крупнее
+   названия карточки, h3 в этом же диапазоне на шаг ниже: 11–13.5px. */
+@media (min-width: 901px) {
+  .project-card h3 { font-size: clamp(11px, 1.05vw, 13.5px); }
+}
 .project-card h3 > a { display:block; }
 .project-card p:not(.project-meta) { margin:0 0 4px; color:var(--archive-muted); font-size:clamp(12px,1vw,14px); line-height:1.4; overflow-wrap:break-word; }
 /* Мета-строка (дата · стек) остаётся основной: чёрной в светлой теме,
@@ -129,7 +146,10 @@ body.archive-home { margin:0; padding:0; }
 .archive-view-all { margin:auto 0 8px; font-size:14px; font-weight:700; }
 .archive-bottom { padding-bottom:18px; border-bottom:1px solid var(--archive-horizontal-line); }
 .archive-bottom section { padding:14px 0 10px; overflow-wrap:break-word; }
-.archive-bottom h2 { margin:0 0 6px; font-size:clamp(13px,1.45vw,20px); line-height:1.1; overflow-wrap:break-word; }
+/* Нижняя граница поднята с 13px: на 320px h2 совпадал с кеглем названий
+   карточек и переставал читаться как заголовок блока.
+   На узких экранах (≤760px) — 15px, чтобы заметно отличаться от h3 12px. */
+.archive-bottom h2 { margin:0 0 6px; font-size:clamp(15px,1.45vw,20px); line-height:1.1; overflow-wrap:break-word; }
 .archive-bottom p { margin:0 0 12px; color:var(--archive-muted); font-size:14px; line-height:1.4; }
 .archive-promos { row-gap:24px; padding-top:16px; }
 /* Два блока промо (.archive-promos и .archive-promos--second) на узких
@@ -316,7 +336,17 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
   .archive-search { margin-top:0; }
   .archive-columns { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .archive-column { min-height: 0; padding: 0 0 1rem; }
-  .archive-column h2 { position: relative; }
+  /* Трёхколоночная сетка (≤900px) куда свободнее: колонки 186–364px
+     против 105–148px в шестиколоночной, поэтому заголовок колонки здесь
+     крупнее и явно перевешивает названия карточек (h3 = 12px).
+     Шкала монотонно убывает: 18px на 320px → 13px на 900px. Так на
+     телефоне заголовок крупный (колонка там во всю ширину), а к границе
+     900/901px он сходится с десктопным (12px на 901px) почти без
+     ступеньки — иначе заголовок прыгал с 20px до 12px. */
+  .archive-column h2 {
+    position: relative;
+    --column-heading-size: clamp(13px, 20.76px - 0.862vw, 18px);
+  }
   .archive-column h2::after { position: absolute; right: 0; bottom: 0; left: 0; height: 1px; background:var(--archive-subtle-line); content:""; }
   .archive-bottom { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .promo-module { grid-column: span 1; }
