@@ -68,7 +68,11 @@
   const initialLanguage = ['ru', 'en'].includes(requestedLanguage)
     ? requestedLanguage
     : (['ru', 'en'].includes(storedLanguage) ? storedLanguage : 'ru');
-  applyLanguage(initialLanguage, false);
+  // Язык из адреса (?lang=) — это осознанный выбор: ссылка из RSS-фида
+  // открывает запись сразу на нужном языке, и этот выбор должен сохраниться
+  // при переходе по внутренним ссылкам. Иначе читатель EN-фида, щёлкнув
+  // «назад к дневнику», снова оказался бы на русской версии.
+  applyLanguage(initialLanguage, Boolean(['ru', 'en'].includes(requestedLanguage)));
 
   const storedTheme = readPreference(themeKey) || readPreference(tufteThemeKey);
   if (storedTheme === 'dark') document.body.classList.add('dark-theme');

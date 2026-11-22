@@ -18,8 +18,8 @@
     <copyright>© 2026 Masortim</copyright>
     <item>
       <title>An event calendar that checks its sources</title>
-      <link>https://masortim.github.io/diary/conferences/</link>
-      <guid isPermaLink="true">https://masortim.github.io/diary/conferences/</guid>
+      <link>https://masortim.github.io/diary/conferences/?lang=en</link>
+      <guid isPermaLink="true">https://masortim.github.io/diary/conferences/?lang=en</guid>
       <pubDate>Tue, 10 Nov 2026 12:00:00 GMT</pubDate>
       <description>Conference Tracker shows upcoming and past events without hard-coding dates that change over time. Stack: Obsidian · JavaScript. Repository: https://github.com/Masortim/conferences</description>
       <category>Obsidian</category>
@@ -27,8 +27,8 @@
     </item>
     <item>
       <title>Portablizer: a portable install without surprises</title>
-      <link>https://masortim.github.io/diary/portablizer/</link>
-      <guid isPermaLink="true">https://masortim.github.io/diary/portablizer/</guid>
+      <link>https://masortim.github.io/diary/portablizer/?lang=en</link>
+      <guid isPermaLink="true">https://masortim.github.io/diary/portablizer/?lang=en</guid>
       <pubDate>Mon, 09 Nov 2026 12:00:00 GMT</pubDate>
       <description>Behind the generic repository name Test is Portablizer, a project for creating and maintaining a portable PyCharm installation on Windows. Stack: Python · Windows. Repository: https://github.com/Masortim/Test</description>
       <category>Python</category>
@@ -36,8 +36,8 @@
     </item>
     <item>
       <title>A catalogue and analysis of UAVs</title>
-      <link>https://masortim.github.io/diary/uav-classification/</link>
-      <guid isPermaLink="true">https://masortim.github.io/diary/uav-classification/</guid>
+      <link>https://masortim.github.io/diary/uav-classification/?lang=en</link>
+      <guid isPermaLink="true">https://masortim.github.io/diary/uav-classification/?lang=en</guid>
       <pubDate>Wed, 07 Oct 2026 12:00:00 GMT</pubDate>
       <description>The project gathers UAV technical specifications and turns them into structured data for exploration and comparison. Stack: Python · Streamlit. Repository: https://github.com/Masortim/UAV_classification</description>
       <category>Python</category>
@@ -45,8 +45,8 @@
     </item>
     <item>
       <title>Lectures as a graph of concepts</title>
-      <link>https://masortim.github.io/diary/lecture-graph-vault/</link>
-      <guid isPermaLink="true">https://masortim.github.io/diary/lecture-graph-vault/</guid>
+      <link>https://masortim.github.io/diary/lecture-graph-vault/?lang=en</link>
+      <guid isPermaLink="true">https://masortim.github.io/diary/lecture-graph-vault/?lang=en</guid>
       <pubDate>Wed, 16 Sep 2026 12:00:00 GMT</pubDate>
       <description>Lecture Graph Vault structures lecture material to be read as text and explored as a network of links. Stack: Obsidian · JavaScript. Repository: https://github.com/Masortim/Lecture-Graph-Vault</description>
       <category>Obsidian</category>
@@ -54,8 +54,8 @@
     </item>
     <item>
       <title>Measuring shapes in an image</title>
-      <link>https://masortim.github.io/diary/figure-measurement/</link>
-      <guid isPermaLink="true">https://masortim.github.io/diary/figure-measurement/</guid>
+      <link>https://masortim.github.io/diary/figure-measurement/?lang=en</link>
+      <guid isPermaLink="true">https://masortim.github.io/diary/figure-measurement/?lang=en</guid>
       <pubDate>Thu, 14 Mar 2024 12:00:00 GMT</pubDate>
       <description>A Python experiment combines image processing and geometry, moving from pixel contours to shape measurements. Stack: Python · OpenCV. Repository: https://github.com/Masortim/Measuring-the-area-of-the-figures</description>
       <category>Python</category>
@@ -63,16 +63,16 @@
     </item>
     <item>
       <title>An arcade in text mode</title>
-      <link>https://masortim.github.io/diary/arkanoid/</link>
-      <guid isPermaLink="true">https://masortim.github.io/diary/arkanoid/</guid>
+      <link>https://masortim.github.io/diary/arkanoid/?lang=en</link>
+      <guid isPermaLink="true">https://masortim.github.io/diary/arkanoid/?lang=en</guid>
       <pubDate>Mon, 16 Oct 2023 12:00:00 GMT</pubDate>
       <description>A console take on Arkanoid, exploring how game physics and level state fit into a compact C program. Stack: C. Repository: https://github.com/Masortim/Arkanoid</description>
       <category>C</category>
     </item>
     <item>
       <title>From text PRN to CSV</title>
-      <link>https://masortim.github.io/diary/prn-to-csv/</link>
-      <guid isPermaLink="true">https://masortim.github.io/diary/prn-to-csv/</guid>
+      <link>https://masortim.github.io/diary/prn-to-csv/?lang=en</link>
+      <guid isPermaLink="true">https://masortim.github.io/diary/prn-to-csv/?lang=en</guid>
       <pubDate>Mon, 16 Oct 2023 12:00:00 GMT</pubDate>
       <description>The converter turns column-oriented PRN text into CSV rows ready for further processing. Stack: C · C++ · C#. Repository: https://github.com/Masortim/prn_to_csv_converter</description>
       <category>C</category>
@@ -81,8 +81,8 @@
     </item>
     <item>
       <title>Tic-tac-toe against the computer</title>
-      <link>https://masortim.github.io/diary/tic-tac-toe/</link>
-      <guid isPermaLink="true">https://masortim.github.io/diary/tic-tac-toe/</guid>
+      <link>https://masortim.github.io/diary/tic-tac-toe/?lang=en</link>
+      <guid isPermaLink="true">https://masortim.github.io/diary/tic-tac-toe/?lang=en</guid>
       <pubDate>Mon, 16 Oct 2023 12:00:00 GMT</pubDate>
       <description>A small Windows Forms app turns a familiar game into an exercise in UI state and turn-taking. Stack: C# · Windows Forms. Repository: https://github.com/Masortim/TicTacToe</description>
       <category>C#</category>
@@ -90,8 +90,8 @@
     </item>
     <item>
       <title>One greeting, many languages</title>
-      <link>https://masortim.github.io/diary/hello-world/</link>
-      <guid isPermaLink="true">https://masortim.github.io/diary/hello-world/</guid>
+      <link>https://masortim.github.io/diary/hello-world/?lang=en</link>
+      <guid isPermaLink="true">https://masortim.github.io/diary/hello-world/?lang=en</guid>
       <pubDate>Tue, 28 Dec 2021 12:00:00 GMT</pubDate>
       <description>This repository gathers tiny greeting programs so that language syntax can be compared without the distraction of larger examples. Stack: Multi-language. Repository: https://github.com/Masortim/hello_world</description>
       <category>Multi-language</category>

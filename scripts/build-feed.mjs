@@ -147,7 +147,19 @@ function describe(note, feed) {
   const parts = [dek];
   if (note.stack) parts.push(`${feed.stackPrefix}: ${note.stack}.`);
   if (note.repo) parts.push(`${feed.repoPrefix}: ${note.repo}`);
-  return { title, description: parts.join(' ') };
+  return { title, description: parts.join(' '), url: itemUrl(note, feed) };
+}
+
+/**
+ * Адрес записи для конкретного фида. Без параметра страница заметки
+ * открывается на языке из localStorage (то есть на том, который читатель
+ * выбирал в прошлый раз), а при первом визите — на русском. Из-за этого
+ * запись из EN-фида открывалась на русском у тех, кто до этого смотрел
+ * русскую версию. Поэтому язык передаётся явно и симметрично в обоих
+ * фидах: ?lang=en и ?lang=ru.
+ */
+function itemUrl(note, feed) {
+  return `${note.url}?lang=${feed.lang}`;
 }
 
 /** Читает все заметки из diary/<slug>/index.html. */
@@ -190,7 +202,7 @@ function buildFeed(notes, feed) {
   const lastBuild = rfc822(items[0].note.pubDate);
 
   const itemXml = items
-    .map(({ note, title, description }) => {
+    .map(({ note, title, description, url }) => {
       const categories = note.stack
         .split('·')
         .map((s) => s.trim())
@@ -201,8 +213,8 @@ function buildFeed(notes, feed) {
       return [
         '    <item>',
         `      <title>${escapeXml(title)}</title>`,
-        `      <link>${escapeXml(note.url)}</link>`,
-        `      <guid isPermaLink="true">${escapeXml(note.url)}</guid>`,
+        `      <link>${escapeXml(url)}</link>`,
+        `      <guid isPermaLink="true">${escapeXml(url)}</guid>`,
         `      <pubDate>${rfc822(note.pubDate)}</pubDate>`,
         `      <description>${escapeXml(description)}</description>`,
         categories,
