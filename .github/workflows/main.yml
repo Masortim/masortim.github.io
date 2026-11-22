@@ -41,6 +41,12 @@ jobs:
         working-directory: ./graph
         run: npm run build
 
+      # QuiteRSS открывает записи из фида во встроенном браузере на старом
+      # QtWebKit: современный синтаксис для него — ошибка разбора, и скрипт
+      # не выполняется вовсе. Ловим это до деплоя.
+      - name: Check Diary Scripts Are ES5
+        run: node scripts/check-es5.mjs
+
       # RSS-фиды собираются из HTML самих заметок, поэтому они всегда актуальны
       # на момент деплоя: новая папка diary/<slug>/ попадает в оба фида
       # автоматически (feed.xml — русский, feed-en.xml — английский).
