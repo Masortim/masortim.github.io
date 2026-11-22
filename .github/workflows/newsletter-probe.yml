@@ -17,6 +17,7 @@ on:
     paths:
       - 'api/newsletter/**'
       - 'newsletter/lib/**'
+      - 'newsletter/edge/**'
       - '.github/workflows/newsletter-probe.yml'
 
 jobs:
