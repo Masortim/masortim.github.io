@@ -131,25 +131,35 @@ vercel env add NEWSLETTER_FROM production
 
 ## Шаг 5. Перевыпустить деплой
 
-**Панель:** Deployments → верхний деплой → ⋯ → **Redeploy**
-(галочку «Use existing build cache» можно оставить).
+Переменные окружения применяются только к **новым** деплоям, поэтому после
+шага 4 нужен новый.
+
+**Панель:** Vercel → проект `masortim-newsletter` → **Deployments** → у верхнего
+деплоя ⋯ → **Redeploy**.
 
 **CLI:**
 
 ```bash
 cd newsletter
-npm run build          # собрать newsletter/edge/index.mjs из исходников
-vercel --prod          # выкатить каталог newsletter/edge в прод
+npm run build      # пересобрать newsletter/edge/index.mjs из исходников
+git add newsletter/edge/index.mjs && git commit -m "newsletter: пересборка"
+git push
+vercel --prod      # если деплоите вручную, а не из git
 ```
 
-Сборка обязательна: Vercel разворачивает **готовый** `newsletter/edge/index.mjs`,
-а не исходники из `api/` и `newsletter/lib/`.
+Сборка обязательна: Vercel разворачивает **готовый** `newsletter/edge/index.mjs`
+(каталог проекта — `newsletter/edge`), а не исходники из `api/` и
+`newsletter/lib/`. Файл лежит в git именно для этого.
 
 Проверка, что выкатилось именно то:
 
 ```bash
 curl -s https://masortim-newsletter.vercel.app/ | head -20
 ```
+
+В ответе — `{"name":"masortim-newsletter","endpoints":[...]}`. Если вместо
+этого `No entrypoint found` в логах деплоя, значит из сборки выпал
+`newsletter/edge/index.mjs` — пересоберите (шаг 5) и повторите.
 
 ---
 
@@ -172,7 +182,8 @@ https://masortim-newsletter.vercel.app/api/newsletter/health
     "fromSet": true,
     "senderDomain": "updates.ваш-домен",
     "fromDomainStatus": "verified",
-    "fromDomainVerified": true
+    "fromDomainVerified": true,
+    "resendDomains": ["updates.ваш-домен (verified)"]
   }
 }
 ```
@@ -266,4 +277,4 @@ CORS для `https://masortim.github.io`, отсутствие Vercel Authentica
 | `onboarding@resend.dev` не доставляет | так и задумано: только на адрес владельца аккаунта |
 | `health` показывает `senderDomain: masortim.github.io` | `NEWSLETTER_FROM` не задан, работает значение по умолчанию |
 | Письмо подтверждения не пришло, в логах `200` | проверьте «Спам» и адрес: Resend отправил, дальше решает почтовый провайдер |
-| `health` отдаёт `503 bundle_unavailable` | прод-версия загрузчика не смогла скачать бандл — перевыпустите деплой (шаг 5) |
+| В логах деплоя `No entrypoint found` | в сборке нет `newsletter/edge/index.mjs` — `npm run build`, коммит, новый деплой |

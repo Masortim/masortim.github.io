@@ -23,7 +23,6 @@ newsletter/config.js
 newsletter/package.json
 newsletter/edge/router.mjs
 newsletter/edge/aliases.mjs
-newsletter/edge/remote.mjs
 feed.xml
 feed-en.xml
 feed-icon.svg
