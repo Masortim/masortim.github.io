@@ -57,10 +57,41 @@ body.archive-home { margin:0; padding:0; }
 .archive-search { align-self:stretch; margin-top:44px; }
 .archive-search input { display: block; box-sizing: border-box; width: 100%; height: 23px; padding: 3px 6px; border: 1px solid #bbb; border-radius: 0; background: #f3f3f3; color: #111; font: 12px Arial, sans-serif; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
-.archive-columns { position:relative; border-bottom:1px solid var(--archive-horizontal-line); }
-.archive-columns::before { position:absolute; top:56px; right:0; left:0; height:1px; background:var(--archive-subtle-line); content:""; }
+.archive-columns {
+  position:relative;
+  border-bottom:1px solid var(--archive-horizontal-line);
+  /* Геометрия заголовков колонок вынесена в переменные: одна и та же
+     формула задаёт поля заголовка и положение линии сетки под ним. */
+  --column-heading-pad: clamp(10px, 1.3vw, 19px);
+  /* Кегль ограничен 17px: самое длинное слово («Исследования») при этом
+     гарантированно влезает в колонку шириной ~148px и не переносится.
+     При 19px оно ломалось на две строки, растягивало строку сетки и
+     добавляло пустое поле под короткими заголовками. */
+  --column-heading-size: clamp(14px, 1.3vw, 17px);
+  --column-heading-line: 1.12;
+  --column-heading-height: calc(2 * var(--column-heading-pad) + var(--column-heading-line) * var(--column-heading-size));
+}
+/* Линия сетки (видна в режиме «Сетка») проходит ровно по нижней границе
+   заголовка: padding сверху + строка + padding снизу. */
+.archive-columns::before { position:absolute; top:var(--column-heading-height); right:0; left:0; height:1px; background:var(--archive-subtle-line); content:""; }
 .archive-column { display:flex; min-width:0; flex-direction:column; padding:0 0 1rem; }
-.archive-column h2 { min-width:0; margin:0 0 10px; padding:clamp(10px,1.3vw,19px) 0; font-size:clamp(14px,1.3vw,19px); font-weight:700; line-height:1.12; white-space:normal; overflow-wrap:break-word; }
+/* Заголовки колонок («Проекты», «Утилиты», «Исследования», «Обучение»,
+   «Инструменты», «Сообщества»): поле над надписью и под ней одинаковое.
+   Раньше снизу добавлялся margin 10px — отступ под надписью был больше, чем
+   над ней. Теперь вертикальные margin равны нулю, а padding задаёт одинаковые
+   поля сверху и снизу. */
+.archive-column h2 {
+  display:flex;
+  align-items:center;
+  min-width:0;
+  margin:0;
+  padding:var(--column-heading-pad) 0;
+  font-size:var(--column-heading-size);
+  font-weight:700;
+  line-height:var(--column-heading-line);
+  white-space:normal;
+  overflow-wrap:break-word;
+}
 .archive-column h2 > span[data-language-content] { font-size: inherit; font-weight: inherit; }
 .project-card { margin:0 0 22px; overflow-wrap:break-word; }
 .project-card h3 { align-self:flex-start; width:100%; min-width:0; margin:0 0 6px; font-size:clamp(14px,1.3vw,18px); font-weight:700; line-height:1.15; text-align:left; overflow-wrap:break-word; }
