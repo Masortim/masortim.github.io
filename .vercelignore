@@ -9,3 +9,10 @@
 !newsletter/lib/*.mjs
 !newsletter/package.json
 !vercel.json
+
+# Каталог сборки бандла: именно из него деплоится прод
+# (root directory проекта Vercel = newsletter/edge).
+!newsletter/edge/
+!newsletter/edge/index.mjs
+!newsletter/edge/package.json
+!newsletter/edge/vercel.json
