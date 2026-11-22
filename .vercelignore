@@ -1,11 +1,30 @@
-# На Vercel уезжает только серверная часть рассылки: API-функции и общие
-# модули. Сайт целиком публикуется через GitHub Pages, дублировать его
-# в Vercel не нужно — это только лишний билд и лишний риск разъезда версий.
-*
-!api/
-!api/newsletter/
-!api/newsletter/*.mjs
-!newsletter/lib/
-!newsletter/lib/*.mjs
-!newsletter/package.json
-!vercel.json
+# На Vercel уезжает только серверная часть рассылки. Сайт целиком
+# публикуется через GitHub Pages: дублировать его в Vercel незачем —
+# это лишний билд и лишний риск разъезда версий.
+#
+# Правила записаны исключениями, а не через `*` + `!`: при `*` вложенные
+# каталоги (newsletter/edge) не возвращаются обратно, и Vercel не находит
+# точку входа. Проще перечислить то, что не нужно.
+
+graph/
+diary/
+tufte/
+api/
+scripts/
+.github/
+newsletter/test/
+newsletter/scripts/
+newsletter/lib/
+newsletter/*.js
+newsletter/*.css
+newsletter/*.html
+newsletter/*.md
+newsletter/config.js
+newsletter/package.json
+newsletter/edge/router.mjs
+newsletter/edge/aliases.mjs
+newsletter/edge/remote.mjs
+feed.xml
+feed-en.xml
+feed-icon.svg
+index.html
