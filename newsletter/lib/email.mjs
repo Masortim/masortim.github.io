@@ -6,6 +6,13 @@
  */
 
 const SITE = process.env.NEWSLETTER_SITE ?? 'https://masortim.github.io';
+
+/**
+ * Адрес серверных функций. Сайт на GitHub Pages, функции на Vercel, поэтому
+ * ссылки подтверждения и отписки должны вести на Vercel, а не на SITE.
+ * Если переменная не задана (локальный прогон), берётся тот же origin.
+ */
+const API = (process.env.NEWSLETTER_API_BASE ?? SITE).replace(/\/$/, '');
 const FROM = process.env.NEWSLETTER_FROM ?? 'Masortim <digest@masortim.github.io>';
 
 const COPY = {
@@ -62,7 +69,7 @@ function button(url, label) {
 /** Письмо с просьбой подтвердить подписку (double opt-in). */
 export function confirmationEmail({ email, lang, token }) {
   const t = COPY[lang] ?? COPY.ru;
-  const url = `${SITE}/api/newsletter/confirm?token=${encodeURIComponent(token)}`;
+  const url = `${API}/api/newsletter/confirm?token=${encodeURIComponent(token)}`;
   return {
     to: email,
     subject: t.confirmSubject,
@@ -75,7 +82,7 @@ export function confirmationEmail({ email, lang, token }) {
 /** Письмо после успешного подтверждения — с ссылкой на отписку. */
 export function welcomeEmail({ email, lang, token }) {
   const t = COPY[lang] ?? COPY.ru;
-  const unsubscribe = `${SITE}/api/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
+  const unsubscribe = `${API}/api/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
   return {
     to: email,
     subject: t.confirmedSubject,
@@ -96,7 +103,7 @@ export function digestEmail({ email, lang, token, notes }) {
 <p style="margin:0"><a href="${escapeHtml(url)}" style="color:#e8590c;font:600 15px Arial,sans-serif">${escapeHtml(t.digestRead)} →</a></p>`;
     })
     .join('\n');
-  const unsubscribe = `${SITE}/api/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
+  const unsubscribe = `${API}/api/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
   return {
     to: email,
     subject: t.digestSubject(notes.length),
