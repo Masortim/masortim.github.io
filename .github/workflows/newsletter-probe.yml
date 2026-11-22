@@ -118,3 +118,4 @@ jobs:
           grep -i 'NEWSLETTER_API_BASE' /tmp/cfg.js && exit 0
           echo "::warning::config.js недоступен или без адреса API (status=$code) — форма может не найти бэкенд"
 
+
