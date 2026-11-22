@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 144 144" width="144" height="144" role="img" aria-label="Дневник разработчика — RSS">
+  <rect width="144" height="144" rx="24" fill="#111"/>
+  <!-- Три расходящиеся дуги и точка — узнаваемый знак RSS -->
+  <circle cx="38" cy="106" r="14" fill="#fffff8"/>
+  <path d="M38 64a42 42 0 0 1 42 42" fill="none" stroke="#fffff8" stroke-width="18" stroke-linecap="round"/>
+  <path d="M38 22a84 84 0 0 1 84 84" fill="none" stroke="#fffff8" stroke-width="18" stroke-linecap="round"/>
+</svg>

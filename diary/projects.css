@@ -151,6 +151,12 @@ body.archive-home { margin:0; padding:0; }
    На узких экранах (≤760px) — 15px, чтобы заметно отличаться от h3 12px. */
 .archive-bottom h2 { margin:0 0 6px; font-size:clamp(15px,1.45vw,20px); line-height:1.1; overflow-wrap:break-word; }
 .archive-bottom p { margin:0 0 12px; color:var(--archive-muted); font-size:14px; line-height:1.4; }
+/* Ссылка на RSS в блоке «Подписка»: основной цвет и подчёркивание, чтобы
+   её было видно как действие, а не как обычный пояснительный текст.
+   Подсказка под ней остаётся приглушённой, но мельче. */
+.archive-bottom .feed-link { display:inline-block; color:inherit; font-weight:700; text-decoration:underline; text-underline-offset:2px; }
+.archive-bottom .feed-link:hover { text-decoration-thickness:2px; }
+.archive-bottom .feed-hint { margin:0; font-size:13px; }
 .archive-promos { row-gap:24px; padding-top:16px; }
 /* Два блока промо (.archive-promos и .archive-promos--second) на узких
    экранах сливаются в один непрерывный поток: вместо двух отдельных сеток
