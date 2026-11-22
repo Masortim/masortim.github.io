@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fffff8">
+  <meta name="description" content="Подписка на email-рассылку дневника разработчика: новые записи раз в неделю.">
+  <title>Подписка на рассылку · Дневник разработчика</title>
+  <link rel="stylesheet" href="/tufte/tufte-universal.css">
+  <link rel="stylesheet" href="/diary/diary.css">
+  <link rel="stylesheet" href="/diary/projects.css">
+  <link rel="stylesheet" href="/newsletter/newsletter.css">
+  <script src="/diary/diary.js" defer></script>
+  <script src="/newsletter/newsletter.js" defer></script>
+</head>
+<body class="tufte-note newsletter-page">
+<main class="project-note">
+  <nav class="note-masthead">
+    <a href="/">← <span data-language-content="ru">Архив дневника</span><span data-language-content="en" lang="en" hidden>Diary archive</span></a>
+    <span>MASORTIM · SUBSCRIBE</span>
+  </nav>
+
+  <div class="note-controls">
+    <div class="language-switch" role="group" aria-label="Language">
+      <button type="button" data-language-choice="ru" aria-pressed="true">RU</button>
+      <button type="button" data-language-choice="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Переключить тему">☾</button>
+  </div>
+
+  <h1>
+    <span data-language-content="ru">Email-рассылка</span>
+    <span data-language-content="en" lang="en" hidden>Email newsletter</span>
+  </h1>
+
+  <p class="note-dek">
+    <span data-language-content="ru">Новые записи дневника — раз в неделю, одним письмом. Без трекеров и рекламы, отписаться можно в один клик.</span>
+    <span data-language-content="en" lang="en" hidden>New diary notes once a week, in a single email. No trackers, no ads, unsubscribe in one click.</span>
+  </p>
+
+  <div class="newsletter-notice" id="newsletter-notice" role="status" hidden></div>
+
+  <form class="newsletter-form" id="newsletter-form" novalidate>
+    <label class="newsletter-label" for="newsletter-email">
+      <span data-language-content="ru">Ваш адрес</span>
+      <span data-language-content="en" lang="en" hidden>Your email</span>
+    </label>
+    <div class="newsletter-row">
+      <input class="newsletter-input" id="newsletter-email" name="email" type="email"
+             autocomplete="email" spellcheck="false" required
+             placeholder="you@example.com">
+      <button class="newsletter-submit" id="newsletter-submit" type="submit">
+        <span data-language-content="ru">Подписаться</span>
+        <span data-language-content="en" lang="en" hidden>Subscribe</span>
+      </button>
+    </div>
+    <p class="newsletter-hint">
+      <span data-language-content="ru">Пришлю письмо со ссылкой подтверждения — без неё адрес в список не попадёт.</span>
+      <span data-language-content="en" lang="en" hidden>I will send a confirmation link — the address is not added without it.</span>
+    </p>
+  </form>
+
+  <p class="newsletter-alt">
+    <span data-language-content="ru">Предпочитаете ленту?</span>
+    <span data-language-content="en" lang="en" hidden>Prefer a feed?</span>
+    <a href="/feed.xml" type="application/rss+xml" hreflang="ru" data-language-content="ru">RSS-рассылка&nbsp;↗</a>
+    <a href="/feed-en.xml" type="application/rss+xml" hreflang="en" lang="en" data-language-content="en" hidden>RSS feed&nbsp;↗</a>
+  </p>
+</main>
+</body>
+</html>
