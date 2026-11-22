@@ -203,17 +203,60 @@ body.tufte-note { background: var(--tufte-bg, #fffff8); }
 .project-note .note-infographic__item strong { display:block; margin-bottom:.35rem; font-size:1.1rem; }
 .project-note .note-infographic__arrow { align-self:center; color:#916044; text-align:center; font-size:1.3rem; }
 @media (max-width:760px) {
-  .project-note { margin:1.5rem 0 2rem; }
-  .project-note .note-controls { margin:1rem 0 0; }
+  .project-note { margin:1.25rem 0 2rem; }
+  .project-note .note-controls { margin:.75rem 0 0; }
   .project-note .note-masthead, .project-note h1, .project-note .note-dek,
   .project-note .note-meta, .project-note h2, .project-note h3,
   .project-note .note-footer { width:100%; }
-  .project-note h1 { font-size:clamp(2.3rem,9vw,3.2rem); }
-  .project-note .note-meta { gap:.45rem .8rem; }
-  .project-note .note-sidenote, .project-note .note-marginnote { float:none; clear:both; width:100%; margin:1rem 0; }
-  .project-note .note-figure { max-width:90%; }
+
+  /* Шапка заметки: «Архив дневника» может занимать две строки,
+     подпись MASORTIM · LEARNING уходит на свою строку. */
+  .project-note .note-masthead {
+    flex-wrap:wrap;
+    gap:.35rem .9rem;
+    padding-bottom:.55rem;
+  }
+
+  /* Заголовки: на телефоне кегль меньше, интерлиньяж больше —
+     иначе строки слипаются. */
+  .project-note h1 {
+    margin:1.35rem 0 .6rem;
+    font-size:clamp(2rem,8.5vw,2.8rem);
+    line-height:1.08;
+  }
+  .project-note h2 { margin:1.7rem 0 0; font-size:1.85rem; line-height:1.12; }
+  .project-note h3 { margin:1.5rem 0 0; font-size:1.5rem; line-height:1.2; }
+  .project-note .note-dek { margin:.8rem 0 1.4rem; font-size:1.25rem; line-height:1.45; }
+
+  /* Метаданные — читаемым кеглем (было 14.25px при 12px капители). */
+  .project-note .note-meta { gap:.4rem .9rem; padding:.65rem 0; font-size:1.05rem; }
+  .project-note .note-footer { margin-top:2rem; padding-top:.85rem; font-size:1.05rem; }
+
+  /* Подписи к рисункам на телефоне не должны быть мельче 15px. */
+  .project-note figure figcaption,
+  .project-note .note-figure figcaption { font-size:1rem; line-height:1.45; }
+
+  .project-note .note-sidenote, .project-note .note-marginnote {
+    float:none; clear:both; width:100%; margin:1rem 0; font-size:1.05rem;
+  }
+  .project-note .note-figure { max-width:100%; }
+  /* Таблицы и код не растягивают страницу: горизонтальная прокрутка
+     внутри блока, а не у всей заметки. */
+  .project-note table { display:block; overflow-x:auto; max-width:100%; }
+  .project-note pre { max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .project-note img, .project-note svg { max-width:100%; height:auto; }
   .project-note .note-infographic { grid-template-columns:1fr; }
   .project-note .note-infographic__arrow { transform:rotate(90deg); }
+}
+
+/* Совсем узкие экраны: поля и кегль ещё на шаг меньше. */
+@media (max-width:400px) {
+  .project-note h1 { font-size:clamp(1.75rem,8.6vw,2.2rem); }
+  .project-note h2 { font-size:1.6rem; }
+  .project-note h3 { font-size:1.35rem; }
+  .project-note .note-dek { font-size:1.15rem; }
+  .project-note .note-masthead { font-size:.9rem; }
+  .project-note .note-meta, .project-note .note-footer { font-size:1rem; }
 }
 
 body.dark-theme .project-archive, body.dark-theme .project-note { color: #eee; }

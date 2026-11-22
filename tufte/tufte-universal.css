@@ -1054,17 +1054,56 @@ body.dark-theme .hljs-strong { font-weight: bold; }
    18. Адаптивность (<760px): сноски — по клику, мера — на всю ширину
    ---------------------------------------------------------------------------- */
 @media screen and (max-width: 760px) {
-  body { width: 84%; padding-left: 8%; padding-right: 8%; }
-  p, footer, ol, ul, table, hr { width: 90%; }
-  pre { width: 97%; margin-left: 0; }
-  ul { width: 85%; }
-  figure { max-width: 90%; }
+  /* Поля страницы 8%/8% на 390px съедали по 31px с каждой стороны.
+     width:auto + box-sizing — чтобы поля не выводили body за край окна
+     (84% + 9% + 9% = 102% давало горизонтальную прокрутку). */
+  body { box-sizing: border-box; width: auto; padding-left: 9%; padding-right: 9%; }
+  /* Основной текст занимает всю доступную ширину: в tufte-css абзацы
+     сжимаются до меры 55% (на 390px это 180px при 328 доступных —
+     всего ~17 символов в строке). На телефоне мера не нужна: колонка
+     одна, поэтому сбрасываем ширину у всех текстовых блоков. */
+  p, footer, ol, ul, table, hr,
+  section > p, section > footer, section > table,
+  section > dl, section > ol, section > ul,
+  blockquote p, blockquote footer,
+  dl, div.figure p.caption, figure figcaption { width: 100%; }
+  /* Сноски/маргиналии и производные блоки тоже на всю ширину. */
+  .sidenote, .marginnote { width: 100%; }
+  /* Списки: padding-start 5% плюс width 100% выводили строку за край. */
+  ol, ul { box-sizing: border-box; width: 100%; padding-left: 1.25em; }
+  /* Боковые штрихи TOC (toc-progress) на телефоне перекрывают текст. */
+  .toc-progress { display: none !important; }
+  pre { width: 100%; margin-left: 0; }
+  figure { max-width: 100%; }
+  /* Широкие таблицы прокручиваются внутри себя, а не растягивают
+     документ: на 390px таблица шириной 629px иначе даёт горизонтальную
+     прокрутку всей странице. Кегль и отступы ячеек уменьшены, чтобы
+     в кадр попадало больше колонок. */
+  table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 1rem;
+  }
+  th, td { padding: 0.3rem 0.45rem 0.3rem 0; }
+  /* Код в блоке переносится, если строка не влезает. */
+  pre code, pre code.hljs { white-space: pre-wrap; overflow-wrap: anywhere; }
+  /* Рисунки и изображения — по ширине экрана. */
+  img, svg { max-width: 100%; height: auto; }
   div.fullwidth p.caption { max-width: none; }
   blockquote p, blockquote footer { width: 100%; }
-  blockquote { margin-left: 1.5em; margin-right: 0; }
-  .tufte-chart, .small-multiples { width: 90%; }
+  blockquote { margin-left: .75em; margin-right: 0; }
+  /* Эпиграф: 5em/3em вертикальные поля и сдвиг цитаты на телефоне
+     выглядят как случайная пустота. */
+  div.epigraph { margin: 2rem 0; }
+  div.epigraph > blockquote { margin: 0; padding-left: 0; }
+  div.epigraph > blockquote > footer { text-align: left; }
+  /* Аннотация — на всю ширину. */
+  .abstract { width: 100%; }
+  .tufte-chart, .small-multiples { width: 100%; }
   .tufte-chart.fullwidth, .small-multiples.fullwidth { max-width: 100%; }
-  .equation { width: 90%; }
+  .equation { width: 100%; }
   .equation .eq-number { right: 0; }
   .bar-row { grid-template-columns: 6rem 1fr 3.5rem; }
   .dot-row { grid-template-columns: 6rem 1fr; }
@@ -1089,6 +1128,23 @@ body.dark-theme .hljs-strong { font-weight: bold; }
     width: 100%; max-width: 100%;
     margin: 1rem 0;
   }
+  /* Подписи к рисункам на телефоне больше не «уезжают» в правую
+     половину: в tufte-css figcaption плавает справа с max-width:40%,
+     из-за чего текст и подпись вставали в две колонки и подпись
+     обрывалась по 2–3 слова в строке. */
+  figcaption,
+  figure figcaption,
+  div.figure p.caption,
+  div.fullwidth p.caption {
+    float: none;
+    clear: both;
+    width: 100%;
+    max-width: 100%;
+    margin: .5rem 0 0;
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+  figure.fullwidth figcaption { margin-right: 0; }
   video { max-width: 100%; width: 100%; }
   .video-container { width: 100%; max-width: 100%; padding-bottom: 56.25%; }
   div.figure .video-container { max-width: 100%; width: 100%; }
@@ -1102,8 +1158,14 @@ body.dark-theme .hljs-strong { font-weight: bold; }
   h1, h2 { clear: both; width: 90%; text-align: left; position: relative; }
   div.section { clear: both; width: 100%; }
   div.fullwidth, div.figure.fullwidth { clear: both; width: 100%; max-width: 100%; }
-  nav.page-navigation { width: 90%; font-size: 1.1rem; }
-  .theme-toggle { top: 10px; right: 10px; width: 45px; height: 45px; font-size: 20px; }
+  nav.page-navigation { width: 100%; font-size: 1.05rem; line-height: 1.6; }
+  nav.page-navigation .nav-item { margin-right: 0; display: block; }
+  nav.page-navigation .nav-separator { display: none; }
+  /* Кнопка темы: на телефоне 44px — удобная цель для пальца. */
+  .theme-toggle {
+    top: 10px; right: 10px; width: 44px; height: 44px; font-size: 20px;
+    display: grid; place-items: center;
+  }
   span.math.display { font-size: 1em; margin: 1rem 0; }
   .MathJax_Display { margin: 1rem 0 !important; }
 }
