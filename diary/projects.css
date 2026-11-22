@@ -7,6 +7,8 @@ body.archive-home { margin:0; padding:0; }
   color: #111;
   background: #fff;
   font: 16px/1.2 Arial, Helvetica, sans-serif;
+  /* Плотная шестиколоночная сетка архива переносится по слогам.
+     Заметки (.project-note) — наоборот, без переносов (см. diary.css). */
   -webkit-hyphens:auto;
   hyphens:auto;
   hyphenate-character:"-";
@@ -126,7 +128,12 @@ body.tufte-note { background: var(--tufte-bg, #fffff8); }
 /* Языковые секции дневника — не Tufte-секции: без лишних отступов. */
 .project-note > section,
 .project-note section[data-language-content] { padding: 0; }
-.project-note .note-controls { position:relative; display:block; width:100%; height:2.6rem; margin:1rem 0 0; }
+/* body в tufte-universal.css занимает всю ширину окна (87.5% + padding-left
+   12.5%), поэтому правый край контента совпадает с краем браузера. Отступ
+   справа у самой строки управления держит кнопки на расстоянии от границы;
+   абсолютные дети (right:0) отсчитываются от её padding-box. */
+.project-note .note-controls { position:relative; display:block; height:2.6rem; margin:1rem 2.5rem 0 0; }
+/* Правый отступ от края окна: кнопки не прилипают к границе браузера. */
 .project-note .language-switch { position:absolute; top:50%; right:2.5rem; display:flex; gap:0; margin:0; padding:.15rem; border:1px solid var(--tufte-rule, #d9d5ca); border-radius:999px; box-shadow:none; background:var(--tufte-bg, #fffff8); font-family:"Gill Sans", "Gill Sans MT", Calibri, sans-serif; font-size:.8rem; letter-spacing:.03em; transform:translateY(-50%); }
 .project-note .language-switch::before { position:absolute; z-index:0; top:.15rem; bottom:.15rem; left:.15rem; width:calc((100% - .3rem)/2); border-radius:999px; background:#70513e; content:""; transition:transform .22s ease; }
 .project-note .language-switch:has(button[data-language-choice="en"][aria-pressed="true"])::before { transform:translateX(calc(100% + .15rem)); }
@@ -161,7 +168,7 @@ body.tufte-note { background: var(--tufte-bg, #fffff8); }
 .project-note .note-infographic__arrow { align-self:center; color:#916044; text-align:center; font-size:1.3rem; }
 @media (max-width:760px) {
   .project-note { margin:1.5rem 0 2rem; }
-  .project-note .note-controls { margin:1rem 0 0 auto; }
+  .project-note .note-controls { margin:1rem 0 0; }
   .project-note .note-masthead, .project-note h1, .project-note .note-dek,
   .project-note .note-meta, .project-note h2, .project-note h3,
   .project-note .note-footer { width:100%; }
