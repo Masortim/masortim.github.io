@@ -107,6 +107,27 @@ jobs:
           esac
           echo "внешняя защита не обнаружена"
 
+      - name: Self-diagnosis says what is missing
+        run: |
+          echo '--- GET /api/newsletter/health ---'
+          # Эндпоинт сам проверяет окружение: есть ли ключи, верифицирован ли
+          # домен отправителя в Resend. Секретов не раскрывает — только да/нет.
+          code=$(curl -sS -o /tmp/health.json -w '%{http_code}' --max-time 25 \
+            https://masortim-newsletter.vercel.app/api/newsletter/health || echo "000")
+          echo "status: $code"
+          cat /tmp/health.json 2>/dev/null; echo
+          if [ "$code" != "200" ]; then
+            echo "::error::HEALTH code=$code body=$(head -c 300 /tmp/health.json 2>/dev/null | tr -d '\n')"
+            exit 1
+          fi
+          ready=$(node -p 'String(require("/tmp/health.json").ready)' 2>/dev/null || echo unknown)
+          blocking=$(node -p 'require("/tmp/health.json").blocking.join("; ")' 2>/dev/null || echo '')
+          if [ "$ready" = "true" ]; then
+            echo "::notice::HEALTH ready=true — рассылка настроена, письма можно отправлять"
+          else
+            echo "::warning::HEALTH ready=false — осталось: ${blocking:-см. блок checks в логе}"
+          fi
+
       - name: Does the site point at this API
         run: |
           echo '--- newsletter/config.js на сайте ---'

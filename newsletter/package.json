@@ -4,6 +4,7 @@
   "type": "module",
   "description": "Серверная часть email-рассылки дневника разработчика: подписка, подтверждение, отписка и отправка выпусков через Resend.",
   "scripts": {
+    "build": "node scripts/bundle.mjs",
     "dev": "vercel dev",
     "test": "node --test test/*.test.mjs",
     "digest": "node scripts/send-digest.mjs"

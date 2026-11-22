@@ -77,6 +77,16 @@ test('корневой обработчик отвечает на все мар�
   const unknown = await handler(new Request('https://example.test/api/newsletter/nope'));
   assert.equal(unknown.status, 404);
 
+  // Самодиагностика должна отвечать и честно говорить, что не готово.
+  const health = await handler(new Request('https://example.test/api/newsletter/health'));
+  assert.equal(health.status, 200);
+  const report = await health.json();
+  assert.equal(typeof report.ready, 'boolean');
+  assert.ok(Array.isArray(report.blocking));
+  assert.equal(typeof report.checks.supabaseUrl, 'boolean');
+  // Секреты наружу не отдаются — только признаки наличия.
+  assert.ok(!JSON.stringify(report).includes('SUPABASE_SERVICE_ROLE_KEY='));
+
   // Без ключа почты подписка отвечает 502 — важно, что это не 500:
   // значит разбор тела и валидация адреса прошли.
   const bad = await handler(new Request('https://example.test/api/newsletter/subscribe', {

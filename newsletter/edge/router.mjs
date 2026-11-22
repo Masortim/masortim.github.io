@@ -12,6 +12,90 @@ const ROUTES = {
   '/api/newsletter/digest': digestApi,
 };
 
+/**
+ * Самодиагностика: открывается в браузере, секретов не раскрывает —
+ * только факт «задано / не задано» и адрес отправителя.
+ */
+async function health() {
+  const env = (name) => (process.env[name] ?? '').trim();
+  const key = env('RESEND_API_KEY');
+  const from = env('NEWSLETTER_FROM');
+  const sender = from || 'Masortim <digest@masortim.github.io>';
+  const domain = (sender.match(/@([^>\s]+)/) ?? [])[1] ?? '';
+
+  // Resend отправляет письма только с домена, добавленного в аккаунт и
+  // прошедшего проверку DNS. Список доменов — единственный способ узнать
+  // это по API: /domains/{...} принимает ID, а не имя.
+  let domains = { checked: false };
+  if (key) {
+    try {
+      const response = await fetch('https://api.resend.com/domains', {
+        headers: { Authorization: `Bearer ${key}` },
+      });
+      if (response.ok) {
+        const body = await response.json();
+        const list = Array.isArray(body.data) ? body.data : [];
+        const match = list.find((item) => item && item.name === domain);
+        const sending = match?.capabilities?.sending ?? 'enabled';
+        domains = {
+          checked: true,
+          account: list.map((item) => `${item.name} (${item.status})`),
+          match: match ? match.status : null,
+          verified: Boolean(match)
+            && (match.status === 'verified'
+              || (match.status === 'partially_verified' && sending === 'enabled')),
+        };
+      } else {
+        domains = { checked: true, verified: false, error: `resend ${response.status}` };
+      }
+    } catch (error) {
+      domains = { checked: true, verified: false, error: 'network' };
+    }
+  }
+
+  const checks = {
+    supabaseUrl: Boolean(env('SUPABASE_URL')),
+    supabaseKey: Boolean(env('SUPABASE_SERVICE_ROLE_KEY')),
+    resendKey: Boolean(key),
+    fromSet: Boolean(from),
+    fromAddress: from || `${sender} (значение по умолчанию)`,
+    senderDomain: domain,
+    fromDomainStatus: domains.match ?? null,
+    fromDomainVerified: domains.verified ?? null,
+    resendDomains: domains.account ?? null,
+    resendError: domains.error ?? null,
+    apiBase: env('NEWSLETTER_API_BASE') || '(не задан)',
+    site: env('NEWSLETTER_SITE') || '(не задан)',
+    cronSecret: Boolean(env('CRON_SECRET')),
+  };
+
+  const ready = checks.supabaseUrl && checks.supabaseKey && checks.resendKey
+    && domains.verified === true;
+
+  return new Response(JSON.stringify({
+    ready,
+    // Что именно осталось сделать — короткими ключами, без лишних слов.
+    blocking: [
+      !checks.resendKey && 'добавьте RESEND_API_KEY в Vercel и перевыпустите деплой',
+      !checks.supabaseUrl && 'нет SUPABASE_URL',
+      !checks.supabaseKey && 'нет SUPABASE_SERVICE_ROLE_KEY',
+      checks.resendKey && !checks.fromSet
+        && 'задайте NEWSLETTER_FROM: адрес по умолчанию (digest@masortim.github.io) Resend отклонит',
+      checks.resendKey && checks.fromSet && domains.checked && domains.verified === false
+        && (domains.error
+          ? `не удалось проверить домен ${domain} в Resend (${domains.error})`
+          : domains.match
+            ? `домен ${domain} в Resend в статусе ${domains.match}, нужен verified`
+            : `домена ${domain} нет в вашем аккаунте Resend`),
+      checks.resendKey && checks.fromSet && domain === 'resend.dev'
+        && 'onboarding@resend.dev доставляет письма только владельцу аккаунта Resend',
+    ].filter(Boolean),
+    checks,
+  }, null, 2), {
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+  });
+}
+
 function jsonResponse(status, payload) {
   return new Response(JSON.stringify(payload), {
     status,
@@ -72,6 +156,8 @@ async function handle(request) {
   if (path === '/' || path === '/api') {
     return jsonResponse(200, { name: 'masortim-newsletter', endpoints: Object.keys(ROUTES) });
   }
+
+  if (path === '/api/newsletter/health') return health();
 
   const route = ROUTES[path];
   if (!route) return jsonResponse(404, { error: 'not_found', path });
