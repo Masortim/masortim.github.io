@@ -13,6 +13,33 @@ body {
   padding-top: 1px;
 }
 
+/* Без переносов: слова не разрываются по слогам.
+   Действует на страницах дневника (заметки и ленту записей),
+   но не на архиве с главной страницы (body.archive-home). */
+body:not(.archive-home),
+body:not(.archive-home) p,
+body:not(.archive-home) h1,
+body:not(.archive-home) h2,
+body:not(.archive-home) h3,
+body:not(.archive-home) h4,
+body:not(.archive-home) li,
+body:not(.archive-home) dt,
+body:not(.archive-home) dd,
+body:not(.archive-home) blockquote,
+body:not(.archive-home) figcaption,
+body:not(.archive-home) caption,
+body:not(.archive-home) td,
+body:not(.archive-home) th,
+body:not(.archive-home) a,
+body:not(.archive-home) .sidenote,
+body:not(.archive-home) .marginnote {
+  -webkit-hyphens: none;
+  hyphens: none;
+  /* Страховка от переполнения: очень длинное слово (URL, термин)
+     переносится по границе блока, без дефиса. */
+  overflow-wrap: break-word;
+}
+
 .skip-link {
   position: absolute;
   top: 0.5rem;
