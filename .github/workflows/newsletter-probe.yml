@@ -27,11 +27,14 @@ jobs:
       - name: Root endpoint
         run: |
           echo '--- GET / ---'
-          code=$(curl -sS -o /tmp/root.json -w '%{http_code}' --max-time 20 https://masortim-newsletter.vercel.app/)
+          code=$(curl -sS -o /tmp/root.json -w '%{http_code}' --max-time 20 https://masortim-newsletter.vercel.app/ || echo "000")
+          server=$(curl -sS -o /dev/null -w '%{http_code}|%{redirect_url}' --max-time 20 https://masortim-newsletter.vercel.app/ || echo "000|")
           echo "status: $code"
-          head -c 400 /tmp/root.json; echo
+          echo "detail: $server"
+          head -c 300 /tmp/root.json 2>/dev/null; echo
+          # Сводка для чтения через API аннотаций, когда логи недоступны.
+          echo "::error::PROBE root=$code detail=$server body=$(head -c 200 /tmp/root.json 2>/dev/null | tr -d '\n')"
           if [ "$code" != "200" ]; then
-            echo "::error::корневой адрес вернул $code — API недоступен снаружи"
             exit 1
           fi
 
