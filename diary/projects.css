@@ -163,7 +163,12 @@ body.archive-home { margin:0; padding:0; }
 .archive-bottom .feed-icon { flex:none; width:1.1em; height:1.1em; }
 /* Текстовая доля держится единым куском: «RSS-рассылка ↗» должно
    читаться одной строкой, а не ломаться по дефису. */
-.archive-bottom .feed-link > span[data-language-content] { flex:0 0 auto; min-width:0; white-space:nowrap; }
+.archive-bottom .feed-link > span { flex:0 0 auto; min-width:0; white-space:nowrap; }
+/* Языковых вариантов ссылки два — RU и EN, каждый со своим адресом фида.
+   Видимость переключает тот же механизм, что и остальной двуязычный
+   текст ([data-language-content] + hidden), поэтому адрес ссылки всегда
+   совпадает с активным языком даже без JavaScript. */
+.archive-bottom .feed-link[hidden] { display:none; }
 /* Колонка «Подписка» в шестиколоночной сетке сжимается до 105–148px,
    а строка «иконка + зазор + текст» занимает ≈10.7 × кегль. Привязывать
    кегль к вьюпорту пришлось бы отдельными медиазапросами под каждую
