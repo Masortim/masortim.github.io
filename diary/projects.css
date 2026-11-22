@@ -326,6 +326,32 @@ body.dark-theme .project-note .language-switch button[aria-pressed="true"] { col
 body.dark-theme .project-note .note-sidenote, body.dark-theme .project-note .note-marginnote { color:#c0c0c0; }
 body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e; border-bottom-color:#555; }
 
+/* Трёхколоночный диапазон. Верхняя граница 900px, нижняя — 561px:
+   ниже 560px сетка одноколоночная, и заголовки карточек должны идти
+   обычной вертикальной стопкой, а не по строкам общей сетки. */
+/* Заголовки вторых карточек («Крестики-нолики», «Измерение фигур на
+   изображении», «Каталог беспилотников») должны стоять на одной линии.
+   Раньше колонки были отдельными грид-ячейками, карточки внутри них шли
+   потоком, и вторая карточка начиналась там, где закончилась первая:
+   на 900px разъезд достигал 17px, на 700px — 35px.
+   Здесь колонка «растворяется» (display:contents), а её заголовок и
+   карточки становятся прямыми элементами общей трёхколоночной сетки.
+   Заголовки всех колонок — строка 1, первые карточки — строка 2,
+   вторые — строка 3. Второй ряд колонок («Обучение», «Инструменты»,
+   «Сообщества») занимает строки 4–6. */
+@media (min-width: 561px) and (max-width: 900px) {
+  .archive-column { display: contents; }
+  .archive-column:nth-child(1) { --column-slot: 1; --row-heading: 1; --row-first: 2; --row-second: 3; }
+  .archive-column:nth-child(2) { --column-slot: 2; --row-heading: 1; --row-first: 2; --row-second: 3; }
+  .archive-column:nth-child(3) { --column-slot: 3; --row-heading: 1; --row-first: 2; --row-second: 3; }
+  .archive-column:nth-child(4) { --column-slot: 1; --row-heading: 4; --row-first: 5; --row-second: 6; }
+  .archive-column:nth-child(5) { --column-slot: 2; --row-heading: 4; --row-first: 5; --row-second: 6; }
+  .archive-column:nth-child(6) { --column-slot: 3; --row-heading: 4; --row-first: 5; --row-second: 6; }
+  .archive-column > h2 { grid-row: var(--row-heading); grid-column: var(--column-slot); }
+  .archive-column > .project-card:first-of-type { grid-row: var(--row-first); grid-column: var(--column-slot); }
+  .archive-column > .project-card:nth-of-type(2) { grid-row: var(--row-second); grid-column: var(--column-slot); }
+}
+
 @media (max-width: 900px) {
   .project-archive { width: 90%; }
   .archive-sheet::before { display: none; }
