@@ -69,6 +69,7 @@ jobs:
           cp newsletter/index.html _site/newsletter/index.html
           cp newsletter/newsletter.css _site/newsletter/newsletter.css
           cp newsletter/newsletter.js _site/newsletter/newsletter.js
+          cp newsletter/config.js _site/newsletter/config.js
           cp feed.xml _site/feed.xml
           cp feed-en.xml _site/feed-en.xml
           cp feed-icon.svg _site/feed-icon.svg

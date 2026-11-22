@@ -32,9 +32,8 @@ jobs:
           echo "status: $code"
           echo "detail: $server"
           head -c 300 /tmp/root.json 2>/dev/null; echo
-          # Сводка для чтения через API аннотаций, когда логи недоступны.
-          echo "::error::PROBE root=$code detail=$server body=$(head -c 200 /tmp/root.json 2>/dev/null | tr -d '\n')"
           if [ "$code" != "200" ]; then
+            echo "::error::PROBE root=$code detail=$server body=$(head -c 200 /tmp/root.json 2>/dev/null | tr -d '\n')"
             exit 1
           fi
 
