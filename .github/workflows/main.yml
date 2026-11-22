@@ -41,6 +41,11 @@ jobs:
         working-directory: ./graph
         run: npm run build
 
+      # RSS-фид собирается из HTML самих заметок, поэтому он всегда актуален
+      # на момент деплоя: новая папка diary/<slug>/ попадает в фид автоматически.
+      - name: Build RSS Feed
+        run: node scripts/build-feed.mjs --site https://masortim.github.io
+
       # Дневник занимает корень сайта и /diary/; приложение графа остаётся в /graph/.
       # /tufte/ публикуется целиком: CSS, JS, шрифты ET Book, примеры и образец.
       - name: Assemble Site Artifact
@@ -49,6 +54,8 @@ jobs:
           mkdir -p _site/graph _site/diary _site/tufte
           cp -R graph/dist/. _site/graph/
           cp index.html _site/index.html
+          cp feed.xml _site/feed.xml
+          cp feed-icon.svg _site/feed-icon.svg
           cp -R diary/. _site/diary/
           cp tufte/tufte-universal.css _site/tufte/
           cp tufte/tufte-universal.js _site/tufte/
