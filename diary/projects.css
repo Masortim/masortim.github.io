@@ -177,7 +177,10 @@ body.tufte-note { background: var(--tufte-bg, #fffff8); }
 .project-note .language-switch button[aria-pressed="true"] { color:#fff; background:transparent; }
 .project-note .theme-toggle { display:grid; width:2rem; height:2rem; padding:0; place-items:center; position:absolute; top:50%; right:0; margin:0; border:0; border-radius:50%; color:#fff; background:#70513e; cursor:pointer; font:.8rem/1 Arial,sans-serif; transform:translateY(-50%); }
 .project-note .note-masthead { display:flex; width:55%; justify-content:space-between; gap:1rem; padding-bottom:.7rem; border-bottom:1px solid var(--tufte-rule, #d9d5ca); color:var(--tufte-faint, #68645c); font-family:"Gill Sans", "Gill Sans MT", Calibri, sans-serif; font-size:.95rem; letter-spacing:.05em; font-variant:small-caps; }
-.project-note h1 { width:75%; margin:2rem 0 .8rem; font-weight:400; font-style:normal; font-size:clamp(2.6rem,5vw,3.2rem); line-height:1; letter-spacing:0; }
+.project-note h1 { width:75%; margin:2rem 0 .8rem; font-weight:400; font-style:normal; /* Заголовок заметки: одна плавная формула на все ширины, без ступенек
+   на границах медиазапросов. Минимум 2.4rem (36px) — заметно крупнее
+   текста 21px даже на 320px; максимум — тафтиевские 3.2rem (48px). */
+font-size:clamp(2.4rem, 1.79rem + 2.8vw, 3.2rem); line-height:1.05; letter-spacing:0; }
 .project-note .note-dek { width:55%; max-width:39rem; margin:1rem 0 2rem; color:var(--tufte-muted, #514e46); font-size:1.4rem; line-height:1.6; font-style:italic; }
 .project-note .note-meta { display:flex; width:55%; flex-wrap:wrap; gap:.5rem 1.25rem; margin:0; padding:.8rem 0; border-top:1px solid var(--tufte-rule, #d9d5ca); border-bottom:1px solid var(--tufte-rule, #d9d5ca); color:var(--tufte-faint, #68645c); font-family:"Gill Sans", "Gill Sans MT", Calibri, sans-serif; font-size:.95rem; letter-spacing:.03em; font-variant:small-caps; }
 .project-note h2 { width:55%; margin:2.1rem 0 0; font-weight:400; font-style:italic; font-size:2.2rem; line-height:1; }
@@ -217,11 +220,11 @@ body.tufte-note { background: var(--tufte-bg, #fffff8); }
     padding-bottom:.55rem;
   }
 
-  /* Заголовки: на телефоне кегль меньше, интерлиньяж больше —
-     иначе строки слипаются. */
+  /* Заголовки: кегль задаёт общая формула выше (она уже учитывает
+     ширину экрана). Здесь только интерлиньяж и поля — на телефоне
+     строки не должны слипаться. */
   .project-note h1 {
     margin:1.35rem 0 .6rem;
-    font-size:clamp(2rem,8.5vw,2.8rem);
     line-height:1.08;
   }
   .project-note h2 { margin:1.7rem 0 0; font-size:1.85rem; line-height:1.12; }
@@ -251,7 +254,9 @@ body.tufte-note { background: var(--tufte-bg, #fffff8); }
 
 /* Совсем узкие экраны: поля и кегль ещё на шаг меньше. */
 @media (max-width:400px) {
-  .project-note h1 { font-size:clamp(1.75rem,8.6vw,2.2rem); }
+  /* h1 здесь намеренно не уменьшается: общая формула сама доходит
+     до 34px на 320px, и это уже минимум, ниже которого заголовок
+     теряет иерархию относительно текста 21px. */
   .project-note h2 { font-size:1.6rem; }
   .project-note h3 { font-size:1.35rem; }
   .project-note .note-dek { font-size:1.15rem; }

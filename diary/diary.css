@@ -77,7 +77,10 @@ body:not(.archive-home) .marginnote {
   max-width: 75%;
   margin-top: 0;
   margin-bottom: 1.1rem;
-  font-size: clamp(2.7rem, 5vw, 4.3rem);
+  /* Кегль растёт монотонно и стыкуется с мобильным правилом ниже:
+     на 760px оба дают 54px, дальше до 64.5px на 1440px. Прежняя формула
+     5vw на 760px давала лишь 40.5px — отсюда провал 54 → 45px на планшете. */
+  font-size: clamp(2.82rem, 2.82rem + 1.544vw, 4.3rem);
   letter-spacing: -0.035em;
   line-height: 1.05;
 }
@@ -295,8 +298,12 @@ body.dark-theme .language-switch button:hover:not([aria-pressed="true"]) {
   }
 
   .masthead h1.title {
-    max-width: 96%;
-    font-size: clamp(2.45rem, 11vw, 3.6rem);
+    /* Во всю ширину колонки: при 96% самое длинное слово «разработчика»
+       (6.9 кегля) не влезало и рвалось с сиротой («разработчик / а»).
+       Полная ширина даёт запас, поэтому кегль можно держать на 11vw:
+       33.9px на 320px, 41.3px на 390px, 50.9px на 480px, 54px с 509px. */
+    max-width: 100%;
+    font-size: clamp(2.25rem, 10.6vw, 3.6rem);
   }
 
   .project-nav {
