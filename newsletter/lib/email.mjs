@@ -139,7 +139,21 @@ export async function send(message, options = {}) {
 
   if (!response.ok) {
     const detail = await response.text();
-    return { ok: false, error: `${response.status} ${detail.slice(0, 200)}` };
+    // Разбираем ответ Resend: наружу отдаём только код и короткое имя ошибки.
+    // Тело ответа содержит адрес владельца аккаунта — его нельзя показывать.
+    let name = '';
+    try {
+      const parsed = JSON.parse(detail);
+      name = String(parsed.name ?? parsed.error ?? '').slice(0, 60);
+    } catch {
+      // не JSON — оставляем пусто
+    }
+    return {
+      ok: false,
+      status: response.status,
+      name,
+      error: `${response.status}${name ? ` ${name}` : ''} ${detail.slice(0, 200)}`,
+    };
   }
   const payload = await response.json();
   return { ok: true, id: payload.id };

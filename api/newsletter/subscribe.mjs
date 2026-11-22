@@ -69,7 +69,12 @@ export async function POST(request) {
   const result = await send(message);
   if (!result.ok) {
     console.error('confirmation email failed', result.error);
-    return json(502, { error: 'email_failed' });
+    // upstream — код и имя ошибки Resend без адресов: он нужен, чтобы отличить
+    // «ключ не тот» от «тестовый режим не пускает на этот адрес».
+    return json(502, {
+      error: 'email_failed',
+      upstream: result.status ? `${result.status} ${result.name || 'unknown'}` : 'no_request',
+    });
   }
 
   return json(200, { ok: true });

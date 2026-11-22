@@ -168,7 +168,8 @@ jobs:
             https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
           echo "status: $code"; cat /tmp/sub_full.json 2>/dev/null; echo
           if [ "$code" != "200" ]; then
-            echo "::error::FLOW подписка вернула $code, хотя health говорит ready=true"
+            body=$(head -c 300 /tmp/sub_full.json | tr -d '\n')
+            echo "::error::FLOW подписка вернула $code, хотя health говорит ready=true: $body"
             exit 1
           fi
           echo "::notice::FLOW подписка принята, письмо ушло на $OWNER_EMAIL — проверьте ящик"
