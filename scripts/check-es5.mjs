@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const FILES = ['diary/diary.js', 'diary/archive.js', 'newsletter/newsletter.js'];
+const FILES = ['diary/diary.js', 'diary/archive.js', 'newsletter/newsletter.js', 'newsletter/config.js'];
 
 const require = createRequire(import.meta.url);
 let acorn;
