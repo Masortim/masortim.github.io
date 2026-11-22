@@ -27,6 +27,15 @@ export async function GET(request) {
   }
 
   if (outcome.result === 'not_found') return redirect('/newsletter/?state=invalid&lang=ru');
+
+  // Строку убираем из базы: отписавшийся адрес не должен храниться.
+  try {
+    await store.remove(outcome.subscriber.email);
+  } catch (error) {
+    console.error('unsubscribe cleanup failed', error);
+    return redirect('/newsletter/?state=error&lang=ru');
+  }
+
   const lang = outcome.subscriber?.lang === 'en' ? 'en' : 'ru';
   return redirect(`/newsletter/?state=unsubscribed&lang=${lang}`);
 }

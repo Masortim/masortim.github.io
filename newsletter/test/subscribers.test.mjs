@@ -40,14 +40,17 @@ test('подтверждённый адрес при повторной подп
   assert.equal((await subscribe({ store, email: 'a@b.co' })).action, 'already');
 });
 
-test('отписка исключает адрес из рассылки', async () => {
+test('отписка убирает адрес из базы', async () => {
   const store = memoryStore();
   const { subscriber } = await subscribe({ store, email: 'a@b.co', lang: 'ru' });
   await confirm({ store, token: subscriber.token });
   const out = await unsubscribe({ store, token: subscriber.token });
   assert.equal(out.result, 'unsubscribed');
   assert.equal((await confirmedSubscribers(store)).length, 0);
-  assert.equal((await unsubscribe({ store, token: subscriber.token })).result, 'already');
+  // Не «статус unsubscribed», а именно удаление: адрес попросили забыть.
+  assert.equal((await store.read()).subscribers.length, 0);
+  // Старая ссылка после удаления уже ничего не находит.
+  assert.equal((await unsubscribe({ store, token: subscriber.token })).result, 'not_found');
 });
 
 test('отписавшийся может вернуться, язык обновляется', async () => {
@@ -56,9 +59,34 @@ test('отписавшийся может вернуться, язык обно�
   await confirm({ store, token: subscriber.token });
   await unsubscribe({ store, token: subscriber.token });
   const back = await subscribe({ store, email: 'a@b.co', lang: 'en' });
-  assert.equal(back.action, 'reactivate');
+  // Строки больше нет — для базы это новый адрес.
+  assert.equal(back.action, 'confirm');
   assert.equal(back.subscriber.lang, 'en');
   assert.equal(back.subscriber.status, 'pending');
+});
+
+test('пробный адрес можно использовать повторно', async () => {
+  // Регрессия: пока отписка оставляла строку, один и тот же адрес
+  // автоматической проверки работал ровно один раз за всю историю.
+  const store = memoryStore();
+  for (let i = 0; i < 3; i += 1) {
+    const { subscriber } = await subscribe({ store, email: 'probe@example.com', lang: 'ru' });
+    await confirm({ store, token: subscriber.token });
+    assert.equal((await unsubscribe({ store, token: subscriber.token })).result, 'unsubscribed');
+    assert.equal((await store.read()).subscribers.length, 0);
+  }
+});
+
+test('две подписки подряд не затирают друг друга', async () => {
+  // Регрессия: хранилище записывало все строки из устаревшего снимка,
+  // из-за чего токен второй подписки откатывался к первому.
+  const store = memoryStore();
+  const first = await subscribe({ store, email: 'one@example.com', lang: 'ru' });
+  const second = await subscribe({ store, email: 'two@example.com', lang: 'ru' });
+  const rows = (await store.read()).subscribers;
+  assert.equal(rows.length, 2);
+  assert.equal(rows.find((s) => s.email === 'one@example.com').token, first.subscriber.token);
+  assert.equal(rows.find((s) => s.email === 'two@example.com').token, second.subscriber.token);
 });
 
 test('неизвестные токены не подтверждают и не отписывают', async () => {

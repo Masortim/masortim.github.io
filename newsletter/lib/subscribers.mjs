@@ -108,8 +108,13 @@ export async function confirm({ store, token, now = new Date() }) {
 /**
  * Отписка по токену.
  *   { result: 'unsubscribed', subscriber } | { result: 'already' } | { result: 'not_found' }
+ *
+ * Строка удаляется из списка, а не помечается unsubscribed: адрес, который
+ * человек попросил забыть, не должен оставаться в базе. Раньше запись со
+ * статусом unsubscribed блокировала автоматические проверки — временный
+ * пробный адрес навсегда занимал единственно возможное значение.
  */
-export async function unsubscribe({ store, token, now = new Date() }) {
+export async function unsubscribe({ store, token }) {
   const data = (await store.read()) ?? emptyData();
   const subscriber = (data.subscribers ?? []).find((s) => s.token === token);
   if (!subscriber) return { result: 'not_found' };
@@ -118,8 +123,7 @@ export async function unsubscribe({ store, token, now = new Date() }) {
     return { result: 'already', subscriber };
   }
 
-  subscriber.status = 'unsubscribed';
-  subscriber.unsubscribedAt = now.toISOString();
+  data.subscribers = data.subscribers.filter((s) => s !== subscriber);
   await store.write(data);
   return { result: 'unsubscribed', subscriber };
 }

@@ -51,6 +51,10 @@ function createMemoryStore() {
       data = JSON.parse(JSON.stringify(next));
       return true;
     },
+    async remove(email) {
+      data.subscribers = (data.subscribers ?? []).filter((s) => s.email !== email);
+      return true;
+    },
   };
 }
 
@@ -60,7 +64,9 @@ function createMemoryStore() {
  * где именно лежат данные.
  *
  * read() отдаёт { version, subscribers } в том же формате, что и раньше;
- * write() применяет разницу: новые записи добавляет, изменённые обновляет.
+ * write() пишет только изменившиеся строки — иначе две одновременные
+ * подписки перезаписывали бы друг друга, и одно письмо с подтверждением
+ * молча терялось. remove() удаляет строку по адресу.
  */
 function createSupabaseStore({ url, key }) {
   const headers = {
@@ -104,6 +110,7 @@ function createSupabaseStore({ url, key }) {
     return response;
   }
 
+  // Снимок последнего чтения: по нему видно, какие строки изменились.
   let snapshot = new Map();
 
   return {
@@ -117,21 +124,36 @@ function createSupabaseStore({ url, key }) {
     },
 
     /**
-     * Синхронизирует таблицу с переданным состоянием: обновляет существующие
-     * строки и добавляет отсутствующие. Удаления не поддерживаются — история
-     * подписок остаётся в таблице (статус unsubscribed), это осознанно.
+     * Пишет только изменившиеся строки: сравнивает с прошлым чтением.
+     * Раньше здесь переписывались все подписчики подряд, поэтому запрос,
+     * прочитавший состояние до чужой подписки, затирал её токен — человек
+     * получал письмо со ссылкой, которая уже не подтверждала ничего.
      */
     async write(next) {
       const subscribers = Array.isArray(next?.subscribers) ? next.subscribers : [];
       for (const subscriber of subscribers) {
         const row = toRow(subscriber);
+        const previous = snapshot.get(row.email);
+        const unchanged = previous
+          && ['lang', 'status', 'token', 'confirmed_at', 'unsubscribed_at']
+            .every((field) => (previous[field] ?? null) === (row[field] ?? null));
+        if (unchanged) continue;
         // email — первичный ключ дедупликации; upsert по нему.
         await request(`${TABLE}?on_conflict=email`, {
           method: 'POST',
           headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
           body: JSON.stringify([row]),
         });
+        snapshot.set(row.email, row);
       }
+      return true;
+    },
+
+    /** Удаление по адресу — для отписки. */
+    async remove(email) {
+      const address = String(email ?? '');
+      await request(`${TABLE}?email=eq.${encodeURIComponent(address)}`, { method: 'DELETE' });
+      snapshot.delete(address);
       return true;
     },
   };
@@ -252,8 +274,13 @@ async function confirm({ store, token, now = new Date() }) {
 /**
  * Отписка по токену.
  *   { result: 'unsubscribed', subscriber } | { result: 'already' } | { result: 'not_found' }
+ *
+ * Строка удаляется из списка, а не помечается unsubscribed: адрес, который
+ * человек попросил забыть, не должен оставаться в базе. Раньше запись со
+ * статусом unsubscribed блокировала автоматические проверки — временный
+ * пробный адрес навсегда занимал единственно возможное значение.
  */
-async function unsubscribe({ store, token, now = new Date() }) {
+async function unsubscribe({ store, token }) {
   const data = (await store.read()) ?? emptyData();
   const subscriber = (data.subscribers ?? []).find((s) => s.token === token);
   if (!subscriber) return { result: 'not_found' };
@@ -262,8 +289,7 @@ async function unsubscribe({ store, token, now = new Date() }) {
     return { result: 'already', subscriber };
   }
 
-  subscriber.status = 'unsubscribed';
-  subscriber.unsubscribedAt = now.toISOString();
+  data.subscribers = data.subscribers.filter((s) => s !== subscriber);
   await store.write(data);
   return { result: 'unsubscribed', subscriber };
 }
@@ -685,6 +711,15 @@ async function GET(request) {
   }
 
   if (outcome.result === 'not_found') return redirect('/newsletter/?state=invalid&lang=ru');
+
+  // Строку убираем из базы: отписавшийся адрес не должен храниться.
+  try {
+    await store.remove(outcome.subscriber.email);
+  } catch (error) {
+    console.error('unsubscribe cleanup failed', error);
+    return redirect('/newsletter/?state=error&lang=ru');
+  }
+
   const lang = outcome.subscriber?.lang === 'en' ? 'en' : 'ru';
   return redirect(`/newsletter/?state=unsubscribed&lang=${lang}`);
 }

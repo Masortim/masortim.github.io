@@ -37,6 +37,15 @@ globalThis.fetch = async (input, init = {}) => {
         });
         return new Response('', { status: 201 });
       }
+      if (method === 'DELETE') {
+        // PostgREST-фильтр ?email=eq.<адрес>
+        const filter = url.searchParams.get('email') ?? '';
+        const target = filter.replace(/^eq\./, '');
+        for (const key of [...rows.keys()]) {
+          if (key === target) rows.delete(key);
+        }
+        return new Response(null, { status: 204 });
+      }
     }
     throw new Error('unhandled ' + method + ' ' + url.pathname);
   }
@@ -87,9 +96,9 @@ const unsubToken = new URL(unsubLink).searchParams.get('token');
 const unsub = await req('/api/newsletter/unsubscribe?token=' + encodeURIComponent(unsubToken));
 ok(`отписка: ${unsub.headers.get('location').split('?')[1]}`,
   unsub.headers.get('location').includes('state=unsubscribed'));
-ok(`статус unsubscribed`, [...rows.values()][0].status === 'unsubscribed');
+ok(`строка удалена из базы (${rows.size})`, rows.size === 0);
 
-// 5. Повторная подписка отписанного — новый токен, язык EN
+// 5. Повторная подписка отписавшегося — для базы это новый адрес, язык EN
 await post('/api/newsletter/subscribe', { email: 'reader@example.com', lang: 'en' });
 const back = [...rows.values()][0];
 ok(`повторная подписка: статус ${back.status}, язык ${back.lang}`, back.status === 'pending' && back.lang === 'en');

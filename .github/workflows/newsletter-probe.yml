@@ -54,18 +54,25 @@ jobs:
           fi
 
       - name: Subscribe accepts a valid address
+        env:
+          NEWSLETTER_OWNER_EMAIL: ${{ secrets.NEWSLETTER_OWNER_EMAIL }}
         run: |
-          echo '--- POST /api/newsletter/subscribe (valid, expect 200 or 502) ---'
+          echo '--- POST /api/newsletter/subscribe ---'
+          # В тестовом режиме Resend (onboarding@resend.dev) письмо доходит
+          # только до владельца аккаунта. Любой другой адрес Resend отклоняет
+          # с 403, и подписка честно отвечает 502 — это не поломка конвейера.
+          # Поэтому на чужой адрес проверяем только валидацию и защиту
+          # (400/422/502), а отправку — на адрес владельца, если он задан
+          # в секретах репозитория.
+          address="${NEWSLETTER_OWNER_EMAIL:-probe@example.com}"
           code=$(curl -sS -o /tmp/sub2.json -w '%{http_code}' --max-time 25 \
             -X POST -H 'Content-Type: application/json' \
-            -d '{"email":"probe@example.com","lang":"ru"}' \
+            -d "{\"email\":\"$address\",\"lang\":\"ru\"}" \
             https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
-          echo "status: $code"
-          cat /tmp/sub2.json; echo
-          echo "::notice::SUB valid code=$code — 200 значит письмо ушло, 502 значит нет ключа Resend"
-          # 200 — письмо ушло (есть ключ), 502 — ключа нет, но конвейер работает.
+          echo "status: $code"; cat /tmp/sub2.json; echo
+          echo "::notice::SUB code=$code — 200 письмо ушло, 502 ключа нет или адрес не владельца"
           if [ "$code" != "200" ] && [ "$code" != "502" ]; then
-            echo "::error::SUB valid code=$code body=$(head -c 300 /tmp/sub2.json | tr -d '\n')"
+            echo "::error::SUB code=$code body=$(head -c 300 /tmp/sub2.json | tr -d '\n')"
             exit 1
           fi
 
@@ -132,13 +139,18 @@ jobs:
 
       - name: Full flow when the API is ready
         env:
-          # Если эти секреты заданы в настройках репозитория, шаг проверит
-          # весь цикл по состоянию в базе. Без них проверяется то, что
-          # видно снаружи (подписка и защита выпуска).
+          # Адрес владельца аккаунта Resend: единственный, куда письма
+          # доходят в тестовом режиме. Email-адреса не секретны, но
+          # хранятся в секретах, чтобы не светиться в логах чужих форков.
+          OWNER_EMAIL: ${{ secrets.NEWSLETTER_OWNER_EMAIL }}
+          # Приватные переменные проекта Vercel: по ним проба читает токен
+          # подтверждения из базы. Значения пользователь вводит сам —
+          # записать их в секреты репозитория агент не может (403 у интеграции).
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           ready=$(node -p 'String(require("/tmp/health.json").ready)' 2>/dev/null || echo unknown)
+          sender=$(node -p 'String(require("/tmp/health.json").checks.senderMode)' 2>/dev/null || echo unknown)
           if [ "$ready" != "true" ]; then
             echo "::notice::FLOW пропущен: API не готов (ready=$ready) — сначала ключ Resend"
             exit 0
@@ -146,22 +158,26 @@ jobs:
 
           node newsletter/scripts/verify-live.mjs --health
 
-          email="probe+$(date +%s)@example.com"
-          echo "--- подписка $email ---"
+          if [ -z "$OWNER_EMAIL" ]; then
+            echo "::notice::FLOW подписка и весь цикл пропущены: добавьте секрет NEWSLETTER_OWNER_EMAIL (адрес владельца аккаунта Resend)"
+            node newsletter/scripts/verify-live.mjs --digest-dry-run
+            exit 0
+          fi
+
+          echo "--- подписка $OWNER_EMAIL ---"
           code=$(curl -sS -o /tmp/sub_full.json -w '%{http_code}' --max-time 25 \
             -X POST -H 'Content-Type: application/json' -H 'Origin: https://masortim.github.io' \
-            -d "{\"email\":\"$email\",\"lang\":\"ru\"}" \
+            -d "{\"email\":\"$OWNER_EMAIL\",\"lang\":\"ru\"}" \
             https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
           echo "status: $code"; cat /tmp/sub_full.json 2>/dev/null; echo
           if [ "$code" != "200" ]; then
             echo "::error::FLOW подписка вернула $code, хотя health говорит ready=true"
             exit 1
           fi
-          echo "::notice::FLOW подписка принята (письмо отправлено на $email)"
+          echo "::notice::FLOW подписка принята, письмо ушло на $OWNER_EMAIL — проверьте ящик"
 
           if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
-            echo "::notice::FLOW подтверждение и отписка пропущены: нет SUPABASE_* в секретах репозитория"
-            node newsletter/scripts/verify-live.mjs --digest-dry-run
+            echo "::notice::FLOW подтверждение, отписка и выпуск пропущены: нет SUPABASE_* в секретах репозитория (см. SETUP-FINAL.md, шаг «Секреты репозитория»)"
             exit 0
           fi
 
@@ -170,7 +186,7 @@ jobs:
             const r=await fetch(`${url}/rest/v1/newsletter_subscribers?email=eq.${process.argv[1]}&select=token`,{headers:{apikey:key,Authorization:`Bearer ${key}`}});
             const rows=await r.json();
             if(rows&&rows[0])process.stdout.write(rows[0].token);
-          ' "$email")
+          ' "$OWNER_EMAIL")
           if [ -z "$token" ]; then
             echo "::error::FLOW токен не найден в базе — подписка не записалась"
             exit 1
@@ -180,7 +196,7 @@ jobs:
             "https://masortim-newsletter.vercel.app/api/newsletter/confirm?token=$token")
           echo "confirm -> $loc"
           case "$loc" in
-            *state=confirmed*) echo "::notice::FLOW подтверждение принято" ;;
+            *state=confirmed*|*state=already*) echo "::notice::FLOW подтверждение принято" ;;
             *) echo "::error::FLOW подтверждение не сработало: $loc"; exit 1 ;;
           esac
 
@@ -191,6 +207,20 @@ jobs:
             *state=unsubscribed*) echo "::notice::FLOW отписка принята" ;;
             *) echo "::error::FLOW отписка не сработала: $loc"; exit 1 ;;
           esac
+
+          # Строка должна исчезнуть: отписавшийся адрес в базе не хранится.
+          left=$(node -e '
+            const url=process.env.SUPABASE_URL, key=process.env.SUPABASE_SERVICE_ROLE_KEY;
+            const r=await fetch(`${url}/rest/v1/newsletter_subscribers?email=eq.${process.argv[1]}&select=email`,{headers:{apikey:key,Authorization:`Bearer ${key}`}});
+            const rows=await r.json();
+            process.stdout.write(String(Array.isArray(rows)?rows.length:-1));
+          ' "$OWNER_EMAIL")
+          if [ "$left" != "0" ]; then
+            echo "::error::FLOW после отписки в базе осталось строк: $left"
+            exit 1
+          fi
+          echo "::notice::FLOW цикл замкнут: подписка -> письмо -> подтверждение -> отписка -> строка удалена"
+          echo "::notice::FLOW режим отправителя: $sender"
 
           node newsletter/scripts/verify-live.mjs --digest-dry-run
 
