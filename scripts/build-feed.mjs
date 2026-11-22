@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 /**
- * Собирает RSS-фид дневника из HTML-страниц заметок.
+ * Собирает два RSS-фида дневника из HTML-страниц заметок: русский и английский.
  *
  * Источник правды — сами страницы `diary/<slug>/index.html`. Скрипт не требует
  * ручного списка записей: любая новая заметка с корректной разметкой попадёт
- * в фид при следующей сборке (в CI — на каждый пуш в main).
+ * в оба фида при следующей сборке (в CI — на каждый пуш в main).
  *
  * Из каждой заметки берётся:
- *   - <title>                         → заголовок пункта (для уведомлений);
- *   - <h1> (RU)                       → заголовок записи;
- *   - <p class="note-dek"> (RU)       → описание;
+ *   - <h1> (RU и EN)                 → заголовок записи;
+ *   - <p class="note-dek"> (RU и EN)  → описание;
  *   - <p class="note-meta"><span>дата  → дата публикации;
  *   - ссылка на GitHub (если есть)    → в <description>.
+ *
+ * Результат: `feed.xml` (RU) и `feed-en.xml` (EN). Заметка попадает в фид,
+ * только если у неё есть заголовок и вступление на нужном языке, — поэтому
+ * частично переведённые записи не просачиваются в чужой фид.
  *
  * Запуск: node scripts/build-feed.mjs [--site https://masortim.github.io]
  */
@@ -30,10 +33,28 @@ const SITE = (siteArgIndex >= 0 ? args[siteArgIndex + 1] : 'https://masortim.git
 
 const FEED_TITLE_RU = 'Дневник разработчика · Masortim';
 const FEED_TITLE_EN = 'Developer Diary · Masortim';
-const FEED_DESC = 'Заметки о проектах, инструментах и решениях в процессе разработки. / Notes on projects, tools, and decisions made while building.';
-const FEED_LANG = 'ru';
 const AUTHOR = 'Masortim';
 const MAX_ITEMS = 20;
+
+/** Описание каждого фида: одно на язык, без смешения. */
+const FEEDS = [
+  {
+    lang: 'ru',
+    file: 'feed.xml',
+    title: FEED_TITLE_RU,
+    description: 'Заметки о проектах, инструментах и решениях в процессе разработки.',
+    stackPrefix: 'Стек',
+    repoPrefix: 'Репозиторий',
+  },
+  {
+    lang: 'en',
+    file: 'feed-en.xml',
+    title: FEED_TITLE_EN,
+    description: 'Notes on projects, tools, and decisions made while building.',
+    stackPrefix: 'Stack',
+    repoPrefix: 'Repository',
+  },
+];
 
 /** Декодирует HTML-сущности, которые могут встречаться в тексте заметки. */
 function decodeEntities(input) {
@@ -73,12 +94,21 @@ function pick(html, regex) {
   return match ? match[1] : '';
 }
 
+/** Возвращает содержимое <span data-language-content="lang"> внутри блока. */
+function spanByLanguage(block, lang) {
+  const regex = new RegExp(`<span data-language-content="${lang}"[^>]*>([\\s\\S]*?)<\\/span>`);
+  return pick(block, regex);
+}
+
 /** Читает одну заметку и превращает её в объект пункта фида. */
 function parseNote(slug, html) {
-  const titleRu = toText(pick(html, /<h1><span data-language-content="ru">([\s\S]*?)<\/span>/));
-  const titleEn = toText(pick(html, /<h1><span data-language-content="en"[^>]*>([\s\S]*?)<\/span>/));
-  const dekRu = toText(pick(html, /<p class="note-dek"><span data-language-content="ru">([\s\S]*?)<\/span>/));
-  const dekEn = toText(pick(html, /<p class="note-dek"><span data-language-content="en"[^>]*>([\s\S]*?)<\/span>/));
+  // В разметке RU- и EN-варианты лежат рядом внутри одного <h1>/<p>, поэтому
+  // сначала находим сам блок, а уже в нём — нужный языковой <span>.
+  const titleRu = toText(spanByLanguage(pick(html, /<h1>([\s\S]*?)<\/h1>/), 'ru'));
+  const titleEn = toText(spanByLanguage(pick(html, /<h1>([\s\S]*?)<\/h1>/), 'en'));
+  const dekBlock = pick(html, /<p class="note-dek">([\s\S]*?)<\/p>/);
+  const dekRu = toText(spanByLanguage(dekBlock, 'ru'));
+  const dekEn = toText(spanByLanguage(dekBlock, 'en'));
   const metaRaw = pick(html, /<p class="note-meta">([\s\S]*?)<\/p>/);
   const metaSpans = [...metaRaw.matchAll(/<span>([\s\S]*?)<\/span>/g)].map((m) => toText(m[1]));
   const dateRaw = metaSpans[0] || '';
@@ -88,22 +118,36 @@ function parseNote(slug, html) {
   if (!titleRu || !/^\d{4}-\d{2}-\d{2}$/.test(dateRaw)) return null;
 
   const url = `${SITE}/diary/${slug}/`;
-  const descriptionParts = [dekRu];
-  if (stack) descriptionParts.push(`Стек: ${stack}.`);
-  if (repo) descriptionParts.push(`Репозиторий: ${repo}`);
 
   return {
     slug,
+    url,
     titleRu,
     titleEn,
-    url,
+    dekRu,
+    dekEn,
     date: dateRaw,
     // Полдень UTC, чтобы дата не «съезжала» в соседний день при любом часовом поясе.
     pubDate: new Date(`${dateRaw}T12:00:00Z`),
-    description: descriptionParts.filter(Boolean).join(' '),
     stack,
     repo,
   };
+}
+
+/**
+ * Описание пункта на языке фида. EN-запись попадает в английский фид, только
+ * если у неё есть и заголовок, и вступление: иначе лучше не показывать запись
+ * совсем, чем смешивать языки в одном канале.
+ */
+function describe(note, feed) {
+  const title = feed.lang === 'en' ? note.titleEn : note.titleRu;
+  const dek = feed.lang === 'en' ? note.dekEn : note.dekRu;
+  if (!title || !dek) return null;
+
+  const parts = [dek];
+  if (note.stack) parts.push(`${feed.stackPrefix}: ${note.stack}.`);
+  if (note.repo) parts.push(`${feed.repoPrefix}: ${note.repo}`);
+  return { title, description: parts.join(' ') };
 }
 
 /** Читает все заметки из diary/<slug>/index.html. */
@@ -132,16 +176,21 @@ function rfc822(date) {
   return date.toUTCString();
 }
 
-function buildFeed(notes) {
-  const items = notes.slice(0, MAX_ITEMS);
+function buildFeed(notes, feed) {
+  const items = notes
+    .map((note) => {
+      const described = describe(note, feed);
+      return described ? { note, ...described } : null;
+    })
+    .filter(Boolean)
+    .slice(0, MAX_ITEMS);
 
-  const lastBuild = items.length ? rfc822(items[0].pubDate) : rfc822(new Date());
+  if (!items.length) return null;
+
+  const lastBuild = rfc822(items[0].note.pubDate);
 
   const itemXml = items
-    .map((note) => {
-      const title = note.titleEn
-        ? `${note.titleRu} / ${note.titleEn}`
-        : note.titleRu;
+    .map(({ note, title, description }) => {
       const categories = note.stack
         .split('·')
         .map((s) => s.trim())
@@ -155,7 +204,7 @@ function buildFeed(notes) {
         `      <link>${escapeXml(note.url)}</link>`,
         `      <guid isPermaLink="true">${escapeXml(note.url)}</guid>`,
         `      <pubDate>${rfc822(note.pubDate)}</pubDate>`,
-        `      <description>${escapeXml(note.description)}</description>`,
+        `      <description>${escapeXml(description)}</description>`,
         categories,
         '    </item>',
       ]
@@ -167,18 +216,18 @@ function buildFeed(notes) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>${escapeXml(FEED_TITLE_RU)}</title>
+    <title>${escapeXml(feed.title)}</title>
     <link>${escapeXml(`${SITE}/`)}</link>
-    <description>${escapeXml(FEED_DESC)}</description>
-    <language>${FEED_LANG}</language>
+    <description>${escapeXml(feed.description)}</description>
+    <language>${feed.lang}</language>
     <managingEditor>${escapeXml(AUTHOR)}</managingEditor>
     <webMaster>${escapeXml(AUTHOR)}</webMaster>
     <lastBuildDate>${lastBuild}</lastBuildDate>
     <generator>scripts/build-feed.mjs</generator>
-    <atom:link href="${escapeXml(`${SITE}/feed.xml`)}" rel="self" type="application/rss+xml"/>
+    <atom:link href="${escapeXml(`${SITE}/${feed.file}`)}" rel="self" type="application/rss+xml"/>
     <image>
       <url>${escapeXml(`${SITE}/feed-icon.svg`)}</url>
-      <title>${escapeXml(FEED_TITLE_RU)}</title>
+      <title>${escapeXml(feed.title)}</title>
       <link>${escapeXml(`${SITE}/`)}</link>
     </image>
     <copyright>© ${new Date().getFullYear()} ${escapeXml(AUTHOR)}</copyright>
@@ -191,13 +240,21 @@ ${itemXml}
 const { notes, skipped } = await collectNotes();
 
 if (!notes.length) {
-  console.error('build-feed: не найдено ни одной заметки с корректной разметкой — фид не создан.');
+  console.error('build-feed: не найдено ни одной заметки с корректной разметкой — фиды не созданы.');
   process.exit(1);
 }
 
-await writeFile(join(ROOT, 'feed.xml'), buildFeed(notes), 'utf8');
+for (const feed of FEEDS) {
+  const xml = buildFeed(notes, feed);
+  if (!xml) {
+    console.warn(`build-feed: для «${feed.lang}» нет заметок с заголовком и вступлением — ${feed.file} не создан.`);
+    continue;
+  }
+  await writeFile(join(ROOT, feed.file), xml, 'utf8');
+  const count = Math.min(notes.filter((n) => describe(n, feed)).length, MAX_ITEMS);
+  console.log(`build-feed: ${feed.file} (${feed.lang}) — записей ${count}`);
+}
 
-console.log(`build-feed: записей в фиде — ${Math.min(notes.length, MAX_ITEMS)} из ${notes.length}`);
 console.log(`build-feed: самая свежая запись — ${notes[0].date} (${notes[0].slug})`);
 if (skipped.length) {
   console.warn(`build-feed: пропущены каталоги без нужной разметки — ${skipped.join(', ')}`);
