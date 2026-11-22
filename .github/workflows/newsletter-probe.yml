@@ -140,9 +140,9 @@ jobs:
       - name: Full flow when the API is ready
         env:
           # Адрес владельца аккаунта Resend: единственный, куда письма
-          # доходят в тестовом режиме. Email-адреса не секретны, но
-          # хранятся в секретах, чтобы не светиться в логах чужих форков.
-          OWNER_EMAIL: ${{ secrets.NEWSLETTER_OWNER_EMAIL }}
+          # доходят в тестовом режиме. Секрет переопределяет значение по
+          # умолчанию — он нужен, если тестовый режим снимут (свой домен).
+          OWNER_EMAIL: ${{ secrets.NEWSLETTER_OWNER_EMAIL || 'alex.typeface@gmail.com' }}
           # Приватные переменные проекта Vercel: по ним проба читает токен
           # подтверждения из базы. Значения пользователь вводит сам —
           # записать их в секреты репозитория агент не может (403 у интеграции).
@@ -157,12 +157,6 @@ jobs:
           fi
 
           node newsletter/scripts/verify-live.mjs --health
-
-          if [ -z "$OWNER_EMAIL" ]; then
-            echo "::notice::FLOW подписка и весь цикл пропущены: добавьте секрет NEWSLETTER_OWNER_EMAIL (адрес владельца аккаунта Resend)"
-            node newsletter/scripts/verify-live.mjs --digest-dry-run
-            exit 0
-          fi
 
           echo "--- подписка $OWNER_EMAIL ---"
           code=$(curl -sS -o /tmp/sub_full.json -w '%{http_code}' --max-time 25 \
