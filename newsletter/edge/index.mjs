@@ -855,6 +855,25 @@ const ROUTES = {
 };
 
 /**
+ * Проверка права отправки без отправки: тело без адреса Resend не примет,
+ * но ключ к этому моменту уже проверен. 401 — ключ негоден или отозван,
+ * любой другой ответ — ключ аутентифицировался.
+ */
+async function probeSending(key) {
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: '{}',
+    });
+    return response.status === 401 ? 'invalid' : 'ok';
+  } catch (error) {
+    // Сеть недоступна — судить о ключе нельзя, не блокируем.
+    return 'unknown';
+  }
+}
+
+/**
  * Самодиагностика: открывается в браузере, секретов не раскрывает —
  * только факт «задано / не задано» и адрес отправителя.
  */
@@ -884,6 +903,7 @@ async function health() {
         domains = {
           checked: true,
           keyValid: true,
+          scope: 'full',
           account: list.map((item) => `${item.name} (${item.status})`),
           match: match ? match.status : null,
           verified: Boolean(match)
@@ -891,22 +911,43 @@ async function health() {
               || (match.status === 'partially_verified' && sending === 'enabled')),
         };
       } else {
+        const detail = await response.text().catch(() => '');
         // 401/403 означают, что ключ не принят; прочие коды — проблема на стороне Resend.
         const rejected = response.status === 401 || response.status === 403;
-        domains = {
-          checked: true,
-          keyValid: !rejected,
-          verified: false,
-          error: `resend ${response.status}`,
-        };
+        // Ключ «Sending access» — как раз тот, что нужен рассылке, но список
+        // доменов ему закрыт: Resend отвечает 401 restricted_api_key. Считать
+        // такой ключ негодным нельзя, иначе готовность не наступит никогда.
+        // Вместо этого проверяем право отправки отдельным запросом без письма.
+        const restricted = rejected && /restricted_api_key|restricted to only send/i.test(detail);
+        if (restricted) {
+          const sending = await probeSending(key);
+          domains = {
+            checked: true,
+            keyValid: sending !== 'invalid',
+            scope: 'sending',
+            verified: testSender ? true : null,
+            match: testSender ? 'not_required' : 'unknown',
+            error: sending === 'invalid' ? 'resend 401 (ключ отклонён и при отправке)' : null,
+          };
+        } else {
+          domains = {
+            checked: true,
+            keyValid: !rejected,
+            scope: null,
+            verified: false,
+            error: `resend ${response.status}${detail ? ` ${detail.slice(0, 120)}` : ''}`,
+          };
+        }
       }
     } catch (error) {
       domains = { checked: true, verified: false, error: 'network' };
     }
   }
 
-  // Домен годится, если он подтверждён в Resend или это тестовый resend.dev.
-  const senderUsable = testSender || domains.verified === true;
+  // Домен годится, если он подтверждён в Resend, это тестовый resend.dev,
+  // или ключ ограничен отправкой и проверить домен физически нельзя —
+  // тогда о непроверенном домене предупреждает note, а не блокировка.
+  const senderUsable = testSender || domains.verified === true || domains.scope === 'sending';
   // Ключ считается рабочим, если Resend его не отверг (401/403).
   const keyUsable = Boolean(key) && domains.keyValid !== false;
 
@@ -915,11 +956,16 @@ async function health() {
     supabaseKey: Boolean(env('SUPABASE_SERVICE_ROLE_KEY')),
     resendKey: Boolean(key),
     resendKeyAccepted: domains.keyValid ?? null,
+    resendKeyScope: domains.scope ?? null,
     fromSet: Boolean(from),
     fromAddress: from || `${sender} (значение по умолчанию)`,
     senderDomain: domain,
     senderMode: testSender ? 'test' : 'domain',
-    fromDomainStatus: testSender ? 'not_required (общий домен resend.dev)' : domains.match ?? null,
+    fromDomainStatus: testSender
+      ? 'not_required (общий домен resend.dev)'
+      : domains.scope === 'sending'
+        ? 'unknown (ключ ограничен отправкой)'
+        : domains.match ?? null,
     fromDomainVerified: testSender ? true : domains.verified ?? null,
     resendDomains: domains.account ?? null,
     resendError: domains.error ?? null,
@@ -953,6 +999,10 @@ async function health() {
     notes: [
       testSender
         && 'тестовый режим: resend.dev доставляет письма только на адрес владельца аккаунта Resend',
+      domains.scope === 'sending'
+        && 'ключ ограничен правами отправки: список доменов ему закрыт (это норма), письма он отправляет',
+      domains.scope === 'sending' && !testSender
+        && `домен ${domain} проверить нельзя — Resend отклонит отправку с него, если он не подтверждён`,
       !testSender && !checks.fromSet
         && 'адрес по умолчанию digest@masortim.github.io принадлежит GitHub — Resend его отклонит',
     ].filter(Boolean),

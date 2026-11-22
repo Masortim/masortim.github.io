@@ -108,6 +108,46 @@ test('корневой обработчик отвечает на все мар�
   }
   Object.assign(process.env, saved);
 
+  // Ключ «Sending access» — правильный для рассылки, но GET /domains ему
+  // закрыт: Resend отвечает 401 restricted_api_key. health обязан считать
+  // такой ключ годным, иначе ready не станет true никогда, хотя письма уходят.
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (input, init = {}) => {
+    const url = String(input);
+    const auth = init.headers?.Authorization ?? init.headers?.authorization ?? '';
+    if (url === 'https://api.resend.com/domains') {
+      if (auth === 'Bearer re_sending_only') {
+        return new Response(JSON.stringify({ name: 'restricted_api_key', message: 'This API key is restricted to only send emails' }), { status: 401 });
+      }
+      return new Response(JSON.stringify({ data: [] }), { status: 200 });
+    }
+    if (url === 'https://api.resend.com/emails') {
+      // Ключ опознан, но тела не хватает — Resend отвечает 422.
+      return new Response(JSON.stringify({ name: 'missing_required_field' }), { status: 422 });
+    }
+    return realFetch(input, init);
+  };
+  try {
+    const envSaved = { ...process.env };
+    Object.assign(process.env, {
+      RESEND_API_KEY: 're_sending_only',
+      NEWSLETTER_FROM: 'Masortim <onboarding@resend.dev>',
+      SUPABASE_URL: 'https://example.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'test-key',
+    });
+    const { default: scoped } = await import(`${BUNDLE}?scope=${Date.now()}`);
+    const report2 = await (await scoped(new Request('https://example.test/api/newsletter/health'))).json();
+    assert.equal(report2.checks.resendKeyScope, 'sending');
+    assert.equal(report2.checks.resendKeyAccepted, true);
+    assert.equal(report2.ready, true);
+    for (const key of Object.keys(process.env)) {
+      if (!(key in envSaved)) delete process.env[key];
+    }
+    Object.assign(process.env, envSaved);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+
   // Без ключа почты подписка отвечает 502 — важно, что это не 500:
   // значит разбор тела и валидация адреса прошли.
   const bad = await handler(new Request('https://example.test/api/newsletter/subscribe', {
