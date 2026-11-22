@@ -24,6 +24,7 @@
       invalidToken: 'Ссылка не подошла. Возможно, она устарела — подпишитесь заново.',
       error: 'Что-то пошло не так. Попробуйте позже.',
       network: 'Нет связи с сервером.',
+      notConnected: 'Серверная часть рассылки пока не подключена — адрес сохранён не будет.',
     },
     en: {
       invalid: 'That address looks mistyped. Please check it.',
@@ -37,6 +38,7 @@
       invalidToken: 'This link did not work. It may be out of date — please subscribe again.',
       error: 'Something went wrong. Please try again later.',
       network: 'No connection to the server.',
+      notConnected: 'The newsletter backend is not connected yet, so the address will not be saved.',
     },
   };
 
@@ -97,16 +99,18 @@
       setBusy(true);
       showNotice(texts.sending, 'info');
 
-      // fetch может отсутствовать в старых движках — тогда форма просто
-      // отправляется обычным способом, и пользователь видит результат
-      // на странице, куда его перенаправит сервер.
-      if (typeof window.fetch !== 'function') {
-        form.removeEventListener('submit', arguments.callee);
-        form.submit();
+      // Адрес API (см. newsletter/config.js). Пустой — серверная часть ещё
+      // не подключена; сообщаем об этом честно, вместо «нет связи».
+      var apiBase = (typeof window.NEWSLETTER_API_BASE === 'string')
+        ? window.NEWSLETTER_API_BASE.replace(/\/$/, '')
+        : '';
+      if (!apiBase || typeof window.fetch !== 'function') {
+        setBusy(false);
+        showNotice(texts.notConnected, 'error');
         return;
       }
 
-      window.fetch('/api/newsletter/subscribe', {
+      window.fetch(apiBase + '/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, lang: currentLanguage() }),

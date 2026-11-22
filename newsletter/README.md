@@ -12,6 +12,53 @@
 Еженедельный выпуск  →  newsletter/scripts/send-digest.mjs (GitHub Actions, cron)
 ```
 
+## Что уже настроено
+
+| Слой | Где | Состояние |
+| --- | --- | --- |
+| Хранилище | Supabase, проект `masortim-newsletter` (`ruirizviwndgyojdqicu`), таблица `public.newsletter_subscribers` | готово |
+| Доступ к таблице | RLS включён, политик нет: пишет и читает только `service_role` | готово |
+| Функции API | Vercel-проект `masortim-newsletter` (`prj_fxHDrJlcI8Z5XUUsNNYeQua1STHm`) | проект и переменные созданы |
+| Переменные | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEWSLETTER_SITE`, `CRON_SECRET` | заданы |
+| Еженедельный выпуск | `GET /api/newsletter/digest`, Vercel Cron `0 9 * * 0` | код готов |
+| Отправка писем | Resend | **нужен ключ** |
+
+Без `RESEND_API_KEY` форма принимает адрес, но письмо с подтверждением не уходит.
+После добавления ключа достаточно перевыпустить деплой — код менять не нужно.
+
+### Почему Supabase, а не файл в репозитории
+
+Подписка на файл в GitHub — это коммит на каждого подписчика: гонки при записи,
+тысячи коммитов в истории, и нужен отдельный приватный репозиторий с токеном.
+Строка в таблице дешевле и не требует ничего, кроме service-ключа в серверных
+переменных. Токен подтверждения и отписки хранится в той же строке.
+
+### Схема таблицы
+
+```sql
+create table public.newsletter_subscribers (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  lang text not null default 'ru' check (lang in ('ru','en')),
+  status text not null default 'pending'
+    check (status in ('pending','confirmed','unsubscribed')),
+  token text not null unique,
+  created_at timestamptz not null default now(),
+  confirmed_at timestamptz,
+  unsubscribed_at timestamptz
+);
+alter table public.newsletter_subscribers enable row level security;
+revoke all on public.newsletter_subscribers from anon, authenticated;
+grant all on public.newsletter_subscribers to service_role;
+```
+
+### Адрес API в браузере
+
+Сайт на GitHub Pages и функции на Vercel — разные домены, поэтому адрес API
+задан в `newsletter/config.js` (`NEWSLETTER_API_BASE`). Пока значение пустое,
+форма честно сообщает «серверная часть пока не подключена» вместо «нет связи».
+
+
 ## Что где лежит
 
 | Файл | Назначение |

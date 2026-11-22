@@ -12,10 +12,31 @@ import { confirmationEmail, send } from '../../newsletter/lib/email.mjs';
 
 const SITE = process.env.NEWSLETTER_SITE ?? 'https://masortim.github.io';
 
+const ALLOWED_ORIGIN = process.env.NEWSLETTER_SITE ?? 'https://masortim.github.io';
+
 function json(status, payload) {
   return new Response(JSON.stringify(payload), {
     status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
+      'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
+}
+
+/** Preflight: сайт на GitHub Pages и API на Vercel — разные домены. */
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    },
   });
 }
 
