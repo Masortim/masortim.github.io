@@ -41,9 +41,10 @@ jobs:
         working-directory: ./graph
         run: npm run build
 
-      # RSS-фид собирается из HTML самих заметок, поэтому он всегда актуален
-      # на момент деплоя: новая папка diary/<slug>/ попадает в фид автоматически.
-      - name: Build RSS Feed
+      # RSS-фиды собираются из HTML самих заметок, поэтому они всегда актуальны
+      # на момент деплоя: новая папка diary/<slug>/ попадает в оба фида
+      # автоматически (feed.xml — русский, feed-en.xml — английский).
+      - name: Build RSS Feeds
         run: node scripts/build-feed.mjs --site https://masortim.github.io
 
       # Дневник занимает корень сайта и /diary/; приложение графа остаётся в /graph/.
@@ -55,6 +56,7 @@ jobs:
           cp -R graph/dist/. _site/graph/
           cp index.html _site/index.html
           cp feed.xml _site/feed.xml
+          cp feed-en.xml _site/feed-en.xml
           cp feed-icon.svg _site/feed-icon.svg
           cp -R diary/. _site/diary/
           cp tufte/tufte-universal.css _site/tufte/

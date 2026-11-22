@@ -44,8 +44,18 @@
       button.setAttribute('aria-pressed', String(button.dataset.languageChoice === language));
     });
 
+    updateFeedLinks(language);
+
     if (remember) savePreference(languageKey, language);
     updateThemeLabel();
+  }
+
+  // Фид существует в двух языковых версиях (feed.xml и feed-en.xml),
+  // поэтому вместе с подписями переключаем и адрес ссылки на ленту.
+  function updateFeedLinks(language) {
+    document.querySelectorAll('[data-feed-ru][data-feed-en]').forEach((link) => {
+      link.setAttribute('href', language === 'en' ? link.dataset.feedEn : link.dataset.feedRu);
+    });
   }
 
   function updateThemeLabel() {
