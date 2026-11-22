@@ -16,15 +16,39 @@
 
 | Слой | Где | Состояние |
 | --- | --- | --- |
-| Хранилище | Supabase, проект `masortim-newsletter` (`ruirizviwndgyojdqicu`), таблица `public.newsletter_subscribers` | готово |
-| Доступ к таблице | RLS включён, политик нет: пишет и читает только `service_role` | готово |
-| Функции API | Vercel-проект `masortim-newsletter` (`prj_fxHDrJlcI8Z5XUUsNNYeQua1STHm`) | проект и переменные созданы |
-| Переменные | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEWSLETTER_SITE`, `CRON_SECRET` | заданы |
-| Еженедельный выпуск | `GET /api/newsletter/digest`, Vercel Cron `0 9 * * 0` | код готов |
+| Хранилище | Supabase, проект `masortim-newsletter` (`ruirizviwndgyojdqicu`), таблица `public.newsletter_subscribers` | работает |
+| Доступ к таблице | RLS включён, политик нет: пишет и читает только `service_role` | работает |
+| API | `https://masortim-newsletter.vercel.app` (проект `prj_fxHDrJlcI8Z5XUUsNNYeQua1STHm`) | задеплоено |
+| Переменные | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEWSLETTER_SITE`, `NEWSLETTER_API_BASE`, `CRON_SECRET` | заданы |
+| Еженедельный выпуск | `GET /api/newsletter/digest`, Vercel Cron `0 9 * * 0` | зарегистрирован |
+| Форма на сайте | `newsletter/config.js` → `NEWSLETTER_API_BASE` | указывает на Vercel |
 | Отправка писем | Resend | **нужен ключ** |
 
-Без `RESEND_API_KEY` форма принимает адрес, но письмо с подтверждением не уходит.
-После добавления ключа достаточно перевыпустить деплой — код менять не нужно.
+Без `RESEND_API_KEY` форма принимает адрес, но письмо с подтверждением не уходит:
+Resend отвечает ошибкой, API возвращает `502 email_failed`. После добавления ключа
+достаточно перевыпустить деплой — код менять не нужно.
+
+### Как устроен деплой
+
+Vercel-проект создан в режиме `framework: node`: из корня собирается **одна**
+функция, а каталог `api/` не разворачивается в отдельные роуты. Поэтому
+маршрутизация живёт в `newsletter/edge/index.mjs`, который собирается
+скриптом:
+
+```bash
+node newsletter/scripts/bundle.mjs
+```
+
+Скрипт склеивает `api/newsletter/*.mjs` и `newsletter/lib/*.mjs` в один
+самодостаточный файл (плюс генерирует `newsletter/edge/vercel.json` с cron).
+В репозитории источники остаются раздельными — склейка нужна только для
+артефакта деплоя, он в `.gitignore`.
+
+Перед отправкой бандл проверяется локально:
+
+```bash
+node newsletter/test/e2e-bundle.mjs   # 18 проверок: подписка → подтверждение → отписка
+```
 
 ### Почему Supabase, а не файл в репозитории
 
