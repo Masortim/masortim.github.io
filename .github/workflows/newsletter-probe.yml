@@ -1,0 +1,120 @@
+name: Newsletter API probe
+
+# Проверка живого API рассылки с внешней стороны.
+#
+# Зачем отдельный workflow: из среды, где готовился код, домены Vercel
+# недоступны, поэтому «деплой READY» ничего не говорит о том, отвечает ли
+# функция и не закрыта ли она защитой деплоя Vercel. Раннер GitHub Actions
+# имеет обычный доступ в интернет и видит ровно то же, что браузер читателя.
+#
+# Запускается вручную и на каждый push, затрагивающий серверную часть.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'arena/**'
+    paths:
+      - 'api/newsletter/**'
+      - 'newsletter/lib/**'
+      - '.github/workflows/newsletter-probe.yml'
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Root endpoint
+        run: |
+          echo '--- GET / ---'
+          code=$(curl -sS -o /tmp/root.json -w '%{http_code}' --max-time 20 https://masortim-newsletter.vercel.app/ || echo "000")
+          server=$(curl -sS -o /dev/null -w '%{http_code}|%{redirect_url}' --max-time 20 https://masortim-newsletter.vercel.app/ || echo "000|")
+          echo "status: $code"
+          echo "detail: $server"
+          head -c 300 /tmp/root.json 2>/dev/null; echo
+          if [ "$code" != "200" ]; then
+            echo "::error::PROBE root=$code detail=$server body=$(head -c 200 /tmp/root.json 2>/dev/null | tr -d '\n')"
+            exit 1
+          fi
+
+      - name: Subscribe rejects a broken address
+        run: |
+          echo '--- POST /api/newsletter/subscribe (bad email) ---'
+          code=$(curl -sS -o /tmp/sub.json -w '%{http_code}' --max-time 20 \
+            -X POST -H 'Content-Type: application/json' \
+            -d '{"email":"not-an-email","lang":"ru"}' \
+            https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
+          echo "status: $code"
+          cat /tmp/sub.json; echo
+          if [ "$code" != "400" ]; then
+            echo "::error::SUB bad-email code=$code body=$(head -c 300 /tmp/sub.json | tr -d '\n')"
+            exit 1
+          fi
+
+      - name: Subscribe accepts a valid address
+        run: |
+          echo '--- POST /api/newsletter/subscribe (valid, expect 200 or 502) ---'
+          code=$(curl -sS -o /tmp/sub2.json -w '%{http_code}' --max-time 25 \
+            -X POST -H 'Content-Type: application/json' \
+            -d '{"email":"probe@example.com","lang":"ru"}' \
+            https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
+          echo "status: $code"
+          cat /tmp/sub2.json; echo
+          echo "::notice::SUB valid code=$code — 200 значит письмо ушло, 502 значит нет ключа Resend"
+          # 200 — письмо ушло (есть ключ), 502 — ключа нет, но конвейер работает.
+          if [ "$code" != "200" ] && [ "$code" != "502" ]; then
+            echo "::error::SUB valid code=$code body=$(head -c 300 /tmp/sub2.json | tr -d '\n')"
+            exit 1
+          fi
+
+      - name: Digest is protected
+        run: |
+          echo '--- GET /api/newsletter/digest (no secret) ---'
+          code=$(curl -sS -o /tmp/dig.json -w '%{http_code}' --max-time 20 \
+            https://masortim-newsletter.vercel.app/api/newsletter/digest)
+          echo "status: $code"
+          cat /tmp/dig.json; echo
+          if [ "$code" != "401" ]; then
+            echo "::error::ожидался 401 unauthorized, получен $code"
+            exit 1
+          fi
+
+      - name: CORS preflight for the site origin
+        run: |
+          echo '--- OPTIONS /api/newsletter/subscribe ---'
+          curl -sS -D /tmp/headers.txt -o /dev/null --max-time 20 \
+            -X OPTIONS -H 'Origin: https://masortim.github.io' \
+            -H 'Access-Control-Request-Method: POST' \
+            https://masortim-newsletter.vercel.app/api/newsletter/subscribe
+          grep -i '^access-control-allow-origin' /tmp/headers.txt || {
+            echo "::error::нет заголовка Access-Control-Allow-Origin — браузер заблокирует форму"
+            exit 1
+          }
+
+      - name: Deployment protection check
+        run: |
+          echo '--- защита деплоя Vercel ---'
+          # Если включён Vercel Authentication, ответ будет редиректом на SSO
+          # или 401 без JSON. Раннер увидит это так же, как браузер читателя.
+          location=$(curl -sS -o /dev/null -w '%{redirect_url}' --max-time 20 \
+            https://masortim-newsletter.vercel.app/api/newsletter/digest)
+          echo "redirect: ${location:-нет}"
+          case "$location" in
+            *vercel.com/sso*|*vercel.com/login*)
+              echo "::error::API закрыт Vercel Authentication — форма не сможет отправить запрос"
+              exit 1
+              ;;
+          esac
+          echo "внешняя защита не обнаружена"
+
+      - name: Does the site point at this API
+        run: |
+          echo '--- newsletter/config.js на сайте ---'
+          # Файл может быть ещё не опубликован GitHub Pages: серверная часть
+          # от этого не зависит, поэтому здесь предупреждение, а не отказ.
+          code=$(curl -sS -o /tmp/cfg.js -w '%{http_code}' --max-time 20 \
+            https://masortim.github.io/newsletter/config.js)
+          echo "status: $code"
+          grep -i 'NEWSLETTER_API_BASE' /tmp/cfg.js && exit 0
+          echo "::warning::config.js недоступен или без адреса API (status=$code) — форма может не найти бэкенд"
+

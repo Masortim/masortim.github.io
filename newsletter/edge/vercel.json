@@ -4,10 +4,5 @@
       "path": "/api/newsletter/digest",
       "schedule": "0 9 * * 0"
     }
-  ],
-  "functions": {
-    "index.mjs": {
-      "maxDuration": 60
-    }
-  }
+  ]
 }
