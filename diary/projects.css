@@ -153,41 +153,27 @@ body.archive-home { margin:0; padding:0; }
 .archive-bottom p { margin:0 0 12px; color:var(--archive-muted); font-size:14px; line-height:1.4; }
 /* Ссылка на RSS в блоке «Подписка»: основной цвет и подчёркивание, чтобы
    её было видно как действие, а не как обычный пояснительный текст.
-   Слева — оранжевая пиктограмма RSS: три дуги и точка, тот же знак, что
-   в /feed-icon.svg, но встроенный в строку и окрашенный в акцентный цвет
-   #e8590c. Иконка выровнена по базовой линии текста и не сжимается. */
-/* В шестиколоночной сетке колонка «Подписка» бывает уже самого текста:
-   на 1024px это 119.7px против 130px у «RSS-рассылка ↗». Поэтому ссылка
-   переносит текст под иконку, а не ломает слово по дефису — иначе «RSS-»
-   вставало отдельным заголовком под «Подпиской». Стрелка приклеена
-   к последнему слову неразрывным пробелом в разметке. */
-/* Кегль 13px и зазор 0.25em подобраны по самой узкой колонке: на 1024px
-   это 119.7px, а текст «RSS-рассылка ↗» при 13px занимает 122px — влезает
-   вместе с иконкой 13px в одну строку при колонке 147.7px (1280px+).
-   На 901–1200px пара честно переносится в две строки, а не обрезается. */
-.archive-bottom .feed-link { display:inline-flex; flex-wrap:wrap; align-items:center; gap:0 .25em; color:inherit; font-size:13px; font-weight:700; line-height:1.4; text-decoration:underline; text-underline-offset:2px; }
+   Слева — стандартный знак RSS: оранжевый квадрат со скруглёнными углами
+   и белыми дугами. Квадрат рисуется прямо в SVG (#e8590c), поэтому
+   масштабируется вместе с текстом и остаётся оранжевым в обеих темах —
+   знак RSS узнаётся именно по плашке. Ссылка не переносится: иконка
+   и текст всегда в одну строку. */
+.archive-bottom .feed-link { display:inline-flex; flex-wrap:nowrap; align-items:center; gap:.3em; color:inherit; font-size:13px; font-weight:700; line-height:1.2; text-decoration:underline; text-underline-offset:2px; white-space:nowrap; }
 .archive-bottom .feed-link:hover { text-decoration-thickness:2px; }
-/* Иконка чуть крупнее кегля и не переносится отдельно от текста:
-   стрелка «↗» должна оставаться на той же строке, что и «RSS-рассылка». */
-.archive-bottom .feed-icon { flex:none; width:1em; height:1em; fill:none; stroke:#e8590c; stroke-width:2.6; stroke-linecap:round; }
-/* Узкая колонка (≤145px, это диапазон 901–1270px): иконка встаёт над
-   текстом, и он умещается в одну строку целиком. */
-.archive-bottom .feed-slot { min-width:0; }
-/* Текстовая доля не растягивается на всю строку, чтобы не вытеснять
-   иконку, и держится единым куском: «RSS-рассылка ↗» должно читаться
-   одной строкой, а не ломаться по дефису. */
-.archive-bottom .feed-link > span[data-language-content] { flex:0 1 auto; min-width:0; white-space:nowrap; }
-/* В шестиколоночной сетке колонка «Подписка» сжимается до 105–148px,
-   а текст «RSS-рассылка ↗» при 13px занимает 122px. Кегль тянется вместе
-   с шириной колонки: 11px на 901px (колонка 105px) → 13px с 1250px
-   (колонка 146px и шире). Так ссылка не вылезает за границу своей колонки
-   и не уменьшается без нужды. */
-@media (min-width: 901px) and (max-width: 1249px) {
-  .archive-bottom .feed-link { font-size:clamp(11px, 6px + 0.56vw, 13px); }
-}
-/* В тёмной теме тот же оранжевый читается хуже на #222, поэтому берём
-   более светлый #ff9f45 — сохраняет «оранжевость», но контраст выше. */
-body.dark-theme .archive-bottom .feed-icon { stroke:#ff9f45; }
+.archive-bottom .feed-icon { flex:none; width:1.1em; height:1.1em; }
+/* Текстовая доля держится единым куском: «RSS-рассылка ↗» должно
+   читаться одной строкой, а не ломаться по дефису. */
+.archive-bottom .feed-link > span[data-language-content] { flex:0 0 auto; min-width:0; white-space:nowrap; }
+/* Колонка «Подписка» в шестиколоночной сетке сжимается до 105–148px,
+   а строка «иконка + зазор + текст» занимает ≈10.7 × кегль. Привязывать
+   кегль к вьюпорту пришлось бы отдельными медиазапросами под каждую
+   раскладку; вместо этого .feed-slot объявлен контейнером, и кегль
+   считается от фактической ширины колонки: 8.8cqi с запасом на
+   сглаживание шрифта даёт строку, которая уложилась целиком на всех
+   проверенных ширинах. На широкой колонке упирается в 13px, на 1024px
+   (колонка 120px) это 10.5px. */
+.archive-bottom .feed-slot { min-width:0; container-type:inline-size; }
+.archive-bottom .feed-link { font-size:min(13px, 8.8cqi); }
 .archive-promos { row-gap:24px; padding-top:16px; }
 /* Два блока промо (.archive-promos и .archive-promos--second) на узких
    экранах сливаются в один непрерывный поток: вместо двух отдельных сеток
