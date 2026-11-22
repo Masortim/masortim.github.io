@@ -131,24 +131,68 @@ jobs:
           fi
 
       - name: Full flow when the API is ready
+        env:
+          # Если эти секреты заданы в настройках репозитория, шаг проверит
+          # весь цикл по состоянию в базе. Без них проверяется то, что
+          # видно снаружи (подписка и защита выпуска).
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
-          # Шаги 6-7 из SETUP-FINAL одним прогоном — только когда API готов:
-          # без ключа Resend подписка честно отвечает 502, и весь цикл
-          # бессмысленен. Секретов не требует: работает через публичный API,
-          # токен подтверждения читается из редиректа, который отдаёт /confirm.
           ready=$(node -p 'String(require("/tmp/health.json").ready)' 2>/dev/null || echo unknown)
           if [ "$ready" != "true" ]; then
             echo "::notice::FLOW пропущен: API не готов (ready=$ready) — сначала ключ Resend"
             exit 0
           fi
+
           node newsletter/scripts/verify-live.mjs --health
-          email="probe+$(date +%s)@masortim.github.io"
-          node newsletter/scripts/verify-live.mjs --subscribe "$email"
 
-          # Проверяем закрытость выпуска: без секрета должно быть 401.
+          email="probe+$(date +%s)@example.com"
+          echo "--- подписка $email ---"
+          code=$(curl -sS -o /tmp/sub_full.json -w '%{http_code}' --max-time 25 \
+            -X POST -H 'Content-Type: application/json' -H 'Origin: https://masortim.github.io' \
+            -d "{\"email\":\"$email\",\"lang\":\"ru\"}" \
+            https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
+          echo "status: $code"; cat /tmp/sub_full.json 2>/dev/null; echo
+          if [ "$code" != "200" ]; then
+            echo "::error::FLOW подписка вернула $code, хотя health говорит ready=true"
+            exit 1
+          fi
+          echo "::notice::FLOW подписка принята (письмо отправлено на $email)"
+
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
+            echo "::notice::FLOW подтверждение и отписка пропущены: нет SUPABASE_* в секретах репозитория"
+            node newsletter/scripts/verify-live.mjs --digest-dry-run
+            exit 0
+          fi
+
+          token=$(node -e '
+            const url=process.env.SUPABASE_URL, key=process.env.SUPABASE_SERVICE_ROLE_KEY;
+            const r=await fetch(`${url}/rest/v1/newsletter_subscribers?email=eq.${process.argv[1]}&select=token`,{headers:{apikey:key,Authorization:`Bearer ${key}`}});
+            const rows=await r.json();
+            if(rows&&rows[0])process.stdout.write(rows[0].token);
+          ' "$email")
+          if [ -z "$token" ]; then
+            echo "::error::FLOW токен не найден в базе — подписка не записалась"
+            exit 1
+          fi
+
+          loc=$(curl -sS -o /dev/null -w '%{redirect_url}' --max-time 25 \
+            "https://masortim-newsletter.vercel.app/api/newsletter/confirm?token=$token")
+          echo "confirm -> $loc"
+          case "$loc" in
+            *state=confirmed*) echo "::notice::FLOW подтверждение принято" ;;
+            *) echo "::error::FLOW подтверждение не сработало: $loc"; exit 1 ;;
+          esac
+
+          loc=$(curl -sS -o /dev/null -w '%{redirect_url}' --max-time 25 \
+            "https://masortim-newsletter.vercel.app/api/newsletter/unsubscribe?token=$token")
+          echo "unsubscribe -> $loc"
+          case "$loc" in
+            *state=unsubscribed*) echo "::notice::FLOW отписка принята" ;;
+            *) echo "::error::FLOW отписка не сработала: $loc"; exit 1 ;;
+          esac
+
           node newsletter/scripts/verify-live.mjs --digest-dry-run
-
-          echo "::notice::FLOW подписка принята; подтверждение проверяется по ссылке из письма"
 
       - name: Does the site point at this API
         run: |
