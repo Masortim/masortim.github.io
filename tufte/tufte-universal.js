@@ -101,17 +101,23 @@
   // ============================================
   function initThemeToggle() {
     if (document.getElementById('theme-toggle-button')) return;
+    // Не дублируем кнопку, если страница уже имеет свою (дневник: #theme-toggle).
+    if (document.getElementById('theme-toggle')) return;
     var btn = document.createElement('button');
     btn.id = 'theme-toggle-button';
     btn.className = 'theme-toggle';
     btn.setAttribute('aria-label', 'Переключить тему');
     btn.innerHTML = '🌙';
     document.body.appendChild(btn);
-    var saved = localStorage.getItem('tufte-theme');
+    var saved = null;
+    try { saved = localStorage.getItem('tufte-theme') || localStorage.getItem('masortim-diary-theme'); } catch (_) {}
     if (saved === 'dark') { document.body.classList.add('dark-theme'); btn.innerHTML = '☀️'; }
     btn.addEventListener('click', function() {
       var isDark = document.body.classList.toggle('dark-theme');
-      localStorage.setItem('tufte-theme', isDark ? 'dark' : 'light');
+      try {
+        localStorage.setItem('tufte-theme', isDark ? 'dark' : 'light');
+        localStorage.setItem('masortim-diary-theme', isDark ? 'dark' : 'light');
+      } catch (_) {}
       btn.innerHTML = isDark ? '☀️' : '🌙';
     });
   }

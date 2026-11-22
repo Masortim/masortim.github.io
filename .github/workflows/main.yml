@@ -42,6 +42,7 @@ jobs:
         run: npm run build
 
       # Дневник занимает корень сайта и /diary/; приложение графа остаётся в /graph/.
+      # /tufte/ публикуется целиком: CSS, JS, шрифты ET Book, примеры и образец.
       - name: Assemble Site Artifact
         run: |
           rm -rf _site
@@ -50,6 +51,10 @@ jobs:
           cp index.html _site/index.html
           cp -R diary/. _site/diary/
           cp tufte/tufte-universal.css _site/tufte/
+          cp tufte/tufte-universal.js _site/tufte/
+          cp tufte/*.html _site/tufte/
+          cp -R tufte/img _site/tufte/
+          cp -R tufte/et-book _site/tufte/
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v6
