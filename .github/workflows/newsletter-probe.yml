@@ -121,6 +121,9 @@ jobs:
           echo '--- GET /api/newsletter/health ---'
           # Эндпоинт сам проверяет окружение: есть ли ключи, верифицирован ли
           # домен отправителя в Resend. Секретов не раскрывает — только да/нет.
+          # Ключ с правами Sending access (рекомендуемый Resend) не может читать
+          # список доменов: на GET /domains он получает 401 restricted_api_key.
+          # Это норма, а не ошибка — health проверяет право отправки отдельно.
           code=$(curl -sS -o /tmp/health.json -w '%{http_code}' --max-time 25 \
             https://masortim-newsletter.vercel.app/api/newsletter/health || echo "000")
           echo "status: $code"
