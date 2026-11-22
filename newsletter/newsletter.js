@@ -25,6 +25,7 @@
       error: 'Что-то пошло не так. Попробуйте позже.',
       network: 'Нет связи с сервером.',
       notConnected: 'Серверная часть рассылки пока не подключена — адрес сохранён не будет.',
+      emailPending: 'Адрес принят, но отправка писем ещё настраивается. Подписка оформится, как только почта заработает.',
     },
     en: {
       invalid: 'That address looks mistyped. Please check it.',
@@ -39,6 +40,7 @@
       error: 'Something went wrong. Please try again later.',
       network: 'No connection to the server.',
       notConnected: 'The newsletter backend is not connected yet, so the address will not be saved.',
+      emailPending: 'The address was accepted, but email delivery is still being set up. Your subscription will complete once it is ready.',
     },
   };
 
@@ -125,6 +127,10 @@
           input.value = '';
         } else if (result.status === 400) {
           showNotice(texts.invalid, 'error');
+        } else if (result.payload && result.payload.error === 'email_failed') {
+          // Сервер работает и адрес записал, но отправить письмо нечем:
+          // не задан ключ почтового сервиса.
+          showNotice(texts.emailPending, 'info');
         } else {
           showNotice(texts.failed, 'error');
         }
