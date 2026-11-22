@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fffff8">
+  <meta name="description" content="Эталонный образец типографики Эдварда Тафти для заметок: шрифты, кегли, сноски, рисунки, инфографика, формулы и код.">
+  <title>Типографика Тафти для заметок — образец</title>
+  <link href="tufte-universal.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/c.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <script src="tufte-universal.js"></script>
+</head>
+<body>
+<article>
+  <h1 class="title">Типографика Тафти для заметок</h1>
+  <p class="subtitle">Шрифты, кегли, поля, сноски, рисунки, инфографика, формулы и код</p>
+  <h4 class="author">Образец для заметок дневника</h4>
+  <h4 class="date">2026-11-22</h4>
+
+  <p class="abstract">
+    Эта страница — эталон: каждый элемент показан так, как он должен выглядеть
+    в заметках. Основной текст — ET Book 21px/30px в колонке 55% ширины;
+    сноски и малые рисунки — в правом поле; графики — без chartjunk,
+    с прямыми подписями. Сравните с исходником: разметка минимальна,
+    вся типографика — в <code>tufte-universal.css</code>.
+  </p>
+
+  <div class="epigraph">
+    <blockquote>
+      <p>Above all, show the data.</p>
+      <footer>— Edward Tufte, <cite>The Visual Display of Quantitative Information</cite></footer>
+    </blockquote>
+  </div>
+
+  <nav class="page-navigation top">
+    <span class="nav-item"><a href="example.html">← Основные возможности</a></span>
+    <span class="nav-separator">|</span>
+    <span class="nav-item"><a href="example2.html">Продвинутые примеры</a></span>
+    <span class="nav-separator">|</span>
+    <span class="nav-item"><a href="specimen.html">Образец (эта страница)</a></span>
+  </nav>
+
+  <!-- 1. Принципы -->
+  <div class="section level1" id="principles">
+    <h1>Принципы</h1>
+    <p>
+      <span class="newthought">Стиль Тафти — это не «красивый шрифт», а дисциплина
+      показа данных.</span>
+      Каждое чернило на странице должно нести данные (data-ink ratio);
+      всё остальное — chartjunk: тени, 3D, рамки-«шкатулки», круговые диаграммы,
+      легенды вместо прямых подписей.
+      <label for="sn-principles-1" class="margin-toggle sidenote-number">1</label>
+      <input type="checkbox" id="sn-principles-1" class="margin-toggle">
+      <span class="sidenote"><span class="sidenote-number">1</span>
+        Edward Tufte, <em>The Visual Display of Quantitative Information</em> (1983),
+        гл. 1–2: data-ink ratio, chartjunk, lie factor.
+      </span>
+      Коэффициент лжи (lie factor) — отношение визуального эффекта к эффекту
+      в данных — должен быть близок к единице: график не должен «врать»
+      сильнее, чем цифры.
+      <label for="mn-principles-1" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="mn-principles-1" class="margin-toggle">
+      <span class="marginnote">
+        Заметка на полях (без номера) — для пояснений, не привязанных
+        к конкретному месту текста. На узком экране нажмите ⊕.
+      </span>
+    </p>
+    <p>
+      Вместо сносок внизу страницы Тафти использует боковые сноски:
+      пояснение стоит рядом с тем местом, к которому относится, и не разрывает
+      чтение. Именно поэтому основная колонка узкая (55%), а правое поле широкое.
+    </p>
+  </div>
+
+  <!-- 2. Шрифты и кегли -->
+  <div class="section level1" id="fonts">
+    <h1>Шрифты и кегли</h1>
+    <p>
+      Основной шрифт — <strong>ET Book</strong> (открытый аналог Bembo),
+      курсив и полужирный — отдельные начертания. Запасной стек —
+      Palatino, Book Antiqua, Georgia. База страницы — 15px;
+      текст — 1.4rem (21px) с интерлиньяжем 2rem (30px).
+      <label for="sn-fonts-1" class="margin-toggle sidenote-number">2</label>
+      <input type="checkbox" id="sn-fonts-1" class="margin-toggle">
+      <span class="sidenote"><span class="sidenote-number">2</span>
+        Файлы шрифтов лежат в <code>tufte/et-book/</code> (woff + ttf).
+        Если они недоступны, браузер откатывается на Palatino/Georgia.
+      </span>
+    </p>
+    <p>
+      Цифры в тексте — старинные (old-style): <span class="numeral">1234567890</span>,
+      они не «прыгают» по высоте строки. В таблицах и коде — строчные
+      (lining, табличные): <span style="font-variant-numeric: lining-nums tabular-nums;">1234567890</span>.
+      Номера сносок — старинными цифрами ET Book, над строкой.
+    </p>
+    <p>
+      Акценты — без жирного: <em>курсив</em>, <span class="smallcaps">капитель</span>,
+      <span class="sans">санс-сериф для подписей</span> и <code>моноширинный для кода</code>.
+      Жирный (<strong>strong</strong>) — только в табличных шапках и редких случаях.
+    </p>
+    <div class="table-wrapper">
+      <table>
+        <caption>Таблица 1. Кегли эталона (база 15px). Сноски — 1.1rem, подписи — 1.1rem.</caption>
+        <thead>
+          <tr><th>Элемент</th><th>Шрифт</th><th align="right">Кегль</th><th align="right">Интерлиньяж</th><th>Начертание</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Заголовок документа (h1.title)</td><td>ET Book</td><td align="right">3.2rem · 48px</td><td align="right">1.0</td><td>прямой</td></tr>
+          <tr><td>Раздел (h1)</td><td>ET Book</td><td align="right">2.2rem · 33px</td><td align="right">1.0</td><td>курсив</td></tr>
+          <tr><td>Подраздел (h2)</td><td>ET Book</td><td align="right">1.7rem · 25.5px</td><td align="right">1.0</td><td>курсив</td></tr>
+          <tr><td>Подзаголовок (subtitle)</td><td>ET Book</td><td align="right">1.8rem · 27px</td><td align="right">1.0</td><td>курсив</td></tr>
+          <tr><td>Текст (p)</td><td>ET Book</td><td align="right">1.4rem · 21px</td><td align="right">2rem · 30px</td><td>прямой</td></tr>
+          <tr><td>Сноски, подписи (sidenote, caption)</td><td>ET Book</td><td align="right">1.1rem · 16.5px</td><td align="right">1.3 / 1.6</td><td>прямой</td></tr>
+          <tr><td>Код инлайн / блок</td><td>моноширинный</td><td align="right">1.0 / 0.9rem</td><td align="right">1.42</td><td>—</td></tr>
+          <tr><td>Подписи графиков</td><td>Gill Sans</td><td align="right">1.1rem</td><td align="right">1.4</td><td>прямой</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Мера: основная колонка 55%, поле сносок — остаток (body 87.5% + отступ 12.5%,
+      максимум 1400px). Абзацы без отступа первой строки, поля 1.4rem;
+      первая фраза раздела — капителью (<span class="newthought">как здесь</span>).
+    </p>
+  </div>
+
+  <!-- 3. Заголовки -->
+  <div class="section level1" id="headings">
+    <h1>Заголовки и отступы</h1>
+    <p>
+      Правило Тафти: не больше двух уровней заголовков (главы + A-heads).
+      Если хочется <code>h4</code> — перестройте документ. Ниже — все уровни эталона.
+    </p>
+    <h2>Подраздел второго уровня (h2, 1.7rem, курсив)</h2>
+    <p>
+      Текст под подразделом. Обратите внимание: заголовок не центрируется,
+      не выделяется жирным и не получает номера — структура читается
+      за счёт кегля, курсива и вертикального ритма.
+    </p>
+    <h3>Третий уровень (h3, 1.4rem, курсив) — только если без него никак</h3>
+    <p>
+      Подзаголовок документа (<code>p.subtitle</code>, 1.8rem) крупнее подраздела —
+      это нормально: он относится к заголовку, а не к разделу.
+      Автор и дата (<code>h4.author/date</code>, 1.4rem, прямой) — в начале страницы.
+    </p>
+    <hr>
+    <p>
+      Горизонтальная линейка (<code>hr</code>) — 55% ширины, 1px, цвет #ccc.
+      Она отделяет крупные блоки, но не заменяет заголовки.
+    </p>
+  </div>
+
+  <!-- 4. Сноски -->
+  <div class="section level1" id="sidenotes">
+    <h1>Боковые сноски и заметки на полях</h1>
+    <p>
+      Нумерованная боковая сноска стоит в правом поле, рядом с местом ссылки.
+      <label for="sn-notes-1" class="margin-toggle sidenote-number">3</label>
+      <input type="checkbox" id="sn-notes-1" class="margin-toggle">
+      <span class="sidenote"><span class="sidenote-number">3</span>
+        Это сноска 3. Номер — старинной цифрой, над строкой.
+        На экране уже 760px нажмите на номер, чтобы раскрыть текст.
+      </span>
+      Вторая сноска в том же абзаце показывает, что нумерация сквозная.
+      <label for="sn-notes-2" class="margin-toggle sidenote-number">4</label>
+      <input type="checkbox" id="sn-notes-2" class="margin-toggle">
+      <span class="sidenote"><span class="sidenote-number">4</span>
+        Сноска 4. В сноске могут быть <a href="#fonts">ссылки</a>,
+        <code>код</code> и формулы \(E = mc^2\).
+      </span>
+    </p>
+    <p>
+      Заметка на полях без номера — для отступлений и пояснений.
+      <label for="mn-notes-1" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="mn-notes-1" class="margin-toggle">
+      <span class="marginnote">
+        Заметка на полях (⊕). Короткий пример кода:
+        <code>const x = 42;</code>
+      </span>
+      Сноски не должны быть длиннее абзаца: если пояснение большое —
+      выносите его в основной текст или в полноширинный блок.
+    </p>
+    <blockquote>
+      <p>
+        «Данные не являются информацией, информация не является знанием…»
+        <label for="sn-notes-3" class="margin-toggle sidenote-number">5</label>
+        <input type="checkbox" id="sn-notes-3" class="margin-toggle">
+        <span class="sidenote"><span class="sidenote-number">5</span>
+          Цитата Клиффорда Столла. Сноска внутри цитаты сдвигается
+          дальше в поле (margin-right −82%).
+        </span>
+      </p>
+      <footer>— Клиффорд Столл</footer>
+    </blockquote>
+  </div>
+
+  <!-- 5. Рисунки -->
+  <div class="section level1" id="figures">
+    <h1>Рисунки</h1>
+    <p>
+      Рисунок в основном столбце (55%) — стандарт для иллюстраций.
+      Подпись — на полях справа, 1.1rem. Разметка — <code>figure/figcaption</code>
+      или <code>div.figure/p.caption</code> (Pandoc).
+    </p>
+    <figure>
+      <img src="img/fig-main-1.png" alt="Пример изображения в основном столбце" width="672">
+      <figcaption>Рисунок в основном столбце. Подпись — на полях, без рамки и фона.</figcaption>
+    </figure>
+    <p>
+      Малый рисунок на полях — рядом с текстом, не разрывая абзац.
+      <label for="mn-fig-1" class="margin-toggle">⊕</label>
+      <input type="checkbox" id="mn-fig-1" class="margin-toggle">
+      <span class="marginnote">
+        <img src="img/fig-margin-1.png" alt="Изображение на полях" width="336">
+        <span style="display:block;margin-top:0.5rem;">Рисунок на полях: 50% ширины абзаца, margin-right −60%.</span>
+      </span>
+      Текст продолжается в основной колонке; рисунок не «всплывает» внутрь
+      абзаца, а живёт в поле. Для ещё меньших иллюстраций используйте
+      <code>figure.margin-figure</code>.
+    </p>
+    <p>
+      Внутритекстовый рисунок (<code>figure.inline-figure</code>) — обтекание
+      в потоке. Тафти предпочитает рисунки на полях, поэтому inline —
+      исключение, а не правило.
+    </p>
+    <figure class="inline-figure">
+      <img src="img/fig-two-together-1.png" alt="Внутритекстовый рисунок" width="336">
+      <figcaption>Внутритекстовый (inline): 32% ширины, обтекание слева.</figcaption>
+    </figure>
+    <p>
+      Этот абзац обтекает внутритекстовый рисунок слева. Обратите внимание:
+      подпись под рисунком, а не на полях, — иначе она потеряется в потоке.
+      Длинные подписи для inline не подходят; для них — основной столбец
+      или полноширинный рисунок.
+    </p>
+    <p>
+      Два рисунка подряд — каждый со своей подписью на полях.
+    </p>
+    <div class="figure">
+      <img src="img/fig-two-together-1.png" alt="Первый из двух рисунков" width="672">
+      <p class="caption marginnote shownote">Первый рисунок: подпись на полях (Pandoc-стиль).</p>
+      <img src="img/fig-two-together-2.png" alt="Второй из двух рисунков" width="672">
+      <p class="caption marginnote shownote">Второй рисунок: подпись на полях.</p>
+    </div>
+    <p>
+      Полноширинный рисунок (90%) — для важных иллюстраций, которым тесно
+      в колонке 55%. Подпись — с отступом справа 24%.
+    </p>
+    <figure class="fullwidth">
+      <img src="img/fig-fullwidth-1.png" alt="Полноширинное изображение" width="960">
+      <figcaption>Полноширинный рисунок: почти вся ширина страницы.</figcaption>
+    </figure>
+  </div>
+
+  <!-- 6. Инфографика -->
+  <div class="section level1" id="infographics">
+    <h1>Инфографика</h1>
+    <p>
+      <span class="newthought">График по Тафти начинается с данных, а не с украшений.</span>
+      Ниже — строительные блоки эталона: спарклайн, малые кратные, столбцы,
+      точки, наклонный график и таблица-графика. Все — чистый CSS + инлайн-SVG,
+      без библиотек. Подписи — прямые, на графике; сетка — только светлая.
+      <label for="sn-info-1" class="margin-toggle sidenote-number">6</label>
+      <input type="checkbox" id="sn-info-1" class="margin-toggle">
+      <span class="sidenote"><span class="sidenote-number">6</span>
+        Заголовок графика — короткая фраза («Рост за 12 месяцев»),
+        а не «Рисунок 1». Источник данных — мелкой подписью под графиком.
+      </span>
+    </p>
+
+    <div class="tufte-chart">
+      <p class="chart-title">Спарклайн в строке текста</p>
+      <p class="chart-subtitle">Мини-график высотой в строку, без осей и сетки.</p>
+      <p>
+        Продажи за неделю:
+        <span class="sparkline" role="img" aria-label="Спарклайн продаж за неделю">
+          <svg viewBox="0 0 72 16" preserveAspectRatio="none"><polyline class="data-line" points="0,12 12,9 24,11 36,6 48,8 60,4 72,5"/></svg>
+        </span>
+        — 12, 9, 11, 6, 8, 4, 5 (условные единицы). Спарклайн не заменяет
+        полный график: он показывает форму, а не точные значения.
+      </p>
+      <p class="chart-source">Источник: условные данные эталона.</p>
+    </div>
+
+    <div class="tufte-chart">
+      <p class="chart-title">Столбцы с прямыми подписями</p>
+      <p class="chart-subtitle">Без осей-«гребёнок»: значение подписано у конца столбца.</p>
+      <div class="bar-chart">
+        <div class="bar-row"><span class="bar-label">Январь</span><span class="bar-track"><span class="bar-fill" style="width:45%"></span></span><span class="bar-value">45</span></div>
+        <div class="bar-row"><span class="bar-label">Февраль</span><span class="bar-track"><span class="bar-fill" style="width:62%"></span></span><span class="bar-value">62</span></div>
+        <div class="bar-row"><span class="bar-label">Март</span><span class="bar-track"><span class="bar-fill accent" style="width:88%"></span></span><span class="bar-value">88</span></div>
+        <div class="bar-row"><span class="bar-label">Апрель</span><span class="bar-track"><span class="bar-fill" style="width:70%"></span></span><span class="bar-value">70</span></div>
+      </div>
+      <p class="chart-source">Источник: условные данные эталона. Акцент — только для максимума.</p>
+    </div>
+
+    <div class="tufte-chart">
+      <p class="chart-title">Точечный график (dot plot)</p>
+      <p class="chart-subtitle">Каждая точка — одно наблюдение; шкала — одна на все строки.</p>
+      <div class="dot-plot">
+        <div class="dot-row"><span class="dot-label">Группа A</span><span class="dot-track"><span class="dot" style="left:20%"></span><span class="dot" style="left:35%"></span><span class="dot" style="left:50%"></span></span></div>
+        <div class="dot-row"><span class="dot-label">Группа B</span><span class="dot-track"><span class="dot accent" style="left:55%"></span><span class="dot accent" style="left:70%"></span><span class="dot accent" style="left:85%"></span></span></div>
+      </div>
+      <p class="chart-source">Источник: условные данные эталона.</p>
+    </div>
+
+    <div class="tufte-chart">
+      <p class="chart-title">Наклонный график (slope graph)</p>
+      <p class="chart-subtitle">Два состояния, прямые подписи у концов линий. Без легенды.</p>
+      <div class="slope-graph">
+        <svg class="tufte-svg" viewBox="0 0 300 140" role="img" aria-label="Наклонный график: рост двух групп">
+          <line class="axis" x1="40" y1="10" x2="40" y2="120"/>
+          <line class="axis" x1="260" y1="10" x2="260" y2="120"/>
+          <line class="data-line" x1="40" y1="90" x2="260" y2="40"/>
+          <line class="data-line" x1="40" y1="70" x2="260" y2="55" stroke-dasharray="4 3"/>
+          <circle class="data-dot" cx="40" cy="90" r="3"/>
+          <circle class="data-dot" cx="260" cy="40" r="3"/>
+          <circle class="data-dot" cx="40" cy="70" r="3"/>
+          <circle class="data-dot" cx="260" cy="55" r="3"/>
+          <text x="40" y="135" text-anchor="middle">2024</text>
+          <text x="260" y="135" text-anchor="middle">2026</text>
+          <text x="268" y="44">Группа A · 88</text>
+          <text x="268" y="59">Группа B · 70</text>
+          <text x="32" y="94" text-anchor="end">45</text>
+          <text x="32" y="74" text-anchor="end">62</text>
+        </svg>
+      </div>
+      <p class="chart-source">Источник: условные данные эталона.</p>
+    </div>
+
+    <div class="small-multiples">
+      <div class="multiple">
+        <p class="multiple-title">Север</p>
+        <svg class="tufte-svg" viewBox="0 0 120 40" role="img" aria-label="Малый кратный: север">
+          <line class="grid" x1="0" y1="20" x2="120" y2="20"/>
+          <polyline class="data-line" points="0,30 30,22 60,25 90,15 120,10"/>
+        </svg>
+      </div>
+      <div class="multiple">
+        <p class="multiple-title">Юг</p>
+        <svg class="tufte-svg" viewBox="0 0 120 40" role="img" aria-label="Малый кратный: юг">
+          <line class="grid" x1="0" y1="20" x2="120" y2="20"/>
+          <polyline class="data-line" points="0,28 30,30 60,18 90,20 120,12"/>
+        </svg>
+      </div>
+      <div class="multiple">
+        <p class="multiple-title">Восток</p>
+        <svg class="tufte-svg" viewBox="0 0 120 40" role="img" aria-label="Малый кратный: восток">
+          <line class="grid" x1="0" y1="20" x2="120" y2="20"/>
+          <polyline class="data-line" points="0,32 30,26 60,28 90,22 120,18"/>
+        </svg>
+      </div>
+      <div class="multiple">
+        <p class="multiple-title">Запад</p>
+        <svg class="tufte-svg" viewBox="0 0 120 40" role="img" aria-label="Малый кратный: запад">
+          <line class="grid" x1="0" y1="20" x2="120" y2="20"/>
+          <polyline class="data-line" points="0,26 30,24 60,20 90,16 120,8"/>
+        </svg>
+      </div>
+    </div>
+    <p>
+      Малые кратные: четыре мини-графика с общей шкалой. Сравнение идёт
+      по форме линий, а не по разным осям — это и есть small multiples.
+    </p>
+
+    <div class="table-wrapper">
+      <table class="table-graphic">
+        <caption>Таблица-графика: booktabs + полоски в ячейках.</caption>
+        <thead>
+          <tr><th>Регион</th><th align="right">Значение</th><th>Доля</th><th>Динамика</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Север</td><td align="right">88</td>
+            <td class="bar-cell"><span class="bar-track"><span class="bar-fill" style="width:88%"></span></span></td>
+            <td><span class="sparkline"><svg viewBox="0 0 72 16" preserveAspectRatio="none"><polyline class="data-line" points="0,12 24,9 48,6 72,4"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Юг</td><td align="right">70</td>
+            <td class="bar-cell"><span class="bar-track"><span class="bar-fill" style="width:70%"></span></span></td>
+            <td><span class="sparkline"><svg viewBox="0 0 72 16" preserveAspectRatio="none"><polyline class="data-line" points="0,10 24,11 48,8 72,7"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Восток</td><td align="right">62</td>
+            <td class="bar-cell"><span class="bar-track"><span class="bar-fill" style="width:62%"></span></span></td>
+            <td><span class="sparkline"><svg viewBox="0 0 72 16" preserveAspectRatio="none"><polyline class="data-line" points="0,8 24,10 48,9 72,11"/></svg></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Полноширинный график — для сложных данных. Тот же набор классов,
+      только контейнер шире; подписи остаются прямыми.
+    </p>
+    <div class="tufte-chart fullwidth">
+      <p class="chart-title">Полноширинный график</p>
+      <p class="chart-subtitle">Линейный график с областью: сетка — только светлая, подписи — у данных.</p>
+      <svg class="tufte-svg" viewBox="0 0 600 180" role="img" aria-label="Полноширинный линейный график">
+        <line class="grid" x1="40" y1="45" x2="580" y2="45"/>
+        <line class="grid" x1="40" y1="90" x2="580" y2="90"/>
+        <line class="grid" x1="40" y1="135" x2="580" y2="135"/>
+        <line class="axis" x1="40" y1="10" x2="40" y2="160"/>
+        <line class="axis" x1="40" y1="160" x2="580" y2="160"/>
+        <polygon class="data-area" points="40,130 160,100 280,110 400,60 520,70 580,40 580,160 40,160"/>
+        <polyline class="data-line" points="40,130 160,100 280,110 400,60 520,70 580,40"/>
+        <circle class="data-dot" cx="400" cy="60" r="3"/>
+        <text x="400" y="50" text-anchor="middle" class="label-direct">пик · 88</text>
+        <text x="40" y="175" text-anchor="middle">янв</text>
+        <text x="280" y="175" text-anchor="middle">июн</text>
+        <text x="580" y="175" text-anchor="middle">дек</text>
+      </svg>
+      <p class="chart-source">Источник: условные данные эталона.</p>
+    </div>
+  </div>
+
+  <!-- 7. Математика -->
+  <div class="section level1" id="math">
+    <h1>Математические формулы</h1>
+    <p>
+      Инлайн-формула в потоке текста: \(E = mc^2\) и
+      \(\frac{d}{dx}\left(\int_{a}^{x} f(u)\,du\right) = f(x)\).
+      Кегль наследует текст; формула не разрывает строку сильнее, чем слово.
+    </p>
+    <p>
+      Блочная формула — по центру текстового столбца (55%):
+    </p>
+    <p>
+      \[\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi}\]
+    </p>
+    <p>
+      Ряд Тейлора для функции \(f(x)\) в точке \(a\):
+    </p>
+    <p>
+      \[f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n\]
+    </p>
+    <p>
+      Формула в сноске — 0.9em на всю ширину колонки:
+      <label for="sn-math-1" class="margin-toggle sidenote-number">7</label>
+      <input type="checkbox" id="sn-math-1" class="margin-toggle">
+      <span class="sidenote"><span class="sidenote-number">7</span>
+        <span style="display:block;">\[\frac{d}{dx}\left(\int_{a}^{x} f(u)\,du\right)=f(x).\]</span>
+      </span>
+      Нумерованное уравнение: формула по центру, номер — в поле справа.
+    </p>
+    <div class="equation">
+      <span>\[E = mc^2\]</span>
+      <span class="eq-number">(1)</span>
+    </div>
+    <div class="fullwidth">
+      <p style="text-align:center;padding:1rem 0;">
+        \[f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n\]
+      </p>
+      <p style="text-align:center;font-size:1.1rem;margin-top:0.5rem;">
+        Полноширинная формула: на всю ширину блока.
+      </p>
+    </div>
+  </div>
+
+  <!-- 8. Код -->
+  <div class="section level1" id="code">
+    <h1>Код</h1>
+    <p>
+      Инлайн-код — моноширинным 1.0rem, без фона:
+      <code>const example = "Hello, World!";</code>.
+      Блоки — 0.9rem, с тонкими линейками сверху/снизу (как таблицы),
+      без плашки. Подсветка — только цветом токенов.
+    </p>
+    <h2>Python</h2>
+    <pre><code class="language-python">def greet(name):
+    """Приветствие пользователя"""
+    print(f"Привет, {name}!")
+
+    numbers = [1, 2, 3, 4, 5]
+    squares = [x**2 for x in numbers]
+    return squares
+
+greet("Мир")</code></pre>
+    <h2>JavaScript</h2>
+    <pre><code class="language-javascript">function greet(name) {
+  console.log(`Привет, ${name}!`);
+}
+
+greet("Мир");</code></pre>
+    <h2>C</h2>
+    <pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    printf("Привет, Мир!\n");
+    return 0;
+}</code></pre>
+    <h2>SQL</h2>
+    <pre><code class="language-sql">SELECT u.name, COUNT(o.id) AS order_count
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+GROUP BY u.id, u.name;</code></pre>
+    <p>
+      Короткий пример в сноске:
+      <label for="sn-code-1" class="margin-toggle sidenote-number">8</label>
+      <input type="checkbox" id="sn-code-1" class="margin-toggle">
+      <span class="sidenote"><span class="sidenote-number">8</span>
+        <code>const x = 42;</code><br>
+        Краткий пример кода в боковой заметке.
+      </span>
+      Для длинных листингов, где нужна плашка, — <code>pre.pre-boxed</code>
+      (светлый фон и левая линейка). По умолчанию плашки нет.
+    </p>
+    <pre class="pre-boxed"><code class="language-python"># pre-boxed: светлый фон для длинных листингов
+print("Плашка — исключение, а не правило.")</code></pre>
+  </div>
+
+  <!-- 9. Таблицы -->
+  <div class="section level1" id="tables">
+    <h1>Таблицы</h1>
+    <p>
+      Таблицы в стиле booktabs: верхняя и нижняя линии 2px, под шапкой 1px,
+      вертикальных линий нет. Числа — строчные, выровнены вправо.
+      Подпись таблицы — над ней, 1.1rem.
+    </p>
+    <div class="table-wrapper">
+      <table>
+        <caption>Таблица 2. Сравнение вариантов (условные данные).</caption>
+        <thead>
+          <tr><th>Параметр</th><th align="right">Вариант A</th><th align="right">Вариант B</th><th align="right">Вариант C</th><th align="right">Единицы</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Скорость</td><td align="right">120</td><td align="right">150</td><td align="right">180</td><td align="right">км/ч</td></tr>
+          <tr><td>Мощность</td><td align="right">75</td><td align="right">100</td><td align="right">125</td><td align="right">л.с.</td></tr>
+          <tr><td>Расход</td><td align="right">6.5</td><td align="right">7.2</td><td align="right">8.1</td><td align="right">л/100км</td></tr>
+          <tr><td>Цена</td><td align="right">500 000</td><td align="right">750 000</td><td align="right">1 000 000</td><td align="right">₽</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Широкая таблица — в <code>.table-wrapper</code> (санс-сериф, горизонтальная
+      прокрутка при переполнении). Полноширинная таблица — <code>table.fullwidth</code>.
+    </p>
+  </div>
+
+  <!-- 10. Цитаты и списки -->
+  <div class="section level1" id="quotes-lists">
+    <h1>Цитаты и списки</h1>
+    <blockquote>
+      <p>«Великие люди говорят об идеях, средние — о вещах, а маленькие — о вине.»</p>
+      <footer>— Фрэн Лебовиц</footer>
+    </blockquote>
+    <p>Нумерованный список (50% + 5% отступ = 55%):</p>
+    <ol>
+      <li>Первый элемент нумерованного списка</li>
+      <li>Второй элемент с дополнительной информацией
+        <ul>
+          <li>Вложенный маркированный элемент</li>
+          <li>Ещё один вложенный элемент</li>
+        </ul>
+      </li>
+      <li>Третий элемент первого уровня</li>
+    </ol>
+    <p>Маркированный список:</p>
+    <ul>
+      <li>Элемент маркированного списка</li>
+      <li>Ещё один элемент</li>
+      <li>И ещё один элемент</li>
+    </ul>
+    <p>Список определений (<code>dl/dt/dd</code>):</p>
+    <dl>
+      <dt>Data-ink ratio</dt>
+      <dd>Доля чернил, несущих данные, в общем объёме чернил графика.</dd>
+      <dt>Chartjunk</dt>
+      <dd>Декоративные элементы, не несущие данных: тени, 3D, рамки.</dd>
+      <dt>Small multiples</dt>
+      <dd>Серия мини-графиков с общей шкалой для сравнения по форме.</dd>
+    </dl>
+  </div>
+
+  <!-- 11. Ссылки и выделение -->
+  <div class="section level1" id="links">
+    <h1>Ссылки и выделение</h1>
+    <p>
+      Ссылки — цветом текста, с подчёркиванием, не пересекающим выносные
+      элементы: <a href="#principles">gypsy</a>, <a href="#figures">Typography</a>,
+      <a href="#math">yesterday</a>. Синий цвет не используется:
+      он кричащий и отвлекает от чтения. При наведении цвет не меняется.
+    </p>
+    <p>
+      Выделение: <strong>жирный</strong> (редко), <em>курсив</em> (часто),
+      <span class="sans">санс-сериф</span>, <span class="smallcaps">капитель</span>,
+      <code>моноширинный</code>, <span class="danger">красный для предупреждений</span>.
+      Комбинации: <strong><em>жирный курсив</em></strong>.
+    </p>
+    <div class="fullwidth">
+      <p class="fullwidth-note">
+        <strong>Полноширинное примечание:</strong> блок на 90% ширины
+        для важной информации, которая должна выделяться.
+        Фон и левая линейка — только здесь, в основном тексте их нет.
+      </p>
+    </div>
+    <p>
+      После полноширинных блоков основной текст продолжается в обычной мере.
+    </p>
+  </div>
+
+  <!-- 12. Адаптивность и печать -->
+  <div class="section level1" id="responsive">
+    <h1>Адаптивность и печать</h1>
+    <p>
+      При ширине меньше 760px боковые сноски скрываются и раскрываются
+      по клику на номер или ⊕; основная колонка расширяется до 90%.
+      Проверьте, сузив окно: сноски 3–8 должны прятаться и раскрываться.
+    </p>
+    <p>
+      При печати сноски видны всегда, переключатели скрыты, фон — белый,
+      текст — чёрный. Кнопка темы (☾/☀ справа вверху) переключает
+      дневную и ночную темы; выбор запоминается в браузере.
+    </p>
+    <p>
+      Как использовать в новой заметке: подключите
+      <code>tufte-universal.css</code>, разметьте сноски по образцу выше,
+      графики — классами <code>.tufte-chart</code>, <code>.small-multiples</code>,
+      <code>.bar-chart</code>, формулы — <code>\(…\)</code> / <code>\[…\]</code>,
+      код — <code>pre &gt; code.language-*</code>. Полный список классов —
+      в шапке <code>tufte-universal.css</code>.
+    </p>
+  </div>
+
+  <nav class="page-navigation">
+    <span class="nav-item"><a href="example.html">← Основные возможности</a></span>
+    <span class="nav-separator">|</span>
+    <span class="nav-item"><a href="example2.html">Продвинутые примеры →</a></span>
+  </nav>
+</article>
+</body>
+</html>

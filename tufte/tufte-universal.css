@@ -1,1005 +1,924 @@
-/* ============================================
-   УНИВЕРСАЛЬНЫЙ CSS ДЛЯ СТИЛЯ TUFTE
-   ============================================
-   Этот файл содержит все стили, необходимые для воспроизведения
-   стиля Tufte Handout в HTML документах.
-   
-   Для использования подключите этот файл в <head> вашего HTML:
-   <link href="tufte-universal.css" rel="stylesheet">
-   ============================================ */
+/* ============================================================================
+   СТИЛЬ TUFTE ДЛЯ ЗАМЕТОК — tufte-universal.css (v2)
+   ============================================================================
+   Наиболее точное воспроизведение типографики Эдварда Тафти для веб-заметок:
+   шрифты ET Book, кегли, заголовки, отступы, поля, боковые сноски,
+   рисунки (внутритекстовые, на полях, в основном столбце, полноширинные),
+   инфографика, математические формулы, блоки кода, таблицы и прочее.
+
+   Источники точности:
+     — Edward Tufte, The Visual Display of Quantitative Information (1983)
+     — Edward Tufte, Envisioning Information (1990)
+     — Edward Tufte, Beautiful Evidence (2005)
+     — tufte-css (edwardtufte/tufte-css): каноническая веб-реализация,
+       Dave Liepmann / Edward Tufte. Значения ниже сверены с tufte.css
+       (html 15px; body 87.5% / padding-left 12.5% / max-width 1400px;
+       текст 1.4rem/2rem в колонке 55%; сноски 1.1rem/1.3, width 50%,
+       margin-right −60%; заголовки 3.2 / 2.2 / 1.7rem и т.д.).
+
+   Принципы Тафти, соблюдённые в этом файле:
+     1. ET Book (аналог Bembo) — основной шрифт; курсив и полужирный —
+        отдельные начертания, а не механические трансформации браузера.
+     2. Старинные (old-style) цифры в тексте и сносках; строчные цифры
+        (lining) — в таблицах и коде. См. .numeral и font-variant-numeric.
+     3. Почти чёрный (#111) на тёплом белом (#fffff8); цвет — только
+        для данных на графиках и синтаксиса кода, экономно.
+     4. Узкая мера основного текста (55%) и широкое правое поле (~32.5%)
+        для сносок и малых рисунков. Никаких сносок внизу страницы —
+        только боковые (sidenotes) и на полях (marginnotes).
+     5. Жирный шрифт почти не используется: акценты — курсив, капитель
+        (.newthought, small-caps) и санс-сериф (.sans) для подписей.
+     6. Ссылки — цветом текста с подчёркиванием, не пересекающим выносные
+        элементы букв (descenders). Синий цвет ссылок не используется.
+     7. Графики: максимум данных при минимуме чернил (data-ink ratio),
+        прямые подписи вместо легенд, без chartjunk (нет 3D, теней,
+        круговых диаграмм, тяжёлых сеток). См. раздел «Инфографика».
+     8. Таблицы — в стиле booktabs: только верхняя/двойная нижняя линии,
+        без вертикальных разделителей. См. раздел «Таблицы».
+
+   Подключение (в <head>):
+     <link href="/tufte/tufte-universal.css" rel="stylesheet">
+     <script src="/tufte/tufte-universal.js"></script>  <!-- MathJax, hljs, тема -->
+
+   HTML-соглашения (поддерживаются оба стиля разметки):
+     A. tufte-css: <article><section><h1 class="title">…</h1>
+        <p class="subtitle">…</p> … <figure><img><figcaption>…</figcaption></figure>
+     B. Pandoc / репозиторий: <h1 class="title">…</h1> <h3 class="subtitle">…</h3>
+        <div class="section level1"><h1>Раздел</h1><p>…</p></div>
+        <div class="figure"><img><p class="caption marginnote shownote">…</p></div>
+     Боковая сноска (Pandoc-стиль, с явным номером):
+        <label for="sn-1" class="margin-toggle sidenote-number">1</label>
+        <input type="checkbox" id="sn-1" class="margin-toggle">
+        <span class="sidenote"><span class="sidenote-number">1</span> Текст…</span>
+     Заметка на полях (без номера):
+        <label for="mn-1" class="margin-toggle">⊕</label>
+        <input type="checkbox" id="mn-1" class="margin-toggle">
+        <span class="marginnote">Текст…</span>
+     Математика: \(…\) — инлайн, \[…\] — блочная (MathJax/KaTeX).
+     Код: <code>…</code> — инлайн, <pre><code class="language-python">…</code></pre>.
+
+   Настройка: значения ниже вынесены в CSS-переменные (--tufte-*).
+   Меняйте их в начале файла или переопределяйте в своём CSS после подключения.
+   ============================================================================ */
 
 @charset "UTF-8";
 
-/* ============================================
-   ШРИФТЫ ET-BOOK
-   ============================================
-   Определение пользовательских шрифтов ET Book.
-   Если у вас нет файлов шрифтов, замените на стандартные шрифты.
-   ============================================ */
+/* ----------------------------------------------------------------------------
+   0. Переменные (настройка)
+   ---------------------------------------------------------------------------- */
+:root {
+  --tufte-bg: #fffff8;          /* тёплый белый фон */
+  --tufte-ink: #111;            /* почти чёрный текст */
+  --tufte-muted: #514e46;       /* приглушённый текст (подписи, dek) */
+  --tufte-faint: #68645c;       /* ещё бледнее (мета, сноски при необходимости) */
+  --tufte-rule: #ccc;           /* тонкие линейки (hr, код, таблицы) */
+  --tufte-rule-strong: #111;    /* сильные линейки booktabs */
+  --tufte-accent: #916044;     /* сдержанный акцент дневника (графики, маркеры) */
+  --tufte-link-underline: #333; /* цвет подчёркивания ссылок */
+  --tufte-code-bg: transparent; /* фон блоков кода: Тафти — без плашки */
+  --tufte-selection: #b4d5fe;   /* выделение текста */
 
-@font-face {
-  font-family: "et-book";
-  src: url("index_files/tufte-css/et-book/roman-line-figures.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
+  --tufte-font-serif: et-book, Palatino, "Palatino Linotype", "Palatino LT STD",
+    "Book Antiqua", Georgia, serif;
+  --tufte-font-sans: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+  --tufte-font-mono: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+  /* Мера: основной текст 55%, поле для сносок — остаток. */
+  --tufte-measure: 55%;
+  --tufte-list-measure: 50%;    /* списки: 50% + 5% отступ = 55% */
+  --tufte-code-measure: 52.5%;  /* блоки кода чуть уже текста */
 }
 
+/* ----------------------------------------------------------------------------
+   1. Шрифты ET Book (локальные файлы в ./et-book/)
+   ----------------------------------------------------------------------------
+   ET Book — открытый аналог Bembo, которым пользуется Тафти в печати.
+   Четыре начертания + полужирный. Цифры:
+     — roman-line-figures: строчные цифры для основного текста/таблиц;
+     — display-italic-old-style: курсив со старинными цифрами;
+     — roman-old-style: старинные цифры для номеров сносок (.numeral).
+   Если файлы недоступны, браузер откатывается на Palatino/Georgia
+   (см. --tufte-font-serif) — раскладка при этом не ломается.
+   ---------------------------------------------------------------------------- */
 @font-face {
   font-family: "et-book";
-  src: url("index_files/tufte-css/et-book/display-italic-old-style-figures.ttf") format("truetype");
+  src: url("et-book/et-book-roman-line-figures.woff") format("woff"),
+       url("et-book/et-book-roman-line-figures.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "et-book";
+  src: url("et-book/et-book-display-italic-old-style-figures.woff") format("woff"),
+       url("et-book/et-book-display-italic-old-style-figures.ttf") format("truetype");
   font-weight: normal;
   font-style: italic;
+  font-display: swap;
 }
-
 @font-face {
   font-family: "et-book";
-  src: url("index_files/tufte-css/et-book/bold-line-figures.ttf") format("truetype");
+  src: url("et-book/et-book-bold-line-figures.woff") format("woff"),
+       url("et-book/et-book-bold-line-figures.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
 }
-
+@font-face {
+  font-family: "et-book";
+  src: url("et-book/et-book-semi-bold-old-style-figures.woff") format("woff"),
+       url("et-book/et-book-semi-bold-old-style-figures.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: "et-book-roman-old-style";
-  src: url("index_files/tufte-css/et-book/roman-old-style-figures.ttf") format("truetype");
+  src: url("et-book/et-book-roman-old-style-figures.woff") format("woff"),
+       url("et-book/et-book-roman-old-style-figures.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
-/* ============================================
-   БАЗОВЫЕ НАСТРОЙКИ HTML И BODY
-   ============================================
-   Основные параметры страницы: размер шрифта, ширина,
-   отступы, цвет текста и фон.
-   ============================================ */
-
-/* Размер базового шрифта для всей страницы */
-/* Измените значение для изменения размера всего текста */
+/* ----------------------------------------------------------------------------
+   2. База страницы: кегль, мера, поля
+   ----------------------------------------------------------------------------
+   html 15px — база всех rem. Текст 1.4rem = 21px, интерлиньяж 2rem = 30px
+   (1.43). Body: ширина 87.5%, левый отступ 12.5%, максимум 1400px.
+   Основная колонка 55% (~770px при максимуме), правое поле — сноски.
+   ---------------------------------------------------------------------------- */
 html {
   font-size: 15px;
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
-
-/* Основной контейнер страницы */
-/* width: 87.5% - ширина основного контента (55% + 32.5% для боковой панели) */
-/* padding-left: 12.5% - отступ слева для размещения боковых заметок */
-/* max-width: 1400px - максимальная ширина страницы */
-/* counter-reset: sidenote-counter - сброс счетчика для боковых заметок */
 body {
   width: 87.5%;
   margin-left: auto;
   margin-right: auto;
   padding-left: 12.5%;
-  color: #111; /* Цвет основного текста - измените для другого цвета */
   max-width: 1400px;
   counter-reset: sidenote-counter;
-  
-  /* Шрифт основного текста */
-  /* Если нет ET Book, используются стандартные serif шрифты */
-  font-family: et-book, Palatino, "Palatino Linotype", "Palatino LT STD", 
-               "Book Antiqua", Georgia, serif;
-  
-  /* Цвет фона страницы */
-  /* Измените #fffff8 на другой цвет для изменения фона */
-  background-color: #fffff8;
+  font-family: var(--tufte-font-serif);
+  background-color: var(--tufte-bg);
+  color: var(--tufte-ink);
+  /* Старинные цифры в тексте по умолчанию (ET Book old-style). */
+  font-variant-numeric: oldstyle-nums;
 }
+::selection { background: var(--tufte-selection); }
 
-/* ============================================
-   ЗАГОЛОВКИ
-   ============================================
-   Стили для заголовков разных уровней.
-   ============================================ */
-
-/* Заголовок первого уровня с классом title (главный заголовок документа) */
-/* font-size: 3.2rem - размер шрифта (1rem = 15px по умолчанию) */
-/* margin-top: 4rem - отступ сверху */
-/* Измените эти значения для настройки размера и отступов */
+/* ----------------------------------------------------------------------------
+   3. Заголовки: кегли и начертания
+   ----------------------------------------------------------------------------
+   tufte-css: h1 — заголовок документа (3.2rem, прямой), h2 — раздел
+   (2.2rem, курсив), h3 — подраздел (1.7rem, курсив). Pandoc/репозиторий:
+   h1.title — документ, h1 — раздел, h2 — подраздел. Оба соглашения
+   поддерживаются: h1.title всегда 3.2rem; обычный h1 — 2.2rem (раздел).
+   Для заметок дневника (.project-note h1 — заголовок, h2 — раздел)
+   см. diary/projects.css, где h1/h2 переопределены под это соглашение.
+   Правило Тафти: не больше двух уровней заголовков (главы + A-heads);
+   если хочется h4 — перестройте документ (см. tufte-css, Fundamentals).
+   ---------------------------------------------------------------------------- */
 h1.title {
-  font-weight: 400; /* Толщина шрифта (400 = normal, 700 = bold) */
-  font-style: normal; /* Обычный стиль (не курсив) */
+  font-weight: 400;
+  font-style: normal;
   margin-top: 4rem;
   margin-bottom: 1.5rem;
   font-size: 3.2rem;
-  line-height: 1; /* Межстрочный интервал */
+  line-height: 1;
+  max-width: 90%;
 }
-
-/* Обычные заголовки первого уровня (секции) */
-/* font-size: 2.2rem - размер шрифта */
-/* font-style: italic - курсивный стиль (можно убрать, изменив на normal) */
 h1 {
   font-weight: 400;
+  font-style: italic;
   margin-top: 2.1rem;
   margin-bottom: 0;
   font-size: 2.2rem;
   line-height: 1;
-  font-style: italic; /* Установите normal для отключения курсива */
-  word-break: normal; /* Предотвращает разрыв слов внутри */
-  overflow-wrap: break-word; /* Разрешает перенос длинных слов */
-  hyphens: auto; /* Автоматические переносы */
-  text-align: left; /* Выравнивание по левому краю */
-  clear: both; /* Очистка float элементов */
+  text-align: left;
+  clear: both;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
-
-/* Заголовки второго уровня */
-/* font-size: 1.7rem - размер шрифта */
 h2 {
   font-weight: 400;
+  font-style: italic;
   font-size: 1.7rem;
   margin-top: 2rem;
   margin-bottom: 0;
   line-height: 1;
-  font-style: italic; /* Установите normal для отключения курсива */
-  word-break: normal; /* Предотвращает разрыв слов внутри */
-  overflow-wrap: break-word; /* Разрешает перенос длинных слов */
-  hyphens: auto; /* Автоматические переносы */
-  text-align: left; /* Выравнивание по левому краю */
-  clear: both; /* Очистка float элементов */
+  text-align: left;
+  clear: both;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
-
-/* Подзаголовок (h3 с классом subtitle) */
-/* font-size: 1.8rem - размер шрифта */
+/* Третий уровень — только если без него никак (1.4rem, курсив). */
+h3 {
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1.4rem;
+  margin-top: 1.6rem;
+  margin-bottom: 0;
+  line-height: 1.2;
+  text-align: left;
+  clear: both;
+}
+/* Подзаголовок документа: 1.8rem, курсив (крупнее h2 — это нормально). */
+p.subtitle,
 h3.subtitle {
   font-weight: 400;
+  font-style: italic;
   margin-top: 1rem;
   margin-bottom: 1rem;
   font-size: 1.8rem;
   display: block;
   line-height: 1;
-  font-style: italic; /* Установите normal для отключения курсива */
 }
-
-/* Автор и дата (h4 с классами author или date) */
-/* font-size: 1.4rem - размер шрифта */
-h4.author, h4.date {
+/* Автор и дата: 1.4rem, прямой, по центру блока заголовка. */
+h4.author,
+h4.date {
   font-size: 1.4rem;
   font-weight: 400;
+  font-style: normal;
   margin: 1rem auto;
   line-height: 1;
 }
+/* Код в заголовках — 0.8em, чтобы не рвал кегль строки. */
+h1 code, h2 code, h3 code { font-size: 0.8em; }
 
-/* ============================================
-   ОСНОВНОЙ КОНТЕНТ
-   ============================================
-   Стили для параграфов, списков, таблиц и других элементов.
-   ============================================ */
+/* ----------------------------------------------------------------------------
+   4. Основной текст: абзацы, отступы, переносы
+   ----------------------------------------------------------------------------
+   Абзацы без отступа первой строки, поля 1.4rem сверху/снизу (схлопываются
+   с полями заголовков). Выравнивание влево (не по ширине) — для веба
+   читабельнее; переносы автоматические. Первая фраза раздела — капителью
+   (.newthought), а не отступом.
+   ---------------------------------------------------------------------------- */
+article { position: relative; padding: 5rem 0; }
+section { padding-top: 1rem; padding-bottom: 1rem; }
+div.section { clear: both; position: relative; }
+div.section > h1, div.section > h2 { clear: both; position: relative; }
 
-/* Статьи и секции */
-article {
-  position: relative;
-  padding: 5rem 0rem; /* Вертикальные отступы */
-}
-
-section {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-}
-
-/* Секции с классом section */
-div.section {
-  clear: both; /* Очистка float элементов */
-  position: relative; /* Относительное позиционирование */
-}
-
-/* Заголовки внутри секций должны правильно позиционироваться */
-div.section > h1,
-div.section > h2 {
-  clear: both; /* Очистка float элементов перед заголовком */
-  position: relative; /* Относительное позиционирование */
-  width: auto; /* Автоматическая ширина */
-  max-width: 100%; /* Не превышает ширину контейнера */
-}
-
-/* Параграфы */
-/* width: 55% - ширина основного текста (остальное место для боковых заметок) */
-/* font-size: 1.4rem - размер шрифта */
-/* line-height: 2rem - межстрочный интервал */
-/* Измените width для изменения ширины основного текста */
-p, ol, ul {
+p, dl, ol, ul {
   font-size: 1.4rem;
-}
-
-p {
   line-height: 2rem;
+}
+p {
   margin-top: 1.4rem;
   margin-bottom: 1.4rem;
   padding-right: 0;
   vertical-align: baseline;
-  width: 55%; /* Измените для изменения ширины текста */
+  width: var(--tufte-measure);
+  text-align: left;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
-
-/* Блочные цитаты */
-/* width: 50% - ширина цитаты (уже основного текста) */
-blockquote {
-  font-size: 1.4rem;
+sup { line-height: 0; }
+/* Ширина основного потока для прямых детей секций (tufte-css). */
+section > p, section > footer, section > table { width: var(--tufte-measure); }
+section > dl, section > ol, section > ul {
+  width: var(--tufte-list-measure);
+  -webkit-padding-start: 5%;
 }
-
-blockquote p {
-  width: 50%; /* Измените для изменения ширины цитаты */
-}
-
-blockquote footer {
-  width: 50%;
+/* Эпиграфы глав: курсивная цитата с прямой подписью. */
+div.epigraph { margin: 5em 0; }
+div.epigraph > blockquote { margin-top: 3em; margin-bottom: 3em; }
+div.epigraph > blockquote,
+div.epigraph > blockquote > p { font-style: italic; }
+div.epigraph > blockquote > footer { font-style: normal; }
+div.epigraph > blockquote > footer > cite { font-style: italic; }
+/* Аннотация (abstract): уже текста, для краткого изложения. */
+.abstract {
+  width: var(--tufte-measure);
   font-size: 1.1rem;
-  text-align: right; /* Выравнивание подписи справа */
+  line-height: 1.6;
+  color: var(--tufte-muted);
 }
 
-/* Списки */
-/* width: 45% - ширина списков */
-/* -webkit-padding-start/end - отступы для маркеров */
+/* ----------------------------------------------------------------------------
+   5. Цитаты, списки, определения
+   ---------------------------------------------------------------------------- */
+blockquote { font-size: 1.4rem; }
+blockquote p { width: var(--tufte-measure); margin-right: 40px; }
+blockquote footer {
+  width: var(--tufte-measure);
+  font-size: 1.1rem;
+  text-align: right;
+}
+blockquote .sidenote, blockquote .marginnote {
+  margin-right: -82%;
+  min-width: 59%;
+  text-align: left;
+}
 ol, ul {
-  width: 45%; /* Измените для изменения ширины списков */
+  width: var(--tufte-list-measure);
   -webkit-padding-start: 5%;
   -webkit-padding-end: 5%;
 }
+li { padding: 0.5rem 0; }
+li:not(:first-child), dt:not(:first-child) { margin-top: 0.25rem; }
+dt { font-weight: bold; }
+dd { margin-left: 0; }
+table table, li p, li pre { width: auto; }
+li p, li pre { margin-top: auto; }
 
-li {
-  padding: 0.5rem 0; /* Вертикальные отступы между элементами списка */
-}
-
-/* Таблицы */
-/* border-top/bottom - границы сверху и снизу */
-/* font-size: 1.1rem - размер шрифта в таблице */
+/* ----------------------------------------------------------------------------
+   6. Таблицы (booktabs): только горизонтальные линейки
+   ----------------------------------------------------------------------------
+   Верхняя и нижняя — 2px, под шапкой — 1px; вертикальных линий нет.
+   Числа — строчные (lining), выровнены вправо; подписи — на полях.
+   Обёртка .table-wrapper — санс-сериф для широких таблиц (tufte-css).
+   ---------------------------------------------------------------------------- */
 table {
-  border-top: 2px solid #111; /* Толщина и цвет верхней границы */
-  border-bottom: 2px solid #111; /* Толщина и цвет нижней границы */
+  border-top: 2px solid var(--tufte-rule-strong);
+  border-bottom: 2px solid var(--tufte-rule-strong);
   font-size: 1.1rem;
-  width: 55%; /* Ширина таблицы */
+  line-height: 1.4;
+  width: var(--tufte-measure);
+  border-collapse: collapse;
+  font-variant-numeric: lining-nums tabular-nums;
 }
-
 th {
-  border-bottom: 1px solid #111; /* Граница под заголовками */
+  border-bottom: 1px solid var(--tufte-rule-strong);
+  font-weight: bold;
+  text-align: left;
+  padding: 0.4rem 0.6rem 0.4rem 0;
+}
+td {
+  padding: 0.4rem 0.6rem 0.4rem 0;
+  vertical-align: baseline;
+}
+th[align="right"], td[align="right"] { text-align: right; }
+th[align="center"], td[align="center"] { text-align: center; }
+caption, .table-caption {
+  font-size: 1.1rem;
+  line-height: 1.3;
+  text-align: left;
+  margin-bottom: 0.5rem;
+}
+div.table-wrapper {
+  overflow-x: auto;
+  font-family: var(--tufte-font-sans);
+  letter-spacing: 0.03em;
+}
+div.fullwidth, table.fullwidth { width: 100%; }
+.fullwidth { max-width: 90%; clear: both; }
+div.fullwidth > * { width: auto; }
+div.fullwidth p.caption {
+  margin-right: 0;
+  max-width: 33%;
+  clear: both;
 }
 
-/* ============================================
-   ИЗОБРАЖЕНИЯ И ФИГУРЫ
-   ============================================
-   Стили для изображений, фигур и их подписей.
-   ============================================ */
+/* ----------------------------------------------------------------------------
+   7. Ссылки: цвет текста, подчёркивание без пересечения выносных
+   ----------------------------------------------------------------------------
+   Градиентная «дырявая» линия (как в tufte-css): подчёркивание прерывается
+   под descenders (g, y, p…), поэтому текст читается без «гребёнки».
+   Дополнительно text-decoration-skip-ink для современных браузеров.
+   При наведении цвет не меняется — Тафти против синих ссылок.
+   ---------------------------------------------------------------------------- */
+a:link, a:visited { color: inherit; }
+a:link {
+  text-decoration: none;
+  text-decoration-skip-ink: auto;
+  text-underline-offset: 0.1em;
+  text-decoration-thickness: 0.05em;
+  background: linear-gradient(var(--tufte-bg), var(--tufte-bg)),
+              linear-gradient(var(--tufte-bg), var(--tufte-bg)),
+              linear-gradient(var(--tufte-link-underline), var(--tufte-link-underline));
+  background-size: 0.05em 1px, 0.05em 1px, 1px 1px;
+  background-repeat: no-repeat, no-repeat, repeat-x;
+  text-shadow: 0.03em 0 var(--tufte-bg), -0.03em 0 var(--tufte-bg),
+               0 0.03em var(--tufte-bg), 0 -0.03em var(--tufte-bg),
+               0.06em 0 var(--tufte-bg), -0.06em 0 var(--tufte-bg),
+               0.09em 0 var(--tufte-bg), -0.09em 0 var(--tufte-bg),
+               0.12em 0 var(--tufte-bg), -0.12em 0 var(--tufte-bg),
+               0.15em 0 var(--tufte-bg), -0.15em 0 var(--tufte-bg);
+  background-position: 0% 93%, 100% 93%, 0% 93%;
+}
+a:link::selection, a:link::-moz-selection {
+  text-shadow: 0.03em 0 var(--tufte-selection), -0.03em 0 var(--tufte-selection),
+               0 0.03em var(--tufte-selection), 0 -0.03em var(--tufte-selection),
+               0.06em 0 var(--tufte-selection), -0.06em 0 var(--tufte-selection),
+               0.09em 0 var(--tufte-selection), -0.09em 0 var(--tufte-selection),
+               0.12em 0 var(--tufte-selection), -0.12em 0 var(--tufte-selection),
+               0.15em 0 var(--tufte-selection), -0.15em 0 var(--tufte-selection);
+  background: var(--tufte-selection);
+}
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  a:link { background-position-y: 87%, 87%, 87%; }
+}
 
-/* Контейнеры для фигур */
-/* max-width: 55% - максимальная ширина фигуры в основном столбце */
-/* margin: 0 0 3em 0 - отступ снизу */
-div.figure {
+/* ----------------------------------------------------------------------------
+   8. Боковые сноски и заметки на полях
+   ----------------------------------------------------------------------------
+   Сноски — справа, в поле: float right, width 50%, margin-right −60%
+   (от ширины абзаца), кегль 1.1rem, интерлиньяж 1.3. Номер — старинной
+   цифрой над строкой (et-book-roman-old-style). На узком экране (<760px)
+   сноски скрыты и раскрываются по клику на номер/⊕ (см. адаптивность).
+   ---------------------------------------------------------------------------- */
+.sidenote, .marginnote {
+  float: right;
+  clear: right;
+  margin-right: -60%;
+  width: 50%;
+  margin-top: 0.3rem;
+  margin-bottom: 0;
+  font-size: 1.1rem;
+  line-height: 1.3;
+  vertical-align: baseline;
+  position: relative;
+  font-variant-numeric: oldstyle-nums;
+}
+.sidenote-number {
+  position: relative;
+  vertical-align: baseline;
+  font-size: 1rem;
+  top: -0.5rem;
+  left: 0.1rem;
+  font-family: "et-book-roman-old-style", var(--tufte-font-serif);
+}
+.numeral { font-family: "et-book-roman-old-style", var(--tufte-font-serif); }
+input.margin-toggle { display: none; }
+label.sidenote-number { display: inline; }
+label.margin-toggle:not(.sidenote-number) { display: none; }
+.shownote { display: block; }
+/* Сноски внутри полноширинных блоков не уходят в поле. */
+.fullwidth .sidenote, .fullwidth .marginnote {
+  float: none;
+  clear: both;
+  margin: 0.5rem 0;
+  width: auto;
+  max-width: 33%;
+}
+
+/* ----------------------------------------------------------------------------
+   9. Рисунки: основной столбец, поля, полноширинные, внутритекстовые
+   ----------------------------------------------------------------------------
+   Поддерживаются обе разметки: <figure>/<figcaption> и div.figure/p.caption.
+   Подпись (caption) — на полях справа, 1.1rem/1.6. Полноширинный рисунок —
+   90% ширины страницы, подпись с отступом справа 24%.
+   Внутритекстовый (inline) — маленький, в потоке текста; Тафти предпочитает
+   рисунки на полях, поэтому inline используйте экономно.
+   ---------------------------------------------------------------------------- */
+figure, div.figure {
   padding: 0;
   border: 0;
   font-size: 100%;
   font: inherit;
   vertical-align: baseline;
-  max-width: 55%; /* Измените для изменения максимальной ширины */
-  -webkit-margin-start: 0;
-  -webkit-margin-end: 0;
+  max-width: var(--tufte-measure);
   margin: 0 0 3em 0;
 }
-
-/* Изображения */
-img {
-  max-width: 100%; /* Адаптивность - изображение не превышает контейнер */
+img { max-width: 100%; height: auto; }
+figure.fullwidth img { width: 100%; }
+figcaption {
+  float: right;
+  clear: right;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  vertical-align: baseline;
+  position: relative;
+  max-width: 40%;
 }
-
-.marginnote img {
-  display: block; /* Блочное отображение в боковых заметках */
+figure.fullwidth figcaption { margin-right: 24%; }
+p.caption { text-align: left; }
+.marginnote img { display: block; }
+/* Рисунок на полях (малый, рядом с текстом). */
+figure.margin-figure, .margin-figure {
+  float: right;
+  clear: right;
+  margin-right: -60%;
+  width: 50%;
+  max-width: 50%;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
 }
-
-/* Видео в основном текстовом блоке */
-/* Ширина соответствует ширине параграфов (55%) */
-video {
-  max-width: 100%; /* Адаптивность - видео не превышает контейнер */
-  height: auto; /* Автоматическая высота для сохранения пропорций */
+figure.margin-figure figcaption, .margin-figure figcaption {
+  float: none;
+  clear: both;
+  max-width: none;
+  margin-top: 0.5rem;
 }
-
-/* Контейнеры для видео в основном текстовом блоке */
-/* Видео в основном тексте ограничено шириной параграфов (55%) */
+/* Внутритекстовый рисунок: обтекание слева/справа в потоке. */
+figure.inline-figure, .inline-figure {
+  float: left;
+  clear: none;
+  width: 32%;
+  max-width: 32%;
+  margin: 0.4rem 1.2rem 0.8rem 0;
+}
+figure.inline-figure.right, .inline-figure.right {
+  float: right;
+  clear: none;
+  margin: 0.4rem 0 0.8rem 1.2rem;
+}
+figure.inline-figure figcaption, .inline-figure figcaption {
+  float: none;
+  clear: both;
+  max-width: none;
+  margin-top: 0.4rem;
+}
+/* Видео: 16:9, ширина текстового столбца (или колонки сноски). */
+video { max-width: 100%; height: auto; }
 .video-container {
   position: relative;
   width: 100%;
-  max-width: 100%; /* Не превышает ширину родительского контейнера */
-  padding-bottom: 56.25%; /* Соотношение сторон 16:9 (9/16 = 0.5625) */
-  height: 0;
-  overflow: hidden;
-  margin: 1.5rem 0; /* Вертикальные отступы как у параграфов */
-}
-
-/* Видео контейнеры в параграфах и секциях ограничены шириной текста */
-p .video-container,
-section .video-container:not(.marginnote .video-container):not(.sidenote .video-container),
-div.section .video-container:not(.marginnote .video-container):not(.sidenote .video-container) {
-  max-width: 100%; /* Внутри параграфа - на всю ширину параграфа (55%) */
-}
-
-.video-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none; /* Убираем границу */
-}
-
-/* Видео в контейнерах фигур (для подписей) */
-div.figure video,
-div.figure .video-container {
   max-width: 100%;
-  width: 100%;
-}
-
-/* Видео в боковых заметках */
-.marginnote video,
-.sidenote video {
-  display: block; /* Блочное отображение в боковых заметках */
-  width: 100%; /* Полная ширина контейнера */
-  max-width: 100%; /* Не превышает ширину боковой колонки */
-  height: auto; /* Автоматическая высота для сохранения пропорций */
-  margin: 0.5rem 0; /* Вертикальные отступы */
-}
-
-/* Встроенные видео (iframe) в боковых заметках */
-/* Базовые стили для iframe (если не используется video-container) */
-.marginnote iframe,
-.sidenote iframe {
-  display: block; /* Блочное отображение */
-  width: 100%; /* Полная ширина контейнера */
-  max-width: 100%; /* Не превышает ширину боковой колонки */
-  border: none; /* Убираем границу */
-}
-
-/* Контейнеры для встроенных видео (YouTube, Vimeo и т.д.) */
-/* Используется для более надежной поддержки старых браузеров */
-.marginnote .video-container,
-.sidenote .video-container {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; /* Соотношение сторон 16:9 (9/16 = 0.5625) */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
-  margin: 0.5rem 0;
+  margin: 1.5rem 0;
 }
-
-.marginnote .video-container iframe,
-.sidenote .video-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none; /* Убираем границу */
-  margin: 0; /* Убираем отступы для абсолютно позиционированного элемента */
+.video-container iframe {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; border: none;
 }
-
-/* Если iframe не в контейнере, используем aspect-ratio для адаптивности */
-.marginnote > iframe,
-.sidenote > iframe {
-  height: auto;
-  aspect-ratio: 16 / 9; /* Сохранение соотношения сторон 16:9 */
-  margin: 0.5rem 0; /* Вертикальные отступы */
+.iframe-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 25px;
+  height: 0;
 }
-
-/* Подписи к фигурам */
-p.caption {
-  text-align: left; /* Выравнивание подписей слева */
+.iframe-wrapper iframe {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
 }
-
-/* Полноширинные элементы */
-/* max-width: 90% - максимальная ширина для элементов на всю ширину */
-div.fullwidth, table.fullwidth {
-  max-width: 90%; /* Измените для изменения ширины */
+div.figure video, div.figure .video-container { max-width: 100%; width: 100%; }
+.marginnote video, .sidenote video,
+.marginnote iframe, .sidenote iframe {
+  display: block; width: 100%; max-width: 100%;
+  height: auto; margin: 0.5rem 0; border: none;
 }
-
-div.fullwidth > * {
-  width: auto;
+.marginnote .video-container, .sidenote .video-container {
+  position: relative; width: 100%;
+  padding-bottom: 56.25%; height: 0;
+  overflow: hidden; margin: 0.5rem 0;
 }
-
-div.fullwidth p.caption {
-  margin-right: 0;
-  max-width: 33%; /* Максимальная ширина подписи для полноширинных фигур */
-  clear: both; /* Очистка float элементов */
+.marginnote .video-container iframe, .sidenote .video-container iframe {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; border: none; margin: 0;
 }
-
-.fullwidth {
-  max-width: 90%;
-  clear: both; /* Очистка обтекания */
+.marginnote > iframe, .sidenote > iframe {
+  height: auto; aspect-ratio: 16 / 9; margin: 0.5rem 0;
 }
-
-/* Специальный стиль для полноширных заметок/карточек */
+/* Полноширинная карточка/выноска (важное объявление). */
 .fullwidth p.fullwidth-note {
   padding: 1.5rem;
-  background-color: #f9f9f9; /* светлый фон по умолчанию */
+  background-color: #f9f9f9;
   border-left: 3px solid #333;
   color: inherit;
   margin: 0 0 1.5rem 0;
 }
 
-/* В ночной теме используем контрастные цвета для этой карточки */
-body.dark-theme .fullwidth p.fullwidth-note {
-  background-color: #2b2b2b !important; /* тёмный фон карточки */
-  color: #e8e8e8 !important; /* светлый текст */
-  border-left: 3px solid #888 !important;
-}
-
-/* ============================================
-   ССЫЛКИ
-   ============================================
-   Стили для ссылок с подчеркиванием, которое не пересекает буквы.
-   ============================================ */
-
-/* Цвет ссылок - наследуется от родителя */
-a:link, a:visited {
-  color: inherit; /* Наследование цвета от родителя */
-}
-
-/* Сложное подчеркивание ссылок, которое не пересекает буквы */
-/* Использует градиенты и тени для создания эффекта */
-a:link {
-  text-decoration: none;
-  background: -webkit-linear-gradient(#fffff8, #fffff8), 
-              -webkit-linear-gradient(#fffff8, #fffff8), 
-              -webkit-linear-gradient(#333, #333);
-  background: linear-gradient(#fffff8, #fffff8), 
-              linear-gradient(#fffff8, #fffff8), 
-              linear-gradient(#333, #333);
-  -webkit-background-size: 0.05em 1px, 0.05em 1px, 1px 1px;
-  -moz-background-size: 0.05em 1px, 0.05em 1px, 1px 1px;
-  background-size: 0.05em 1px, 0.05em 1px, 1px 1px;
-  background-repeat: no-repeat, no-repeat, repeat-x;
-  text-shadow: 0.03em 0 #fffff8, -0.03em 0 #fffff8, 0 0.03em #fffff8, 
-               0 -0.03em #fffff8, 0.06em 0 #fffff8, -0.06em 0 #fffff8, 
-               0.09em 0 #fffff8, -0.09em 0 #fffff8, 0.12em 0 #fffff8, 
-               -0.12em 0 #fffff8, 0.15em 0 #fffff8, -0.15em 0 #fffff8;
-  background-position: 0% 93%, 100% 93%, 0% 93%;
-}
-
-/* Стили для выделения ссылок */
-a:link::selection {
-  text-shadow: 0.03em 0 #b4d5fe, -0.03em 0 #b4d5fe, 0 0.03em #b4d5fe, 
-               0 -0.03em #b4d5fe, 0.06em 0 #b4d5fe, -0.06em 0 #b4d5fe, 
-               0.09em 0 #b4d5fe, -0.09em 0 #b4d5fe, 0.12em 0 #b4d5fe, 
-               -0.12em 0 #b4d5fe, 0.15em 0 #b4d5fe, -0.15em 0 #b4d5fe;
-  background: #b4d5fe; /* Цвет фона при выделении */
-}
-
-a:link::-moz-selection {
-  text-shadow: 0.03em 0 #b4d5fe, -0.03em 0 #b4d5fe, 0 0.03em #b4d5fe, 
-               0 -0.03em #b4d5fe, 0.06em 0 #b4d5fe, -0.06em 0 #b4d5fe, 
-               0.09em 0 #b4d5fe, -0.09em 0 #b4d5fe, 0.12em 0 #b4d5fe, 
-               -0.12em 0 #b4d5fe, 0.15em 0 #b4d5fe, -0.15em 0 #b4d5fe;
-  background: #b4d5fe;
-}
-
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-  a:link {
-    background-position-y: 87%, 87%, 87%;
-  }
-}
-
-/* ============================================
-   БОКОВЫЕ ЗАМЕТКИ (SIDENOTES) И ЗАМЕТКИ НА ПОЛЯХ (MARGINNOTES)
-   ============================================
-   Стили для боковых заметок, которые отображаются справа от основного текста.
-   ============================================ */
-
-/* Боковые заметки и заметки на полях */
-/* float: right - обтекание справа */
-/* margin-right: -60% - отрицательный отступ для размещения в правом поле */
-/* width: 50% - ширина боковой заметки */
-.sidenote, .marginnote {
-  float: right;
-  clear: right;
-  margin-right: -60%; /* Измените для изменения позиции (более отрицательное = правее) */
-  width: 50%; /* Измените для изменения ширины боковых заметок */
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.1rem; /* Размер шрифта в боковых заметках */
-  line-height: 1.3;
-  vertical-align: baseline;
-  position: relative;
-}
-
-/* Номера боковых заметок */
-.sidenote-number {
-  position: relative;
-  vertical-align: baseline;
-  font-size: 1rem;
-  top: -0.5rem; /* Смещение вверх для создания эффекта верхнего индекса */
-  left: 0.1rem;
-  font-family: et-book-roman-old-style; /* Специальный шрифт для номеров */
-}
-
-/* Числа (нумерация) */
-.numeral {
-  font-family: et-book-roman-old-style;
-}
-
-/* Переключатели для показа/скрытия заметок (скрыты по умолчанию) */
-input.margin-toggle {
-  display: none; /* Скрытые чекбоксы для управления заметками */
-}
-
-label.sidenote-number {
-  display: inline; /* Номера заметок видны */
-}
-
-label.margin-toggle:not(.sidenote-number) {
-  display: none; /* Символы ⊕ скрыты на десктопе */
-}
-
-/* Класс для заметок, которые всегда видны */
-.shownote {
-  display: block;
-}
-
-/* ============================================
-   КОД И ПРЕДВАРИТЕЛЬНОЕ ФОРМАТИРОВАНИЕ
-   ============================================
-   Стили для кода и блоков кода.
-   ============================================ */
-
-/* Инлайн код */
-/* font-family - моноширинные шрифты для кода */
-/* font-size: 1.125rem - размер шрифта кода */
+/* ----------------------------------------------------------------------------
+   10. Код: инлайн и блоки (минимализм Тафти — без плашек)
+   ----------------------------------------------------------------------------
+   Моноширинный кегль меньше текста: инлайн 1.0rem, блок 0.9rem.
+   Фон — прозрачный (в печати кода без подложки); структура блока —
+   тонкие линейки сверху/снизу, как у таблиц. Подсветка hljs — только
+   цветом, без фона; палитра приглушена, цвет — только для синтаксиса.
+   Для длинных листингов, где нужна плашка, — .pre-boxed.
+   ---------------------------------------------------------------------------- */
 code {
-  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  font-size: 1.125rem;
-  line-height: 1.6;
-  white-space: pre-wrap; /* Сохранение пробелов и перенос строк */
-}
-
-/* Код в блоках pre */
-pre code {
+  font-family: var(--tufte-font-mono);
   font-size: 1rem;
-  white-space: pre; /* Сохранение форматирования */
+  line-height: 1.42;
+  -webkit-text-size-adjust: 100%;
+  white-space: pre-wrap;
 }
-
-/* Код внутри параграфов */
-p code {
-  white-space: inherit; /* Наследование обработки пробелов */
-}
-
-/* Код в заголовках */
-h1 code, h2 code, h3 code {
-  font-size: 0.80em; /* Уменьшенный размер кода в заголовках */
-}
-
-/* Код в боковых заметках */
-.marginnote code, .sidenote code {
-  font-size: 1rem;
-}
-
-/* Блоки предварительно отформатированного текста */
-/* width: 52.5% - ширина блока кода */
+p code { white-space: inherit; }
+.sans > code { font-size: 1.2rem; }
+.marginnote > code, .sidenote > code { font-size: 1rem; }
 pre {
-  width: 52.5%; /* Измените для изменения ширины блоков кода */
-  overflow-x: auto; /* Горизонтальная прокрутка при переполнении */
+  width: var(--tufte-code-measure);
+  margin-left: 2.5%;
+  overflow-x: auto;
+  border-top: 1px solid var(--tufte-rule);
+  border-bottom: 1px solid var(--tufte-rule);
+  padding: 0.6rem 0;
+  background: var(--tufte-code-bg);
+}
+pre > code {
+  font-size: 0.9rem;
+  width: 100%;
+  margin-left: 0;
+  overflow-x: auto;
+  display: block;
+  white-space: pre;
+}
+pre.fullwidth > code { width: 90%; }
+pre.pre-boxed {
+  background: #f7f5ee;
+  border: 1px solid var(--tufte-rule);
+  border-left: 3px solid #333;
+  padding: 1rem;
+  border-radius: 4px;
+}
+/* Highlight.js — Tufte-тема: без фона, только цветные токены. */
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+.hljs { color: #333; background: transparent; }
+.hljs-comment, .hljs-quote { color: #998; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #000; font-weight: bold; }
+.hljs-number, .hljs-literal, .hljs-variable,
+.hljs-template-variable, .hljs-tag .hljs-attr { color: #099; }
+.hljs-string, .hljs-doctag { color: #d14; }
+.hljs-title, .hljs-section, .hljs-selector-id { color: #900; font-weight: bold; }
+.hljs-subst { font-weight: normal; }
+.hljs-type, .hljs-class .hljs-title { color: #458; font-weight: bold; }
+.hljs-tag, .hljs-name, .hljs-attribute { color: #000080; font-weight: normal; }
+.hljs-regexp, .hljs-link { color: #009926; }
+.hljs-symbol, .hljs-bullet { color: #990073; }
+.hljs-built_in, .hljs-builtin-name { color: #0086b3; }
+.hljs-meta { color: #999; font-weight: bold; }
+.hljs-deletion { background: #fdd; }
+.hljs-addition { background: #dfd; }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: bold; }
+/* Инлайн-код без подсветки: без фона, только моноширинный. */
+code:not(pre code) { background: transparent; padding: 0; border-radius: 0; }
+.marginnote pre code.hljs, .sidenote pre code.hljs {
+  font-size: 0.9em; padding: 0;
 }
 
-/* ============================================
-   СПЕЦИАЛЬНЫЕ ЭЛЕМЕНТЫ
-   ============================================
-   Дополнительные стили для специальных элементов.
-   ============================================ */
+/* ----------------------------------------------------------------------------
+   11. Математика (MathJax / KaTeX)
+   ----------------------------------------------------------------------------
+   Инлайн — в потоке текста, кегль наследует. Блочная — по центру
+   текстового столбца (55%), поля 1.5rem. В сносках — 0.9em на всю
+   ширину колонки; в полноширинных — на всю ширину блока.
+   Нумерация уравнений: .equation с номером в поле (см. specimen).
+   ---------------------------------------------------------------------------- */
+span.math.inline { display: inline; font-size: inherit; line-height: inherit; }
+span.math.display {
+  display: block; text-align: center;
+  margin: 1.5rem 0; font-size: 1.2em; line-height: 1.6;
+  max-width: var(--tufte-measure);
+  margin-left: auto; margin-right: auto;
+}
+.MathJax { font-size: inherit !important; }
+.MathJax_Display {
+  margin: 1.5rem auto !important;
+  text-align: center;
+  width: var(--tufte-measure) !important;
+  max-width: var(--tufte-measure) !important;
+  display: block !important;
+  box-sizing: border-box !important;
+}
+mjx-container[jax="CHTML"][display="true"],
+mjx-container[jax="SVG"][display="true"] {
+  width: var(--tufte-measure) !important;
+  max-width: var(--tufte-measure) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+}
+body > mjx-container[jax="CHTML"][display="true"],
+body > mjx-container[jax="SVG"][display="true"],
+body > .MathJax_Display,
+section > mjx-container[jax="CHTML"][display="true"],
+section > mjx-container[jax="SVG"][display="true"],
+section > .MathJax_Display,
+div.section > mjx-container[jax="CHTML"][display="true"],
+div.section > mjx-container[jax="SVG"][display="true"],
+div.section > .MathJax_Display {
+  width: var(--tufte-measure) !important;
+  max-width: var(--tufte-measure) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.sidenote .MathJax, .marginnote .MathJax { font-size: 0.9em !important; }
+.sidenote .MathJax_Display, .marginnote .MathJax_Display,
+.sidenote mjx-container[jax="CHTML"][display="true"],
+.sidenote mjx-container[jax="SVG"][display="true"],
+.marginnote mjx-container[jax="CHTML"][display="true"],
+.marginnote mjx-container[jax="SVG"][display="true"] {
+  margin: 0.5rem 0 !important;
+  font-size: 0.9em !important;
+  max-width: 100% !important;
+}
+.fullwidth .MathJax_Display,
+.fullwidth mjx-container[jax="CHTML"][display="true"],
+.fullwidth mjx-container[jax="SVG"][display="true"] {
+  margin: 1rem 0 !important;
+  max-width: 100% !important;
+  width: auto !important;
+}
+p .MathJax_Display { max-width: 100% !important; margin: 1.5rem auto !important; }
+/* KaTeX: те же меры, что у MathJax. */
+.katex-display {
+  margin: 1.5rem auto !important;
+  max-width: var(--tufte-measure) !important;
+  padding: 0 !important;
+}
+.sidenote .katex-display, .marginnote .katex-display {
+  margin: 0.5rem 0 !important;
+  max-width: 100% !important;
+  font-size: 0.9em !important;
+}
+.fullwidth .katex-display { max-width: 100% !important; }
+/* Нумерованное уравнение: формула по центру, номер — в поле справа. */
+.equation {
+  position: relative;
+  width: var(--tufte-measure);
+  margin: 1.5rem 0;
+  text-align: center;
+}
+.equation .eq-number {
+  position: absolute;
+  right: -45%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  font-family: "et-book-roman-old-style", var(--tufte-font-serif);
+}
 
-/* Новый абзац (с капителью) */
-/* font-variant: small-caps - капитель (маленькие заглавные буквы) */
-/* font-size: 1.2em - увеличенный размер */
+/* ----------------------------------------------------------------------------
+   12. Инфографика по Тафти
+   ----------------------------------------------------------------------------
+   Правила (VDQI, Envisioning Information, Beautiful Evidence):
+     — data-ink ratio: каждое чернило — данные; без теней, 3D, рамок-«шкатулок»;
+     — прямые подписи на графике вместо легенд и осей-«гребёнок»;
+     — сетка — только светлая, тонкая, и только если помогает читать;
+     — никаких круговых диаграмм и «улучшайзеров»; сравнения — через
+       малые кратные (small multiples) с общей шкалой;
+     — подписи графиков — санс-серифом (Gill Sans), числа — старинными
+       цифрами ET Book; заголовок графика — короткая фраза, не «Рисунок 1»;
+     — источник данных — мелкой подписью под графиком.
+   Реализация: чистый CSS + инлайн-SVG (без библиотек). Классы ниже —
+   строительные блоки; примеры — в tufte/specimen.html.
+   ---------------------------------------------------------------------------- */
+.tufte-chart {
+  width: var(--tufte-measure);
+  margin: 2rem 0;
+  font-family: var(--tufte-font-sans);
+  letter-spacing: 0.03em;
+}
+.tufte-chart.fullwidth { width: auto; max-width: 90%; }
+.chart-title {
+  font-family: var(--tufte-font-serif);
+  font-style: italic;
+  font-size: 1.4rem;
+  line-height: 1.3;
+  margin: 0 0 0.3rem;
+}
+.chart-subtitle {
+  font-size: 1.1rem;
+  line-height: 1.4;
+  color: var(--tufte-muted);
+  margin: 0 0 1rem;
+}
+.chart-source {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--tufte-faint);
+  margin: 0.6rem 0 0;
+}
+.chart-caption {
+  font-family: var(--tufte-font-serif);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0.6rem 0 0;
+}
+.tufte-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.tufte-svg text {
+  font-family: var(--tufte-font-sans);
+  font-size: 11px;
+  fill: var(--tufte-ink);
+  letter-spacing: 0.03em;
+}
+.tufte-svg .axis { stroke: var(--tufte-ink); stroke-width: 1; }
+.tufte-svg .grid { stroke: #ddd; stroke-width: 0.5; }
+.tufte-svg .data-line { fill: none; stroke: var(--tufte-ink); stroke-width: 1.5; }
+.tufte-svg .data-area { fill: rgba(17, 17, 17, 0.08); stroke: none; }
+.tufte-svg .data-bar { fill: var(--tufte-ink); }
+.tufte-svg .data-bar.accent { fill: var(--tufte-accent); }
+.tufte-svg .data-dot { fill: var(--tufte-ink); }
+.tufte-svg .label-direct { font-weight: bold; }
+/* Спарклайн: мини-график в строке текста (высота ~1 строка). */
+.sparkline {
+  display: inline-block;
+  height: 1em;
+  width: 4.5em;
+  vertical-align: baseline;
+  overflow: visible;
+}
+.sparkline svg { width: 100%; height: 100%; overflow: visible; }
+.sparkline .data-line { stroke-width: 1; }
+/* Малые кратные: сетка мини-графиков с общей шкалой. */
+.small-multiples {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 1.2rem 1.5rem;
+  width: var(--tufte-measure);
+  margin: 2rem 0;
+  font-family: var(--tufte-font-sans);
+}
+.small-multiples.fullwidth { width: auto; max-width: 90%; }
+.small-multiples .multiple { min-width: 0; }
+.small-multiples .multiple-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0 0 0.4rem;
+}
+.small-multiples .multiple svg { width: 100%; height: auto; display: block; }
+/* Горизонтальные столбцы с прямыми подписями (без осей). */
+.bar-chart { display: flex; flex-direction: column; gap: 0.5rem; }
+.bar-row { display: grid; grid-template-columns: 9rem 1fr 4rem; align-items: baseline; gap: 0.8rem; }
+.bar-label { font-size: 1.1rem; text-align: right; }
+.bar-track { height: 0.9rem; border-bottom: 1px solid var(--tufte-rule-strong); position: relative; }
+.bar-fill { position: absolute; left: 0; bottom: 0; height: 100%; background: var(--tufte-ink); }
+.bar-fill.accent { background: var(--tufte-accent); }
+.bar-value { font-size: 1.1rem; font-variant-numeric: lining-nums tabular-nums; }
+/* Точечный график (dot plot): строки точек с подписями. */
+.dot-plot { display: flex; flex-direction: column; gap: 0.6rem; }
+.dot-row { display: grid; grid-template-columns: 9rem 1fr; align-items: center; gap: 0.8rem; }
+.dot-label { font-size: 1.1rem; text-align: right; }
+.dot-track { position: relative; height: 1.2rem; border-bottom: 1px solid var(--tufte-rule); }
+.dot { position: absolute; bottom: 0.15rem; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--tufte-ink); transform: translateX(-50%); }
+.dot.accent { background: var(--tufte-accent); }
+/* Наклонный график (slope graph): два состояния, прямые подписи. */
+.slope-graph { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+.slope-graph svg { width: 100%; height: auto; display: block; }
+/* Таблица-графика: booktabs + инлайн-полоски/спарклайны в ячейках. */
+.table-graphic .bar-cell { min-width: 8rem; }
+.table-graphic .bar-cell .bar-track { height: 0.7rem; }
+.table-graphic .sparkline { vertical-align: middle; }
+/* Легенда Тафти — прямая, на графике; класс — только для редких случаев. */
+.chart-legend { display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 1.1rem; margin: 0 0 0.8rem; }
+.chart-legend .swatch { display: inline-block; width: 1.2rem; height: 0.6rem; background: var(--tufte-ink); margin-right: 0.4rem; vertical-align: baseline; }
+.chart-legend .swatch.accent { background: var(--tufte-accent); }
+
+/* ----------------------------------------------------------------------------
+   13. Специальное форматирование
+   ---------------------------------------------------------------------------- */
 span.newthought {
   font-variant: small-caps;
   font-size: 1.2em;
 }
-
-/* Санс-сериф шрифт */
-/* Используется для выделения текста без засечек */
+span.smallcaps { font-variant: small-caps; }
+span.underline { text-decoration: underline; }
 .sans {
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-  letter-spacing: .03em; /* Межбуквенный интервал */
+  font-family: var(--tufte-font-sans);
+  letter-spacing: 0.03em;
 }
-
-/* Опасность (красный текст) */
-.danger {
-  color: red;
-}
-
-/* Ширина различных элементов */
-p, footer, table, hr {
-  width: 55%; /* Ширина основного контента */
-}
-
-/* Блочные формулы между параграфами должны наследовать ширину основного текста */
-/* Ограничиваем ширину формул, которые находятся на уровне body или section */
-body > .MathJax_Display,
-body > mjx-container[jax="CHTML"][display="true"],
-body > mjx-container[jax="SVG"][display="true"],
-section > .MathJax_Display,
-section > mjx-container[jax="CHTML"][display="true"],
-section > mjx-container[jax="SVG"][display="true"],
-div.section > .MathJax_Display,
-div.section > mjx-container[jax="CHTML"][display="true"],
-div.section > mjx-container[jax="SVG"][display="true"] {
-  max-width: 55% !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  width: auto !important;
-}
-
+.danger { color: red; }
 hr {
-  margin-left: 0; /* Горизонтальная линия без отступа слева */
-}
-
-/* Элементы внутри списков и таблиц */
-table table, li p, li pre {
-  width: auto; /* Автоматическая ширина */
-}
-
-li p, li pre {
-  margin-top: auto;
-}
-
-/* Оглавление */
-#TOC, h1.title {
-  max-width: 90%; /* Максимальная ширина для оглавления */
-}
-
-#TOC ol, #TOC ul {
-  width: auto;
-}
-
-/* ============================================
-   ПОДСВЕТКА СИНТАКСИСА КОДА (HIGHLIGHT.JS)
-   ============================================
-   Цвета для подсветки синтаксиса в блоках кода.
-   Стили темы "default" из Highlight.js включены в этот файл.
-   ============================================ */
-
-/* Базовые стили для блоков кода с подсветкой */
-pre code.hljs {
   display: block;
-  overflow-x: auto;
-  padding: 1em;
-  background: #f5f5f5;
-  border-radius: 4px;
-  border-left: 3px solid #333;
+  height: 1px;
+  width: var(--tufte-measure);
+  border: 0;
+  border-top: 1px solid var(--tufte-rule);
+  margin: 1em 0;
+  padding: 0;
 }
+p, footer, table, hr { width: var(--tufte-measure); }
+#TOC, h1.title { max-width: 90%; }
+#TOC ol, #TOC ul { width: auto; }
 
-/* Стили темы default из Highlight.js */
-.hljs {
-  color: #333;
-  background: #f5f5f5;
-}
+/* ----------------------------------------------------------------------------
+   14. Pandoc-дополнения (совместимость)
+   ---------------------------------------------------------------------------- */
+div.column { display: inline-block; vertical-align: top; width: 50%; }
+div.hanging-indent { margin-left: 1.5em; text-indent: -1.5em; }
+ul.task-list { list-style: none; }
+div.csl-entry { clear: both; }
+.hanging div.csl-entry { margin-left: 2em; text-indent: -2em; }
+div.csl-left-margin { min-width: 2em; float: left; }
+div.csl-right-inline { margin-left: 2em; padding-left: 1em; }
+div.csl-indent { margin-left: 2em; }
 
-.hljs-comment,
-.hljs-quote {
-  color: #998;
-  font-style: italic;
-}
-
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-subst {
-  color: #000;
-  font-weight: bold;
-}
-
-.hljs-number,
-.hljs-literal,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-tag .hljs-attr {
-  color: #099;
-}
-
-.hljs-string,
-.hljs-doctag {
-  color: #d14;
-}
-
-.hljs-title,
-.hljs-section,
-.hljs-selector-id {
-  color: #900;
-  font-weight: bold;
-}
-
-.hljs-subst {
-  font-weight: normal;
-}
-
-.hljs-type,
-.hljs-class .hljs-title {
-  color: #458;
-  font-weight: bold;
-}
-
-.hljs-tag,
-.hljs-name,
-.hljs-attribute {
-  color: #000080;
-  font-weight: normal;
-}
-
-.hljs-regexp,
-.hljs-link {
-  color: #009926;
-}
-
-.hljs-symbol,
-.hljs-bullet {
-  color: #990073;
-}
-
-.hljs-built_in,
-.hljs-builtin-name {
-  color: #0086b3;
-}
-
-.hljs-meta {
-  color: #999;
-  font-weight: bold;
-}
-
-.hljs-deletion {
-  background: #fdd;
-}
-
-.hljs-addition {
-  background: #dfd;
-}
-
-.hljs-emphasis {
-  font-style: italic;
-}
-
-.hljs-strong {
-  font-weight: bold;
-}
-
-/* Стили для инлайн кода (без подсветки) */
-code:not(pre code) {
-  background: #f5f5f5;
-  padding: 0.2em 0.4em;
-  border-radius: 3px;
-  font-size: 0.9em;
-}
-
-/* Стили для блоков кода в боковых заметках */
-.marginnote pre code.hljs,
-.sidenote pre code.hljs {
-  font-size: 0.9em;
-  padding: 0.5em;
-}
-
-/* Адаптивность для блоков кода */
-@media screen and (max-width: 760px) {
-  pre code.hljs {
-    font-size: 0.9em;
-    padding: 0.8em;
-  }
-}
-
-/* ============================================
-   АДАПТИВНЫЙ ДИЗАЙН (МОБИЛЬНЫЕ УСТРОЙСТВА)
-   ============================================
-   Стили для экранов шириной менее 760px.
-   На мобильных устройствах боковые заметки скрываются
-   и показываются при клике.
-   ============================================ */
-
-@media screen and (max-width: 760px) {
-  /* Основной контент занимает больше места */
-  p, footer, ol, ul, table, hr {
-    width: 90%; /* Увеличенная ширина на мобильных */
-  }
-  
-  pre {
-    width: 87.5%;
-  }
-  
-  ul {
-    width: 85%;
-  }
-  
-  figure {
-    max-width: 90%;
-  }
-  
-  div.fullwidth p.caption {
-    max-width: none; /* Подписи на всю ширину */
-  }
-  
-  blockquote p, blockquote footer {
-    width: 90%; /* Цитаты шире на мобильных */
-  }
-  
-  /* Показ переключателей для заметок */
-  label.margin-toggle:not(.sidenote-number) {
-    display: inline; /* Символы ⊕ видны на мобильных */
-  }
-  
-  /* Скрытие боковых заметок по умолчанию */
-  .sidenote, .marginnote {
-    display: none;
-  }
-  
-  /* Показ заметок при активации чекбокса */
-  .shownote,
-  .margin-toggle:checked + .sidenote,
-  .margin-toggle:checked + .marginnote {
-    display: block;
-    float: left; /* Изменение обтекания на мобильных */
-    left: 1rem;
-    clear: both;
-    width: 95%; /* Ширина заметок на мобильных */
-    margin: 1rem 2.5%;
-    position: relative;
-  }
-  
-  /* Курсор-указатель для переключателей */
-  label {
-    cursor: pointer;
-  }
-  
-  /* Фигуры на мобильных */
-  div.figure {
-    max-width: 90%;
-  }
-  
-  /* Видео в основном текстовом блоке на мобильных */
-  video {
-    max-width: 100%;
-    width: 100%;
-  }
-  
-  .video-container {
-    width: 100%;
-    max-width: 100%;
-    padding-bottom: 56.25%;
-  }
-  
-  div.figure .video-container {
-    max-width: 100%;
-    width: 100%;
-  }
-  
-  /* Видео в боковых заметках на мобильных */
-  .marginnote video,
-  .sidenote video,
-  .marginnote iframe,
-  .sidenote iframe {
-    width: 100%;
-    max-width: 100%;
-  }
-  
-  .marginnote .video-container,
-  .sidenote .video-container {
-    width: 100%;
-    padding-bottom: 56.25%;
-  }
-  
-  /* Блоки кода на мобильных */
-  pre {
-    width: 90%;
-    padding: 0;
-  }
-  
-  /* Заголовки на мобильных устройствах */
-  h1, h2 {
-    clear: both; /* Очистка float элементов */
-    width: 90%; /* Ширина заголовков на мобильных */
-    word-break: normal; /* Предотвращает разрыв слов */
-    overflow-wrap: break-word; /* Разрешает перенос длинных слов */
-    text-align: left; /* Выравнивание по левому краю */
-    position: relative; /* Относительное позиционирование */
-  }
-  
-  /* Секции на мобильных */
-  div.section {
-    clear: both; /* Очистка float элементов */
-    width: 100%; /* Полная ширина на мобильных */
-  }
-  
-  /* Полноширинные элементы на мобильных */
-  div.fullwidth,
-  div.figure.fullwidth {
-    clear: both; /* Очистка float элементов */
-    width: 100%; /* Полная ширина на мобильных */
-    max-width: 100%;
-  }
-}
-
-/* ============================================
-   ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ PANDOC
-   ============================================
-   Стили для элементов, генерируемых Pandoc.
-   ============================================ */
-
-/* Стили для капители */
-span.smallcaps {
-  font-variant: small-caps;
-}
-
-/* Подчеркнутый текст */
-span.underline {
-  text-decoration: underline;
-}
-
-/* Колонки */
-div.column {
-  display: inline-block;
-  vertical-align: top;
-  width: 50%;
-}
-
-/* Висячий отступ (для библиографии) */
-div.hanging-indent {
-  margin-left: 1.5em;
-  text-indent: -1.5em;
-}
-
-/* Списки задач без маркеров */
-ul.task-list {
-  list-style: none;
-}
-
-/* Стили для библиографии (Pandoc citeproc) */
-div.csl-entry {
-  clear: both; /* Очистка обтекания */
-}
-
-.hanging div.csl-entry {
-  margin-left: 2em;
-  text-indent: -2em; /* Висячий отступ */
-}
-
-div.csl-left-margin {
-  min-width: 2em;
-  float: left;
-}
-
-div.csl-right-inline {
-  margin-left: 2em;
-  padding-left: 1em;
-}
-
-div.csl-indent {
-  margin-left: 2em;
-}
-
-/* ============================================
-   НАВИГАЦИЯ МЕЖДУ СТРАНИЦАМИ
-   ============================================
-   Стили для навигации между страницами в стиле Tufte.
-   ============================================ */
-
-/* Контейнер навигации */
+/* ----------------------------------------------------------------------------
+   15. Навигация между страницами
+   ---------------------------------------------------------------------------- */
 nav.page-navigation {
-  width: 55%; /* Ширина как у основного текста */
+  width: var(--tufte-measure);
   margin-top: 3rem;
   margin-bottom: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid #ddd; /* Тонкая линия сверху */
+  border-top: 1px solid #ddd;
   font-size: 1.2rem;
   line-height: 1.8;
 }
-
-/* Ссылки навигации */
-nav.page-navigation a {
-  color: inherit; /* Наследование цвета */
-  text-decoration: none;
-  font-weight: 400;
-}
-
-/* Элементы навигации */
-nav.page-navigation .nav-item {
-  display: inline-block;
-  margin-right: 1.5rem;
-}
-
-nav.page-navigation .nav-item:last-child {
-  margin-right: 0;
-}
-
-/* Разделитель между элементами навигации */
-nav.page-navigation .nav-separator {
-  color: #999;
-  margin: 0 0.5rem;
-}
-
-/* Навигация вверху страницы (более компактная) */
+nav.page-navigation a { color: inherit; text-decoration: none; font-weight: 400; }
+nav.page-navigation .nav-item { display: inline-block; margin-right: 1.5rem; }
+nav.page-navigation .nav-item:last-child { margin-right: 0; }
+nav.page-navigation .nav-separator { color: #999; margin: 0 0.5rem; }
 nav.page-navigation.top {
   margin-top: 0;
   margin-bottom: 2rem;
@@ -1010,193 +929,15 @@ nav.page-navigation.top {
   font-size: 1.1rem;
 }
 
-/* Навигация в боковой заметке (для мобильных) */
-nav.page-navigation.marginnote {
-  width: 50%;
-  float: right;
-  clear: right;
-  margin-right: -60%;
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  line-height: 1.3;
-  border: none;
-  padding: 0;
-}
-
-/* Адаптивность навигации */
-@media screen and (max-width: 760px) {
-  nav.page-navigation {
-    width: 90%;
-    font-size: 1.1rem;
-  }
-  
-  nav.page-navigation.marginnote {
-    width: 95%;
-    float: left;
-    margin: 1rem 2.5%;
-    position: relative;
-  }
-}
-
-/* ============================================
-   МАТЕМАТИЧЕСКИЕ ФОРМУЛЫ (MATHJAX/KATEX)
-   ============================================
-   Стили для отображения математических формул.
-   ============================================ */
-
-/* Инлайн математические формулы */
-/* Используется для формул внутри текста */
-span.math.inline {
-  display: inline;
-  font-size: inherit;
-  line-height: inherit;
-}
-
-/* Блочные математические формулы */
-/* Используется для формул на отдельной строке */
-/* Выравнивание по центру основного текстового блока (55% ширины) */
-span.math.display {
-  display: block;
-  text-align: center;
-  margin: 1.5rem 0;
-  font-size: 1.2em;
-  line-height: 1.6;
-  max-width: 55%; /* Ограничение ширины основным текстовым блоком */
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* Контейнеры для формул MathJax */
-.MathJax {
-  font-size: inherit !important;
-}
-
-/* Блочные формулы MathJax - центрирование относительно абзацев */
-/* Формулы должны иметь ту же ширину, что и параграфы (55%) */
-/* и быть центрированы внутри этого блока (относительно верхнего <p>) */
-.MathJax_Display {
-  margin: 1.5rem auto !important; /* Отступы сверху/снизу и центрирование по горизонтали */
-  text-align: center; /* Центрирование содержимого формулы */
-  width: 55% !important; /* Та же ширина, что и у параграфов */
-  max-width: 55% !important;
-  display: block !important;
-  box-sizing: border-box !important;
-}
-
-/* Инлайн формулы MathJax */
-.MathJax_SVG_Display {
-  width: auto !important;
-}
-
-/* Контейнеры MathJax для блочных формул (MathJax 3.x) */
-/* Формулы должны иметь ту же ширину, что и параграфы (55%) */
-/* и быть центрированы внутри этого блока (относительно верхнего <p>) */
-mjx-container[jax="CHTML"][display="true"],
-mjx-container[jax="SVG"][display="true"] {
-  width: 55% !important; /* Та же ширина, что и у параграфов */
-  max-width: 55% !important;
-  margin-left: auto !important; /* Центрирование относительно параграфов */
-  margin-right: auto !important;
-  margin-top: 1.5rem !important;
-  margin-bottom: 1.5rem !important;
-  display: block !important;
-  box-sizing: border-box !important;
-  text-align: center !important; /* Центрирование содержимого формулы */
-}
-
-/* Формулы, которые находятся между параграфами на уровне body или section */
-/* Должны иметь ту же ширину, что и параграфы (55%) */
-/* и быть центрированы относительно верхнего <p> */
-/* Используем более общие селекторы для формул внутри секций */
-body > mjx-container[jax="CHTML"][display="true"],
-body > mjx-container[jax="SVG"][display="true"],
-body > .MathJax_Display,
-section > mjx-container[jax="CHTML"][display="true"],
-section > mjx-container[jax="SVG"][display="true"],
-section > .MathJax_Display,
-div.section > mjx-container[jax="CHTML"][display="true"],
-div.section > mjx-container[jax="SVG"][display="true"],
-div.section > .MathJax_Display,
-div.section.level1 > mjx-container[jax="CHTML"][display="true"],
-div.section.level1 > mjx-container[jax="SVG"][display="true"],
-div.section.level1 > .MathJax_Display {
-  width: 55% !important; /* Та же ширина, что и у параграфов */
-  max-width: 55% !important;
-  margin-left: auto !important; /* Центрирование относительно верхнего <p> */
-  margin-right: auto !important;
-}
-
-/* Дополнительно: формулы, которые находятся между элементами внутри секций */
-/* но не внутри полноширинных блоков или боковых заметок */
-div.section:not(.fullwidth) > mjx-container[jax="CHTML"][display="true"]:not(.fullwidth mjx-container),
-div.section:not(.fullwidth) > mjx-container[jax="SVG"][display="true"]:not(.fullwidth mjx-container),
-div.section:not(.fullwidth) > .MathJax_Display:not(.fullwidth .MathJax_Display) {
-  max-width: 55% !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  width: fit-content !important;
-}
-
-/* Формулы в боковых заметках */
-/* В боковых заметках формулы используют всю доступную ширину (50%) */
-.sidenote .MathJax,
-.marginnote .MathJax {
-  font-size: 0.9em !important;
-}
-
-.sidenote .MathJax_Display,
-.marginnote .MathJax_Display,
-.sidenote mjx-container[jax="CHTML"][display="true"],
-.sidenote mjx-container[jax="SVG"][display="true"],
-.marginnote mjx-container[jax="CHTML"][display="true"],
-.marginnote mjx-container[jax="SVG"][display="true"] {
-  margin: 0.5rem 0 !important;
-  font-size: 0.9em !important;
-  max-width: 100% !important; /* Полная ширина в боковых заметках */
-}
-
-/* Формулы в полноширинных блоках */
-/* В полноширинных блоках формулы занимают всю доступную ширину */
-.fullwidth .MathJax_Display,
-.fullwidth mjx-container[jax="CHTML"][display="true"],
-.fullwidth mjx-container[jax="SVG"][display="true"] {
-  margin: 1rem 0 !important;
-  max-width: 100% !important; /* Полная ширина в полноширинных блоках */
-  width: auto !important;
-}
-
-/* Формулы внутри параграфов также ограничены шириной текста */
-p .MathJax_Display {
-  max-width: 100% !important; /* Внутри параграфа - на всю ширину параграфа */
-  margin: 1.5rem auto !important;
-}
-
-/* Адаптивность формул */
-@media screen and (max-width: 760px) {
-  span.math.display {
-    font-size: 1em;
-    margin: 1rem 0;
-  }
-  
-  .MathJax_Display {
-    margin: 1rem 0 !important;
-  }
-}
-
-/* ============================================
-   ПЕРЕКЛЮЧЕНИЕ ТЕМ (НОЧНАЯ/ДНЕВНАЯ)
-   ============================================
-   Стили для ночной темы сайта.
-   ============================================ */
-
-/* Кнопка переключения темы */
+/* ----------------------------------------------------------------------------
+   16. Кнопка темы (дневная/ночная)
+   ---------------------------------------------------------------------------- */
 .theme-toggle {
   position: fixed;
   top: 20px;
   right: 20px;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 248, 0.9);
   border: 1px solid #ddd;
   border-radius: 50%;
   width: 50px;
@@ -1207,273 +948,199 @@ p .MathJax_Display {
   justify-content: center;
   font-size: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
-
 .theme-toggle:hover {
-  background: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 248, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: scale(1.1);
 }
+.theme-toggle:active { transform: scale(0.95); }
 
-.theme-toggle:active {
-  transform: scale(0.95);
-}
-
-/* Стили для ночной темы */
+/* ----------------------------------------------------------------------------
+   17. Ночная тема (ручной переключатель + prefers-color-scheme)
+   ----------------------------------------------------------------------------
+   Тёмная тема — не «инверсия», а тёплый тёмный фон (#151515, как в
+   tufte-css) с мягким белым текстом (#ddd). Подчёркивания ссылок
+   перекрашиваются под фон, чтобы не было светлых «дыр».
+   ---------------------------------------------------------------------------- */
 body.dark-theme {
-  background-color: #1a1a1a;
-  color: #e0e0e0;
+  --tufte-bg: #151515;
+  --tufte-ink: #ddd;
+  --tufte-muted: #c5c0b7;
+  --tufte-faint: #a8a49a;
+  --tufte-rule: #444;
+  --tufte-rule-strong: #888;
+  --tufte-link-underline: #888;
+  --tufte-accent: #d0a17e;
+  --tufte-selection: #2a4a6a;
+  background-color: var(--tufte-bg);
+  color: var(--tufte-ink);
 }
-
-body.dark-theme h1.title,
-body.dark-theme h1,
-body.dark-theme h2,
-body.dark-theme h3.subtitle,
-body.dark-theme h4.author,
-body.dark-theme h4.date {
-  color: #f0f0f0;
+body.dark-theme h1.title, body.dark-theme h1, body.dark-theme h2,
+body.dark-theme h3, body.dark-theme p.subtitle,
+body.dark-theme h4.author, body.dark-theme h4.date { color: #f0f0f0; }
+body.dark-theme table { border-top-color: #666; border-bottom-color: #666; }
+body.dark-theme th { border-bottom-color: #666; }
+body.dark-theme hr { border-top-color: #444; }
+body.dark-theme nav.page-navigation { border-top-color: #444; }
+body.dark-theme nav.page-navigation.top { border-bottom-color: #444; }
+body.dark-theme nav.page-navigation .nav-separator { color: #666; }
+body.dark-theme .sidenote, body.dark-theme .marginnote { color: #c0c0c0; }
+body.dark-theme code { color: #e0e0e0; }
+body.dark-theme pre { background-color: #1e1e1e; border-top-color: #444; border-bottom-color: #444; }
+body.dark-theme pre.pre-boxed { background-color: #2a2a2a; border-color: #444; }
+body.dark-theme pre code { background-color: transparent; }
+body.dark-theme blockquote { border-left: 3px solid #666; color: #d0d0d0; }
+body.dark-theme .fullwidth { background-color: rgba(255, 255, 255, 0.03); }
+body.dark-theme .fullwidth p { background-color: transparent; }
+body.dark-theme .fullwidth p.fullwidth-note {
+  background-color: #2b2b2b !important;
+  color: #e8e8e8 !important;
+  border-left-color: #888 !important;
 }
-
-body.dark-theme table {
-  border-top: 2px solid #666;
-  border-bottom: 2px solid #666;
-}
-
-body.dark-theme th {
-  border-bottom: 1px solid #666;
-}
-
-body.dark-theme hr {
-  border-top: 1px solid #444;
-  border-bottom: 1px solid #444;
-}
-
-body.dark-theme nav.page-navigation {
-  border-top: 1px solid #444;
-}
-
-body.dark-theme nav.page-navigation.top {
-  border-bottom: 1px solid #444;
-}
-
-body.dark-theme nav.page-navigation .nav-separator {
-  color: #666;
-}
-
-/* Ссылки в ночной теме */
-body.dark-theme a:link {
-  background: -webkit-linear-gradient(#1a1a1a, #1a1a1a), 
-              -webkit-linear-gradient(#1a1a1a, #1a1a1a), 
-              -webkit-linear-gradient(#888, #888);
-  background: linear-gradient(#1a1a1a, #1a1a1a), 
-              linear-gradient(#1a1a1a, #1a1a1a), 
-              linear-gradient(#888, #888);
-  text-shadow: 0.03em 0 #1a1a1a, -0.03em 0 #1a1a1a, 0 0.03em #1a1a1a, 
-               0 -0.03em #1a1a1a, 0.06em 0 #1a1a1a, -0.06em 0 #1a1a1a, 
-               0.09em 0 #1a1a1a, -0.09em 0 #1a1a1a, 0.12em 0 #1a1a1a, 
-               -0.12em 0 #1a1a1a, 0.15em 0 #1a1a1a, -0.15em 0 #1a1a1a;
-}
-
-body.dark-theme a:link::selection {
-  text-shadow: 0.03em 0 #2a4a6a, -0.03em 0 #2a4a6a, 0 0.03em #2a4a6a, 
-               0 -0.03em #2a4a6a, 0.06em 0 #2a4a6a, -0.06em 0 #2a4a6a, 
-               0.09em 0 #2a4a6a, -0.09em 0 #2a4a6a, 0.12em 0 #2a4a6a, 
-               -0.12em 0 #2a4a6a, 0.15em 0 #2a4a6a, -0.15em 0 #2a4a6a;
-  background: #2a4a6a;
-}
-
-body.dark-theme a:link::-moz-selection {
-  text-shadow: 0.03em 0 #2a4a6a, -0.03em 0 #2a4a6a, 0 0.03em #2a4a6a, 
-               0 -0.03em #2a4a6a, 0.06em 0 #2a4a6a, -0.06em 0 #2a4a6a, 
-               0.09em 0 #2a4a6a, -0.09em 0 #2a4a6a, 0.12em 0 #2a4a6a, 
-               -0.12em 0 #2a4a6a, 0.15em 0 #2a4a6a, -0.15em 0 #2a4a6a;
-  background: #2a4a6a;
-}
-
-/* Кнопка переключения темы в ночном режиме */
-body.dark-theme .theme-toggle {
-  background: rgba(40, 40, 40, 0.9);
-  border: 1px solid #555;
-  color: #f0f0f0;
-}
-
-body.dark-theme .theme-toggle:hover {
-  background: rgba(50, 50, 50, 1);
-}
-
-/* Боковые заметки в ночной теме */
-body.dark-theme .sidenote,
-body.dark-theme .marginnote {
-  color: #c0c0c0;
-}
-
-/* Код в ночной теме */
-body.dark-theme code {
-  background-color: #2a2a2a;
-  color: #e0e0e0;
-  border: 1px solid #444;
-}
-
-body.dark-theme pre {
-  background-color: #2a2a2a;
-  border: 1px solid #444;
-}
-
-body.dark-theme pre code {
-  background-color: transparent;
-  border: none;
-}
-
-/* Блочные цитаты в ночной теме */
-body.dark-theme blockquote {
-  border-left: 3px solid #666;
-  color: #d0d0d0;
-}
-
-/* Таблицы в ночной теме */
-body.dark-theme table tr.odd {
-  background-color: rgba(255, 255, 255, 0.02);
-}
-
-body.dark-theme table tr.even {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-/* Полноширинные блоки в ночной теме */
-body.dark-theme .fullwidth {
-  background-color: rgba(255, 255, 255, 0.03);
-}
-
-body.dark-theme .fullwidth p {
-  background-color: transparent;
-}
-
-/* Подсветка синтаксиса (Highlight.js) в ночной теме */
-body.dark-theme .hljs {
-  color: #e0e0e0;
-  background: #2a2a2a;
-}
-
-body.dark-theme .hljs-comment,
-body.dark-theme .hljs-quote {
-  color: #888;
-  font-style: italic;
-}
-
-body.dark-theme .hljs-keyword,
-body.dark-theme .hljs-selector-tag,
-body.dark-theme .hljs-subst {
-  color: #c792ea;
-  font-weight: bold;
-}
-
-body.dark-theme .hljs-number,
-body.dark-theme .hljs-literal,
-body.dark-theme .hljs-variable,
-body.dark-theme .hljs-template-variable,
-body.dark-theme .hljs-tag .hljs-attr {
-  color: #099;
-}
-
-/* ============================================
-   Исправление для ночной темы: полноширинные блоки
-   (div.fullwidth p) должны быть читаемы, даже если
-   в HTML задан inline `background-color`.
-   Используем `!important` целенаправленно, чтобы
-   переопределить inline-стили в ночной теме.
-   ============================================ */
 body.dark-theme div.fullwidth p,
 body.dark-theme .fullwidth p {
-  background-color: #2b2b2b !important; /* тёмный фон карточки */
-  color: #e8e8e8 !important; /* светлый текст */
-  border-left-color: #888 !important; /* более светлая полоса */
+  background-color: #2b2b2b !important;
+  color: #e8e8e8 !important;
+  border-left-color: #888 !important;
 }
-
-/* Перекрываем случаи, когда в теге p стоят inline-стили */
 body.dark-theme div.fullwidth p[style],
 body.dark-theme .fullwidth p[style] {
   background-color: #2b2b2b !important;
   color: #e8e8e8 !important;
   border-left: 3px solid #888 !important;
 }
-
-/* Наследуем цвет текста для вложенных элементов (strong, code и т.д.) */
 body.dark-theme div.fullwidth p *,
-body.dark-theme .fullwidth p * {
-  color: inherit !important;
+body.dark-theme .fullwidth p * { color: inherit !important; }
+body.dark-theme .theme-toggle {
+  background: rgba(40, 40, 40, 0.9);
+  border-color: #555;
+  color: #f0f0f0;
 }
+body.dark-theme .theme-toggle:hover { background: rgba(50, 50, 50, 1); }
+body.dark-theme .tufte-svg text { fill: #ddd; }
+body.dark-theme .tufte-svg .axis { stroke: #888; }
+body.dark-theme .tufte-svg .grid { stroke: #333; }
+body.dark-theme .tufte-svg .data-line { stroke: #ddd; }
+body.dark-theme .tufte-svg .data-area { fill: rgba(221, 221, 221, 0.12); }
+body.dark-theme .tufte-svg .data-bar { fill: #ddd; }
+body.dark-theme .tufte-svg .data-dot { fill: #ddd; }
+body.dark-theme .bar-fill { background: #ddd; }
+body.dark-theme .dot { background: #ddd; }
+body.dark-theme .hljs { color: #e0e0e0; background: transparent; }
+body.dark-theme .hljs-comment, body.dark-theme .hljs-quote { color: #888; font-style: italic; }
+body.dark-theme .hljs-keyword, body.dark-theme .hljs-selector-tag,
+body.dark-theme .hljs-subst { color: #c792ea; font-weight: bold; }
+body.dark-theme .hljs-number, body.dark-theme .hljs-literal,
+body.dark-theme .hljs-variable, body.dark-theme .hljs-template-variable,
+body.dark-theme .hljs-tag .hljs-attr { color: #099; }
+body.dark-theme .hljs-string, body.dark-theme .hljs-doctag { color: #c3e88d; }
+body.dark-theme .hljs-title, body.dark-theme .hljs-section,
+body.dark-theme .hljs-selector-id { color: #ff5370; font-weight: bold; }
+body.dark-theme .hljs-type, body.dark-theme .hljs-class .hljs-title { color: #82aaff; font-weight: bold; }
+body.dark-theme .hljs-tag, body.dark-theme .hljs-name,
+body.dark-theme .hljs-attribute { color: #7fdbca; font-weight: normal; }
+body.dark-theme .hljs-regexp, body.dark-theme .hljs-link { color: #c3e88d; }
+body.dark-theme .hljs-symbol, body.dark-theme .hljs-bullet { color: #f78c6c; }
+body.dark-theme .hljs-built_in, body.dark-theme .hljs-builtin-name { color: #82aaff; }
+body.dark-theme .hljs-meta { color: #888; font-weight: bold; }
+body.dark-theme .hljs-deletion { background: #ff5370; }
+body.dark-theme .hljs-addition { background: #c3e88d; }
+body.dark-theme .hljs-emphasis { font-style: italic; }
+body.dark-theme .hljs-strong { font-weight: bold; }
 
-body.dark-theme .hljs-string,
-body.dark-theme .hljs-doctag {
-  color: #c3e88d;
-}
-
-body.dark-theme .hljs-title,
-body.dark-theme .hljs-section,
-body.dark-theme .hljs-selector-id {
-  color: #ff5370;
-  font-weight: bold;
-}
-
-body.dark-theme .hljs-type,
-body.dark-theme .hljs-class .hljs-title {
-  color: #82aaff;
-  font-weight: bold;
-}
-
-body.dark-theme .hljs-tag,
-body.dark-theme .hljs-name,
-body.dark-theme .hljs-attribute {
-  color: #7fdbca;
-  font-weight: normal;
-}
-
-body.dark-theme .hljs-regexp,
-body.dark-theme .hljs-link {
-  color: #c3e88d;
-}
-
-body.dark-theme .hljs-symbol,
-body.dark-theme .hljs-bullet {
-  color: #f78c6c;
-}
-
-body.dark-theme .hljs-built_in,
-body.dark-theme .hljs-builtin-name {
-  color: #82aaff;
-}
-
-body.dark-theme .hljs-meta {
-  color: #888;
-  font-weight: bold;
-}
-
-body.dark-theme .hljs-deletion {
-  background: #ff5370;
-}
-
-body.dark-theme .hljs-addition {
-  background: #c3e88d;
-}
-
-body.dark-theme .hljs-emphasis {
-  font-style: italic;
-}
-
-body.dark-theme .hljs-strong {
-  font-weight: bold;
-}
-
-/* Адаптивность кнопки переключения темы */
+/* ----------------------------------------------------------------------------
+   18. Адаптивность (<760px): сноски — по клику, мера — на всю ширину
+   ---------------------------------------------------------------------------- */
 @media screen and (max-width: 760px) {
-  .theme-toggle {
-    top: 10px;
-    right: 10px;
-    width: 45px;
-    height: 45px;
-    font-size: 20px;
+  body { width: 84%; padding-left: 8%; padding-right: 8%; }
+  p, footer, ol, ul, table, hr { width: 90%; }
+  pre { width: 97%; margin-left: 0; }
+  ul { width: 85%; }
+  figure { max-width: 90%; }
+  div.fullwidth p.caption { max-width: none; }
+  blockquote p, blockquote footer { width: 100%; }
+  blockquote { margin-left: 1.5em; margin-right: 0; }
+  .tufte-chart, .small-multiples { width: 90%; }
+  .tufte-chart.fullwidth, .small-multiples.fullwidth { max-width: 100%; }
+  .equation { width: 90%; }
+  .equation .eq-number { right: 0; }
+  .bar-row { grid-template-columns: 6rem 1fr 3.5rem; }
+  .dot-row { grid-template-columns: 6rem 1fr; }
+  label.margin-toggle:not(.sidenote-number) { display: inline; }
+  .sidenote, .marginnote { display: none; }
+  .shownote,
+  .margin-toggle:checked + .sidenote,
+  .margin-toggle:checked + .marginnote {
+    display: block;
+    float: left;
+    left: 1rem;
+    clear: both;
+    width: 95%;
+    margin: 1rem 2.5%;
+    position: relative;
+  }
+  label { cursor: pointer; }
+  div.figure { max-width: 90%; }
+  figure.margin-figure, .margin-figure,
+  figure.inline-figure, .inline-figure {
+    float: none; clear: both;
+    width: 100%; max-width: 100%;
+    margin: 1rem 0;
+  }
+  video { max-width: 100%; width: 100%; }
+  .video-container { width: 100%; max-width: 100%; padding-bottom: 56.25%; }
+  div.figure .video-container { max-width: 100%; width: 100%; }
+  .marginnote video, .sidenote video,
+  .marginnote iframe, .sidenote iframe { width: 100%; max-width: 100%; }
+  .marginnote .video-container, .sidenote .video-container {
+    width: 100%; padding-bottom: 56.25%;
+  }
+  pre { width: 90%; padding: 0; }
+  pre code.hljs { font-size: 0.9em; padding: 0; }
+  h1, h2 { clear: both; width: 90%; text-align: left; position: relative; }
+  div.section { clear: both; width: 100%; }
+  div.fullwidth, div.figure.fullwidth { clear: both; width: 100%; max-width: 100%; }
+  nav.page-navigation { width: 90%; font-size: 1.1rem; }
+  .theme-toggle { top: 10px; right: 10px; width: 45px; height: 45px; font-size: 20px; }
+  span.math.display { font-size: 1em; margin: 1rem 0; }
+  .MathJax_Display { margin: 1rem 0 !important; }
+}
+
+/* ----------------------------------------------------------------------------
+   19. Печать: чёрный на белом, сноски видны, переключатели скрыты
+   ---------------------------------------------------------------------------- */
+@media print {
+  html { font-size: 12px; }
+  body {
+    width: 100%;
+    padding-left: 0;
+    background: #fff;
+    color: #000;
+  }
+  .theme-toggle, input.margin-toggle,
+  label.margin-toggle:not(.sidenote-number) { display: none !important; }
+  .sidenote, .marginnote {
+    display: block !important;
+    float: right;
+    margin-right: -60%;
+    width: 50%;
+  }
+  a:link {
+    background: none;
+    text-shadow: none;
+    text-decoration: underline;
+  }
+  pre { border-top: 1px solid #999; border-bottom: 1px solid #999; }
+  .tufte-svg .grid { stroke: #ccc; }
+  h1, h2, h3 { page-break-after: avoid; }
+  figure, .tufte-chart, pre, table { page-break-inside: avoid; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
-
-/*
