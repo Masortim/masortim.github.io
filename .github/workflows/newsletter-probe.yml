@@ -161,7 +161,7 @@ jobs:
 
           node newsletter/scripts/verify-live.mjs --health
 
-          echo "--- подписка $OWNER_EMAIL ---"
+          echo "--- подписка $OWNER_EMAIL (проверка 2) ---"
           code=$(curl -sS -o /tmp/sub_full.json -w '%{http_code}' --max-time 25 \
             -X POST -H 'Content-Type: application/json' -H 'Origin: https://masortim.github.io' \
             -d "{\"email\":\"$OWNER_EMAIL\",\"lang\":\"ru\"}" \
