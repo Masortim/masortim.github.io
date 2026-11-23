@@ -263,9 +263,69 @@ jobs:
           fi
           echo "::notice::FLOW цикл замкнут: подписка -> письмо -> подтверждение -> отписка -> строка удалена"
           echo "::notice::FLOW транспорт: $transport"
-          # Выпуск в dry_run здесь не зовём: без CRON_SECRET он отвечает 401,
-          # а это уже проверено шагом «Digest is protected». С секретом он
-          # доступен вручную — команда есть в SETUP-FINAL.md, шаг 6.
+
+      - name: Weekly digest actually sends
+        env:
+          OWNER_EMAIL: ${{ secrets.NEWSLETTER_OWNER_EMAIL || 'alex.typeface@gmail.com' }}
+          NEWSLETTER_CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          # Выпуск — единственное, что дойдёт до читателей без их действий,
+          # поэтому проверяем настоящую отправку, а не только dry_run.
+          # Схема без мусора: подписка -> подтверждение -> выпуск на одного
+          # человека (этот же ящик) -> отписка. После шага строк в базе нет.
+          if [ -z "${NEWSLETTER_CRON_SECRET:-}" ] || [ -z "${OWNER_EMAIL:-}" ]; then
+            echo "::notice::DIGEST пропущен: нет CRON_SECRET или NEWSLETTER_OWNER_EMAIL"
+            exit 0
+          fi
+
+          mail=$(curl -sS --max-time 25 \
+            -X POST -H 'Content-Type: application/json' \
+            -d "{\"email\":\"$OWNER_EMAIL\",\"lang\":\"ru\"}" \
+            https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
+          echo "подписка: $mail"
+          token=$(curl -sS --max-time 25 \
+            -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" \
+            "https://masortim-newsletter.vercel.app/api/newsletter/token?email=$OWNER_EMAIL" \
+            | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{process.stdout.write(String(JSON.parse(s).token||""))}catch(e){}})')
+          if [ -z "$token" ]; then
+            echo "::error::DIGEST токен не получен — подписка не записалась"
+            exit 1
+          fi
+          confirmed=$(curl -sS -o /dev/null -w '%{redirect_url}' --max-time 25 \
+            "https://masortim-newsletter.vercel.app/api/newsletter/confirm?token=$token")
+          case "$confirmed" in
+            *state=confirmed*|*state=already*) echo "подтверждение: принято" ;;
+            *) echo "::error::DIGEST подтверждение не сработало: $confirmed"; exit 1 ;;
+          esac
+
+          # Сначала dry_run: видно, какие записи пошли бы и кому.
+          dry=$(curl -sS --max-time 40 \
+            -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" \
+            "https://masortim-newsletter.vercel.app/api/newsletter/digest?dry_run=1")
+          echo "dry_run: $dry"
+          notes=$(printf '%s' "$dry" | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{process.stdout.write(String((JSON.parse(s).notes||[]).length))}catch(e){process.stdout.write("0")}})')
+          case "$dry" in
+            *'"error"'*) echo "::error::DIGEST dry_run вернул ошибку: $dry"; exit 1 ;;
+          esac
+
+          if [ "$notes" = "0" ]; then
+            echo "::notice::DIGEST записей нет — рассылать нечего, отправка пропущена"
+          else
+            real=$(curl -sS --max-time 90 \
+              -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" \
+              "https://masortim-newsletter.vercel.app/api/newsletter/digest")
+            echo "отправка: $real"
+            sent=$(printf '%s' "$real" | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{process.stdout.write(String(JSON.parse(s).sent))}catch(e){process.stdout.write("-1")}})')
+            if [ "$sent" = "0" ]; then
+              echo "::error::DIGEST не отправлено ни одного письма: $real"
+              exit 1
+            fi
+            echo "::notice::DIGEST выпуск отправлен: писем $sent, записей $notes"
+          fi
+
+          # Убираем за собой: отписка удаляет строку.
+          curl -sS -o /dev/null --max-time 25 \
+            "https://masortim-newsletter.vercel.app/api/newsletter/unsubscribe?token=$token" || true
 
       - name: Does the site point at this API
         run: |
