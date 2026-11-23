@@ -30,6 +30,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # Файлы репозитория нужны шагу про расписание (vercel.json) и
+      # проверкам, которые читают код. Без checkout рабочая копия пустая.
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            vercel.json
+            newsletter
+            api
+          sparse-checkout-cone-mode: false
+
       - name: Root endpoint
         run: |
           echo '--- GET / ---'
@@ -345,6 +356,10 @@ jobs:
           # На бесплатном плане Vercel запуск best-effort и с точностью «в
           # течение часа», поэтому одно из двух заданий может не состояться.
           echo '--- crons в vercel.json ---'
+          if [ ! -f vercel.json ]; then
+            echo "::warning::CRON vercel.json не найден в рабочей копии — шаг пропущен"
+            exit 0
+          fi
           node -e '
             const text = require("fs").readFileSync("vercel.json", "utf8");
             const cfg = JSON.parse(text);
