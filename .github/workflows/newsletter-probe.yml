@@ -190,7 +190,11 @@ jobs:
             https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
           echo "status: $code"; cat /tmp/sub_full.json 2>/dev/null; echo
           if [ "$code" != "200" ]; then
-            echo "::error::FLOW подписка вернула $code, хотя health говорит ready=true"
+            # Тело ответа печатаем внутри аннотации: в логе оно может быть
+            # вымарано значением секрета, а аннотация видна всегда и сразу
+            # называет код транспорта (например 535 auth_failed).
+            detail=$(tr -d '\n' < /tmp/sub_full.json 2>/dev/null | head -c 300)
+            echo "::error::FLOW подписка вернула $code, хотя health говорит ready=true; ответ: $detail"
             exit 1
           fi
           echo "::notice::FLOW подписка принята, письмо отправлено через SMTP Gmail"
