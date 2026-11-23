@@ -58,8 +58,13 @@ export async function POST(request) {
     return json(500, { error: 'server_error' });
   }
 
-  // Уже подтверждён — письмо не шлём, но и не раскрываем статус.
-  if (outcome.action === 'already') return json(200, { ok: true });
+  // Уже подтверждён — письма не будет, и страница должна сказать это прямо,
+  // а не обещать «проверьте почту». Без этого повторная подписка всякий раз
+  // уверяла, что письмо отправлено, хотя сервер молча ничего не слал.
+  //
+  // Флаг already не выдаёт лишнего: он значит лишь «этот адрес уже в списке
+  // подтверждённых», а это и так видно по самому факту подписки.
+  if (outcome.action === 'already') return json(200, { ok: true, already: true, sent: false });
 
   const message = confirmationEmail({
     email: outcome.subscriber.email,
@@ -77,7 +82,10 @@ export async function POST(request) {
     });
   }
 
-  return json(200, { ok: true });
+  // resent — письмо уже отправлялось на этот адрес, но подтверждения не
+  // было: шлём второе, с тем же токеном, чтобы работало и первое.
+  const resent = outcome.action === 'resend';
+  return json(200, { ok: true, sent: true, resent });
 }
 
 export function GET() {

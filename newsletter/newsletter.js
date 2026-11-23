@@ -16,6 +16,9 @@
       invalid: 'Похоже, в адресе опечатка. Проверьте его, пожалуйста.',
       sending: 'Отправляю письмо с подтверждением…',
       sent: 'Готово. Проверьте почту: пришло письмо со ссылкой подтверждения.',
+      sentAgain: 'Письмо со ссылкой подтверждения отправлено ещё раз — проверьте почту. Если его нет, загляните в «Спам».',
+      known: 'Этот адрес уже подтверждён — письма будут приходить. Отписаться можно по ссылке в любом из них.',
+      notSent: 'Адрес принят, но письмо отправить не удалось. Попробуйте ещё раз через минуту.',
       failed: 'Не получилось отправить письмо. Попробуйте ещё раз через минуту.',
       offline: 'Нет связи с сервером. Проверьте интернет и попробуйте снова.',
       confirmed: 'Подписка подтверждена. Спасибо!',
@@ -39,6 +42,9 @@
       invalid: 'That address looks mistyped. Please check it.',
       sending: 'Sending the confirmation email…',
       sent: 'Done. Check your inbox for the confirmation link.',
+      sentAgain: 'The confirmation link has been sent again — check your inbox. If it is not there, look in Spam.',
+      known: 'This address is already confirmed — the emails will arrive. You can unsubscribe from the link in any of them.',
+      notSent: 'The address was accepted, but the email could not be sent. Please try again in a minute.',
       failed: 'The email could not be sent. Please try again in a minute.',
       offline: 'No connection to the server. Check your network and try again.',
       confirmed: 'Subscription confirmed. Thank you!',
@@ -388,7 +394,23 @@
       }).then(function (result) {
         setBusy(false);
         if (result.status === 200) {
-          showNotice(texts.sent, 'ok');
+          // Ответ 200 бывает трёх видов, и обещать письмо во всех случаях
+          // нельзя. Подтверждённому адресу сервер письма не шлёт вовсе —
+          // иначе повторная подписка уверяла бы, что письмо «пришло»,
+          // хотя ничего не отправлялось.
+          var payload = result.payload || {};
+          if (payload.already === true) {
+            // Адрес уже подтверждён: письма не будет, и обещать его нельзя.
+            showNotice(texts.known, 'info');
+          } else if (payload.sent === false) {
+            // Адрес принят, но письмо не ушло — говорим об этом прямо.
+            showNotice(texts.notSent, 'error');
+          } else if (payload.resent === true) {
+            // Первое письмо не дошло: отправили второе, токен прежний.
+            showNotice(texts.sentAgain, 'ok');
+          } else {
+            showNotice(texts.sent, 'ok');
+          }
           input.value = '';
         } else if (result.status === 400) {
           showNotice(texts.invalid, 'error');
