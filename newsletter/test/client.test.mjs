@@ -142,13 +142,35 @@ test('ответ 4xx не повторяется на втором адресе'
   assert.match(notice.textContent, /опечатка/);
 });
 
-test('рабочий адрес запоминается и идёт первым', async () => {
+test('рабочий адрес запоминается и идёт первым — но недолго', async () => {
+  const remembered = JSON.stringify({ base: VERCEL, at: Date.now() });
   const env = await load({
-    storage: { 'masortim-newsletter-base': VERCEL },
+    storage: { 'masortim-newsletter-base': remembered },
     fetch: async () => new Response('{"ok":true}', { status: 200 }),
   });
   await submit(env);
-  assert.ok(env.calls[0].startsWith(VERCEL), 'запомненный адрес должен быть первым');
+  assert.ok(env.calls[0].startsWith(VERCEL), 'свежий запомненный адрес идёт первым');
+});
+
+test('старый запомненный адрес не тормозит страницу', async () => {
+  // Запасной адрес (*.vercel.app) у части провайдеров рвётся на TCP. Если
+  // он остался первым навсегда, каждый визит начинается с мёртвого домена
+  // и ожидания таймаута. Приоритет живёт пять минут.
+  const stale = JSON.stringify({ base: VERCEL, at: Date.now() - 6 * 60 * 1000 });
+  const env = await load({
+    storage: { 'masortim-newsletter-base': stale },
+    fetch: async () => new Response('{"ok":true}', { status: 200 }),
+  });
+  await submit(env);
+  assert.ok(env.calls[0].startsWith(SUPABASE), 'порядок вернулся к конфигу');
+
+  // Старый формат (просто строка) тоже больше не читается.
+  const legacy = await load({
+    storage: { 'masortim-newsletter-base': VERCEL },
+    fetch: async () => new Response('{"ok":true}', { status: 200 }),
+  });
+  await submit(legacy);
+  assert.ok(legacy.calls[0].startsWith(SUPABASE), 'старый формат игнорируется');
 });
 
 test('ссылка из письма ждёт нажатия и только потом действует', async () => {

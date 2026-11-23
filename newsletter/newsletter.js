@@ -84,12 +84,36 @@
   /** Ключ запоминания рабочего адреса: чтобы не пробовать битый каждый раз. */
   var BASE_KEY = 'masortim-newsletter-base';
 
+  /**
+   * Сколько держим запомненный адрес первым.
+   *
+   * Раньше он оставался первым навсегда. Это оказалось ловушкой: если у
+   * читателя в тот момент не работал основной адрес, запасной запоминался
+   * и с тех пор пробовался первым — а запасной это *.vercel.app, который
+   * у части провайдеров рвётся на уровне TCP. Страница начинала каждый
+   * визит с заведомо мёртвого домена и ждала таймаут.
+   *
+   * Теперь приоритет запасного живёт пять минут: он нужен, чтобы не
+   * биться в сломанный основной адрес во время одного визита, а дальше
+   * порядок возвращается к конфигу.
+   */
+  var BASE_TTL = 5 * 60 * 1000;
+
   function readBase() {
-    try { return window.localStorage.getItem(BASE_KEY) || ''; } catch (error) { return ''; }
+    try {
+      var raw = window.localStorage.getItem(BASE_KEY) || '';
+      if (!raw) return '';
+      var saved = JSON.parse(raw);
+      if (!saved || typeof saved.base !== 'string') return '';
+      if (typeof saved.at !== 'number' || Date.now() - saved.at > BASE_TTL) return '';
+      return saved.base;
+    } catch (error) { return ''; }
   }
 
   function saveBase(base) {
-    try { window.localStorage.setItem(BASE_KEY, base); } catch (error) { /* приватный режим */ }
+    try {
+      window.localStorage.setItem(BASE_KEY, JSON.stringify({ base: base, at: Date.now() }));
+    } catch (error) { /* приватный режим */ }
   }
 
   /**
