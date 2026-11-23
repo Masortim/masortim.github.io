@@ -69,7 +69,12 @@ export async function POST(request) {
   const result = await send(message);
   if (!result.ok) {
     console.error('confirmation email failed', result.error);
-    return json(502, { error: 'email_failed' });
+    // upstream — код и имя ошибки транспорта без адресов. Он нужен, чтобы
+    // отличить «пароль приложения неверен» от «адрес не принят сервером».
+    return json(502, {
+      error: 'email_failed',
+      upstream: result.status ? `${result.status} ${result.name || 'unknown'}` : (result.name || 'no_request'),
+    });
   }
 
   return json(200, { ok: true });

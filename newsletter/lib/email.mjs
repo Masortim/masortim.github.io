@@ -5,6 +5,8 @@
  * Так они не ломаются в почтовых клиентах и выглядят как текст дневника.
  */
 
+import { sendViaSmtp } from './smtp.mjs';
+
 const SITE = process.env.NEWSLETTER_SITE ?? 'https://masortim.github.io';
 
 /**
@@ -13,7 +15,39 @@ const SITE = process.env.NEWSLETTER_SITE ?? 'https://masortim.github.io';
  * Если переменная не задана (локальный прогон), берётся тот же origin.
  */
 const API = (process.env.NEWSLETTER_API_BASE ?? SITE).replace(/\/$/, '');
-const FROM = process.env.NEWSLETTER_FROM ?? 'Masortim <digest@masortim.github.io>';
+const FROM = process.env.NEWSLETTER_FROM ?? 'Masortim <alex.typeface@gmail.com>';
+
+const OWNER = 'alex.typeface@gmail.com';
+
+/**
+ * Какой транспорт отправляет письма.
+ *
+ *   smtp   — Gmail (smtp.gmail.com) с паролем приложения. Единственный способ
+ *            отправлять от имени alex.typeface@gmail.com без своего домена.
+ *   resend — Resend; годится только с проверенным доменом, иначе песочница
+ *            доставляет письма исключительно владельцу аккаунта.
+ *
+ * Выбор по переменным окружения, без правок кода: если задан
+ * NEWSLETTER_SMTP_PASS — работает SMTP, иначе Resend.
+ */
+function transportKind() {
+  const mode = (process.env.NEWSLETTER_TRANSPORT ?? '').trim().toLowerCase();
+  if (mode === 'smtp' || mode === 'resend') return mode;
+  if ((process.env.NEWSLETTER_SMTP_PASS ?? '').trim()) return 'smtp';
+  return 'resend';
+}
+
+function smtpConfig(options = {}) {
+  const host = (options.host ?? process.env.NEWSLETTER_SMTP_HOST ?? 'smtp.gmail.com').trim();
+  const port = Number((options.port ?? process.env.NEWSLETTER_SMTP_PORT ?? 465) || 465);
+  const user = (options.user ?? process.env.NEWSLETTER_SMTP_USER ?? OWNER).trim();
+  // Google показывает пароль приложения группами по четыре символа
+  // («abcd efgh ijkl mnop»), и его копируют вместе с пробелами. SMTP ждёт
+  // 16 символов без них, поэтому убираем все пробелы, не только по краям.
+  const pass = String(options.pass ?? process.env.NEWSLETTER_SMTP_PASS ?? '')
+    .replace(/\s+/g, '');
+  return { host, port, user, pass };
+}
 
 const COPY = {
   ru: {
@@ -119,8 +153,24 @@ export function digestEmail({ email, lang, token, notes }) {
  * весь выпуск.
  */
 export async function send(message, options = {}) {
+  const kind = options.transport ?? transportKind();
+  if (kind === 'smtp') {
+    const config = smtpConfig(options);
+    if (!config.pass) {
+      return { ok: false, status: null, name: 'not_configured', error: 'NEWSLETTER_SMTP_PASS не задан' };
+    }
+    return sendViaSmtp({
+      ...config,
+      from: options.from ?? FROM,
+      to: message.to,
+      subject: message.subject,
+      text: message.text,
+      html: message.html,
+    });
+  }
+
   const key = options.apiKey ?? process.env.RESEND_API_KEY ?? '';
-  if (!key) return { ok: false, error: 'RESEND_API_KEY не задан' };
+  if (!key) return { ok: false, status: null, name: 'not_configured', error: 'RESEND_API_KEY не задан' };
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',

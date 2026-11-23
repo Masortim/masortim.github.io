@@ -25,6 +25,7 @@ const ROOT = resolve(HERE, '../..');
 /** Модули в порядке зависимостей: имя в бандле → файл. */
 const MODULES = [
   { name: '__store', file: 'newsletter/lib/store.mjs' },
+  { name: '__smtp', file: 'newsletter/lib/smtp.mjs' },
   { name: '__subscribers', file: 'newsletter/lib/subscribers.mjs' },
   { name: '__email', file: 'newsletter/lib/email.mjs' },
   { name: '__notes', file: 'newsletter/lib/notes.mjs' },
@@ -34,6 +35,23 @@ const MODULES = [
   { name: '__digestApi', file: 'api/newsletter/digest.mjs' },
 ];
 
+/**
+ * Карта «файл → имя IIFE»: нужна, чтобы импорт одного модуля из другого
+ * превратился в обращение к уже собранному блоку. Без этого `__email`
+ * внутри своей обёртки не увидел бы `sendViaSmtp` из `__smtp`.
+ */
+const BY_FILE = new Map(MODULES.map((mod) => [mod.file, mod.name]));
+
+/** Переводит относительный путь импорта в путь от корня репозитория. */
+function resolveImport(fromFile, spec) {
+  const base = fromFile.split('/').slice(0, -1);
+  for (const part of spec.split('/')) {
+    if (part === '..') base.pop();
+    else if (part !== '.') base.push(part);
+  }
+  return base.join('/');
+}
+
 const IMPORT_RE = /^import\s[\s\S]*?from\s+['"][^'"]+['"];?[ \t]*$/gm;
 const EXPORT_DECL_RE = /^export\s+(async\s+function|function|const|let|class)\s+([A-Za-z_$][\w$]*)/gm;
 const EXPORT_LIST_RE = /^export\s*\{([^}]*)\};?[ \t]*$/gm;
@@ -42,7 +60,7 @@ const EXPORT_LIST_RE = /^export\s*\{([^}]*)\};?[ \t]*$/gm;
  * Готовит тело модуля к вставке внутрь IIFE: снимает import/export,
  * собирает имена экспортов, чтобы вернуть их из обёртки.
  */
-function transformModule(source) {
+function transformModule(source, file) {
   const names = new Set();
   let body = source.replace(EXPORT_DECL_RE, (_, kind, name) => {
     names.add(name);
@@ -55,8 +73,27 @@ function transformModule(source) {
     }
     return '';
   });
+  // Встроенные модули Node (node:net, node:tls, node:crypto) должны остаться
+  // импортами: их нельзя «вставить» в бандл, но и вырезать нельзя — функция
+  // упала бы с «X is not defined» уже на платформе. Разбираем их ПЕРВЫМИ,
+  // иначе правило для соседних модулей примет их за свои и выбросит.
+  const builtins = [];
+  body = body.replace(/^import\s+(\{[^}]*\}|\w+)\s+from\s+['"](node:[^'"]+)['"];?[ \t]*$/gm, (_, names, spec) => {
+    builtins.push(`import ${names} from '${spec}';`);
+    return '';
+  });
+  // Импорты из соседних модулей заменяем на деструктуризацию из их IIFE.
+  const bridges = [];
+  body = body.replace(/^import\s*\{([^}]*)\}\s*from\s+['"]([^'"]+)['"];?[ \t]*$/gm, (_, list, spec) => {
+    const target = BY_FILE.get(resolveImport(file, spec));
+    if (!target) return '';
+    const wanted = list.split(',').map((part) => part.trim()).filter(Boolean)
+      .map((part) => part.replace(/\s+as\s+/, ': '));
+    bridges.push(`const { ${wanted.join(', ')} } = ${target};`);
+    return '';
+  });
   body = body.replace(IMPORT_RE, '');
-  return { body: body.trim(), exports: [...names] };
+  return { body: body.trim(), exports: [...names], bridges, builtins };
 }
 
 async function build() {
@@ -72,19 +109,24 @@ async function build() {
  *   GET  /api/newsletter/confirm     ?token=
  *   GET  /api/newsletter/unsubscribe ?token=
  *   GET  /api/newsletter/digest      Authorization: Bearer CRON_SECRET
- */
-import { randomBytes } from 'node:crypto';`,
+ */`,
   ];
 
+  const collectedBuiltins = [];
   for (const mod of MODULES) {
     const raw = await readFile(resolve(ROOT, mod.file), 'utf8');
-    const { body, exports } = transformModule(raw);
+    const { body, exports, bridges, builtins } = transformModule(raw, mod.file);
     if (!exports.length) {
       throw new Error(`${mod.file}: не найдено ни одного экспорта — проверьте разметку модуля`);
     }
     chunks.push('');
     chunks.push(`// ─── ${mod.file} ───`);
+    // Импорты платформы нельзя держать внутри IIFE — они должны быть на
+    // верхнем уровне модуля. Копим их и вставим после шапки файла.
+    collectedBuiltins.push(...builtins);
     chunks.push(`const ${mod.name} = (() => {`);
+    // Мосты к ранее собранным модулям — до тела, чтобы имена были видны.
+    if (bridges.length) chunks.push(...bridges);
     chunks.push(body);
     chunks.push('');
     chunks.push(`return { ${exports.join(', ')} };`);
@@ -97,6 +139,9 @@ import { randomBytes } from 'node:crypto';`,
   chunks.push('');
   chunks.push(await readFile(resolve(ROOT, 'newsletter/edge/router.mjs'), 'utf8'));
 
+  // Убираем дубли (node:crypto импортируют два модуля) и ставим в начало.
+  const unique = [...new Set(collectedBuiltins)];
+  chunks.splice(1, 0, unique.join('\n'));
   return chunks.join('\n');
 }
 

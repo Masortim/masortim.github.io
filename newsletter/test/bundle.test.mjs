@@ -42,7 +42,11 @@ test('каждый модуль обёрнут в IIFE', async () => {
   await buildBundle();
   const code = await readFile(BUNDLE, 'utf8');
   const wrappers = code.match(/^const __\w+ = \(\(\) => \{$/gm) ?? [];
-  assert.equal(wrappers.length, 8, `ожидалось 8 обёрток, найдено ${wrappers.length}`);
+  // Число берём из списка сборки, а не из константы: новый модуль не должен
+  // ломать тест, но и молча потеряться не должен.
+  const script = await readFile(resolve(ROOT, 'newsletter/scripts/bundle.mjs'), 'utf8');
+  const expected = (script.match(/\{ name: '__/g) ?? []).length;
+  assert.equal(wrappers.length, expected, `ожидалось ${expected} обёрток, найдено ${wrappers.length}`);
 });
 
 test('каждый модуль начинается с обёртки, а не с голого кода', async () => {
@@ -107,6 +111,29 @@ test('корневой обработчик отвечает на все мар�
     if (!(key in saved)) delete process.env[key];
   }
   Object.assign(process.env, saved);
+
+  // SMTP: письма уходят с адреса автора, ключ Resend не нужен вовсе.
+  {
+    const envSaved = { ...process.env };
+    Object.assign(process.env, {
+      NEWSLETTER_SMTP_PASS: 'app-password',
+      NEWSLETTER_FROM: 'Masortim <alex.typeface@gmail.com>',
+      SUPABASE_URL: 'https://example.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'test-key',
+      RESEND_API_KEY: '',
+    });
+    const { default: smtpHandler } = await import(`${BUNDLE}?smtp=${Date.now()}`);
+    const report = await (await smtpHandler(new Request('https://example.test/api/newsletter/health'))).json();
+    assert.equal(report.checks.transport, 'smtp');
+    assert.equal(report.checks.smtp.user, 'alex.typeface@gmail.com');
+    assert.equal(report.checks.smtp.passSet, true);
+    assert.equal(report.ready, true, JSON.stringify(report.blocking));
+    assert.match(report.checks.fromAddress, /alex\.typeface@gmail\.com/);
+    for (const key of Object.keys(process.env)) {
+      if (!(key in envSaved)) delete process.env[key];
+    }
+    Object.assign(process.env, envSaved);
+  }
 
   // Без ключа почты подписка отвечает 502 — важно, что это не 500:
   // значит разбор тела и валидация адреса прошли.

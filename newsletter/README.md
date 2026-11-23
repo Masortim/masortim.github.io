@@ -22,11 +22,14 @@
 | Переменные | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEWSLETTER_SITE`, `NEWSLETTER_API_BASE`, `CRON_SECRET` | заданы |
 | Еженедельный выпуск | `GET /api/newsletter/digest`, Vercel Cron `0 9 * * 0` | зарегистрирован |
 | Форма на сайте | `newsletter/config.js` → `NEWSLETTER_API_BASE` | указывает на Vercel |
-| Отправка писем | Resend | **нужен ключ** |
+| Отправка писем | SMTP Gmail, адрес `alex.typeface@gmail.com` | **нужен пароль приложения** |
 
-Без `RESEND_API_KEY` форма принимает адрес, но письмо с подтверждением не уходит:
-Resend отвечает ошибкой, API возвращает `502 email_failed`. После добавления ключа
-достаточно перевыпустить деплой — код менять не нужно.
+Транспорт выбирается сам: если задан `NEWSLETTER_SMTP_PASS` — письма идут через
+SMTP Gmail от имени автора; если задан только `RESEND_API_KEY` — через Resend
+(годится лишь с проверенным доменом). Без пароля и ключа форма принимает адрес,
+но письмо не уходит, и API честно отвечает `502 email_failed` с полем `upstream`:
+по нему видно, отказал транспорт из-за пароля (`535 auth_failed`) или получателя
+(`550 recipient_rejected`).
 
 ### Как проверить, что API жив
 
@@ -52,20 +55,21 @@ gh run list --workflow=newsletter-probe.yml --limit 1
 
 ### Что нужно от владельца
 
-Единственный шаг, который нельзя выполнить из кода: выпустить ключ Resend.
+Единственный шаг, который нельзя выполнить из кода: получить пароль приложения
+Gmail. Подробная инструкция — в [SETUP-FINAL.md](./SETUP-FINAL.md), шаги 1–3.
+Коротко:
 
-1. [resend.com/api-keys](https://resend.com/api-keys) → Create API Key (достаточно
-   Sending access).
-2. Vercel → проект `masortim-newsletter` → Settings → Environment Variables →
-   `RESEND_API_KEY` = `re_…` → Production.
-3. Redeploy: Deployments → последний → ⋯ → Redeploy.
+1. <https://myaccount.google.com/security> → включить двухэтапную аутентификацию.
+2. <https://myaccount.google.com/apppasswords> → создать пароль для
+   `masortim newsletter`.
+3. Vercel → проект `masortim-newsletter` → Settings → Environment Variables:
+   `NEWSLETTER_SMTP_PASS` = 16 символов, `NEWSLETTER_SMTP_USER` = ящик,
+   `NEWSLETTER_FROM` = `Masortim <alex.typeface@gmail.com>`.
+4. Deployments → последний → ⋯ → Redeploy.
 
-Домен отправителя тоже проверяется в Resend (Domains → Add Domain → DNS-записи).
-Пока домена нет, можно отправлять с тестового `onboarding@resend.dev` — но только
-на собственный адрес. `NEWSLETTER_FROM` меняется в тех же переменных.
-
-До появления ключа форма показывает «Адрес принят, но отправка писем ещё
-настраивается» — честно и без ложного «нет связи».
+До появления пароля форма показывает «Адрес принят, но отправка писем ещё
+настраивается» — честно и без ложного «нет связи». Самодиагностика
+`/api/newsletter/health` в поле `blocking` пишет дословно, чего не хватает.
 
 ### Как устроен деплой
 
@@ -130,62 +134,58 @@ grant all on public.newsletter_subscribers to service_role;
 | `api/newsletter/confirm.mjs` | Подтверждение по токену, приветственное письмо, редирект на `/newsletter/?state=…` |
 | `api/newsletter/unsubscribe.mjs` | Отписка по токену из письма |
 | `newsletter/lib/subscribers.mjs` | Вся логика списка: подписка, подтверждение, отписка, выборка подтверждённых |
-| `newsletter/lib/store.mjs` | Хранилище: приватный репозиторий через GitHub Contents API или память (тесты) |
-| `newsletter/lib/email.mjs` | Двуязычные тексты писем и отправка через Resend |
+| `newsletter/lib/store.mjs` | Хранилище: Supabase через PostgREST; пишет только изменившиеся строки; память для тестов |
+| `newsletter/lib/email.mjs` | Двуязычные тексты писем и выбор транспорта (SMTP или Resend) |
+| `newsletter/lib/smtp.mjs` | SMTP-клиент без зависимостей: EHLO, AUTH LOGIN, DATA, STARTTLS |
+| `newsletter/edge/index.mjs` | Собранная функция для Vercel (генерируется, руками не править) |
 | `newsletter/scripts/send-digest.mjs` | Сборка и отправка выпуска, поддерживает `--dry-run` и `--since` |
 | `newsletter/index.html` | Страница подписки на сайте (двуязычная, как заметки) |
 | `newsletter/newsletter.js` | Форма: проверка адреса, запрос, сообщения об успехе и ошибке (ES5) |
-| `.github/workflows/newsletter.yml` | Еженедельный выпуск по расписанию + запуск вручную |
+| `.github/workflows/newsletter-probe.yml` | Проба живого API снаружи: конвейер, CORS, самодиагностика, полный цикл |
 
 ## Настройка (один раз)
 
-### 1. Resend
+Всё уже развёрнуто; ниже — что где лежит, если понадобится повторить.
 
-1. Зарегистрироваться на [resend.com](https://resend.com) и добавить домен
-   `masortim.github.io` (Resend покажет DNS-записи — их нужно внести у регистратора).
-2. Создать API-ключ с правом отправки.
-3. В настройках репозитория → **Secrets and variables → Actions** добавить:
-   - `RESEND_API_KEY` — ключ из шага 2;
-   - `NEWSLETTER_FROM` — например `Masortim <digest@masortim.github.io>`.
+### 1. Отправка: SMTP Gmail
 
-Пока домен не подтверждён, Resend разрешает отправку только на собственный
-адрес аккаунта — этого достаточно, чтобы прогнать весь цикл.
+Письма уходят от имени `alex.typeface@gmail.com`. Обычный пароль Google для
+этого не годится — нужен пароль приложения, и в аккаунте должна быть включена
+двухэтапная аутентификация.
 
-### 2. Хранилище подписчиков
+1. <https://myaccount.google.com/apppasswords> → создать пароль для
+   `masortim newsletter`.
+2. Vercel → проект `masortim-newsletter` → Environment Variables:
+   - `NEWSLETTER_SMTP_PASS` — 16 символов (пробелы можно оставить, код их уберёт);
+   - `NEWSLETTER_SMTP_USER` — `alex.typeface@gmail.com`;
+   - `NEWSLETTER_FROM` — `Masortim <alex.typeface@gmail.com>`.
+3. Перевыпустить деплой: без этого переменные не попадут в функцию.
 
-Список адресов в публичном репозитории хранить нельзя, поэтому он лежит в
-**отдельном приватном репозитории** (например `Masortim/newsletter-store`)
-в файле `subscribers.json`.
+`NEWSLETTER_SMTP_HOST` и `NEWSLETTER_SMTP_PORT` по умолчанию —
+`smtp.gmail.com` и `465`, задавать их не обязательно.
 
-1. Создать приватный репозиторий и положить туда начальный файл:
-   ```json
-   { "version": 1, "subscribers": [] }
-   ```
-2. Создать fine-grained PAT с доступом **Contents: Read and write** только к
-   этому репозиторию.
-3. Добавить секреты:
-   - `NEWSLETTER_STORE_REPO` — `Masortim/newsletter-store`;
-   - `NEWSLETTER_STORE_TOKEN` — сам токен.
+### 2. Хранилище подписчиков: Supabase
 
-Если секреты не заданы, код работает с хранилищем в памяти: удобно для
-локальных проверок, но между запросами ничего не сохраняется.
+Таблица `public.newsletter_subscribers` в проекте `masortim-newsletter`
+(`ruirizviwndgyojdqicu`). RLS включён, политик нет: доступ есть только у
+`service_role`, поэтому ключ живёт исключительно в переменных Vercel.
+
+Колонки: `email` (первичный ключ), `lang`, `status`, `token`, `created_at`,
+`confirmed_at`, `unsubscribed_at`. Отписка не ставит статус, а **удаляет**
+строку: адрес, который попросили забыть, в базе не остаётся.
 
 ### 3. Vercel
 
-API-функции разворачиваются на Vercel из этого же репозитория.
+- Проект `masortim-newsletter-api` (`prj_fxHDrJlcI8Z5XUUsNNYeQua1STHm`),
+  root directory `newsletter/edge`.
+- Переменные: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEWSLETTER_SITE`,
+  `NEWSLETTER_API_BASE`, `CRON_SECRET`, `NEWSLETTER_FROM`, `NEWSLETTER_SMTP_*`.
+- Автодеплой по push отключён: каждый деплой выпускается явно.
+- `.vercelignore` — список исключений: на Vercel уезжает только собранная
+  функция, сайт остаётся на GitHub Pages.
 
-1. Импортировать репозиторий в Vercel (Framework Preset: **Other**).
-2. В настройках проекта → **Environment Variables** добавить те же четыре
-   переменные: `RESEND_API_KEY`, `NEWSLETTER_FROM`, `NEWSLETTER_STORE_REPO`,
-   `NEWSLETTER_STORE_TOKEN`, плюс `NEWSLETTER_SITE=https://masortim.github.io`.
-3. `.vercelignore` уже настроен: на Vercel уезжают только `api/` и
-   `newsletter/lib/`, сам сайт остаётся на GitHub Pages.
-
-После деплоя `https://<project>.vercel.app/api/newsletter/subscribe` отвечает
-на POST. Форма на сайте обращается к относительному `/api/…`, поэтому нужен
-маршрут с домена сайта на Vercel — например, rewrite в Cloudflare или в
-настройках домена. Пока маршрута нет, форма покажет «Не получилось отправить
-письмо» — это ожидаемо и не ломает сайт.
+Сайт обращается к API по абсолютному адресу из `newsletter/config.js`
+(`NEWSLETTER_API_BASE`), поэтому CORS настроен на `https://masortim.github.io`.
 
 ## Как это работает
 
@@ -193,8 +193,8 @@ API-функции разворачиваются на Vercel из этого ж
 письма. До этого он в статусе `pending` и выпусков не получает. Это защищает
 и от опечаток в адресе, и от подписки чужих людей.
 
-**Статусы подписчика:** `pending` → `confirmed` → `unsubscribed`. Отписавшийся
-может вернуться: новая подписка переводит его снова в `pending`.
+**Статусы подписчика:** `pending` → `confirmed`. Отписка удаляет строку, поэтому
+вернувшийся подписчик снова проходит подтверждение — это нормально и безопасно.
 
 **Токены.** Случайные 24 байта в base64url, по одному на подписчика. Токен
 используется и для подтверждения, и для отписки, поэтому ссылка отписки есть
@@ -243,7 +243,7 @@ node scripts/check-es5.mjs       # newsletter.js тоже должен быть 
 - **Хранилище в GitHub** — не база данных: каждая запись списка делает коммит
   в приватный репозиторий. Для дневника с десятками подписчиков это нормально,
   для тысяч — стоит перейти на реальную БД (например Postgres или KV).
-- **Рассылку нельзя отозвать.** Resend отправил письмо — оно ушло. Поэтому
+- **Рассылку нельзя отозвать.** Письмо отправлено — оно ушло. Поэтому
   сначала `--dry-run`.
 - **Первый запуск** после настройки стоит сделать вручную с `--dry-run`, чтобы
   увидеть список получателей до реальной отправки.
