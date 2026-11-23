@@ -91,6 +91,15 @@ jobs:
           cp feed.xml _site/feed.xml
           cp feed-en.xml _site/feed-en.xml
           cp feed-icon.svg _site/feed-icon.svg
+          # Фавикон: аватар с прозрачным фоном. .ico — для старых браузеров и
+          # закладок, .svg — для современных, apple-touch-icon — для «на экран
+          # домой» на iOS, где прозрачность не поддерживается и иконка
+          # накладывается на подложку.
+          cp favicon.ico _site/favicon.ico
+          cp favicon.svg _site/favicon.svg
+          cp favicon-32.png _site/favicon-32.png
+          cp favicon-192.png _site/favicon-192.png
+          cp apple-touch-icon.png _site/apple-touch-icon.png
           cp -R diary/. _site/diary/
           cp tufte/tufte-universal.css _site/tufte/
           cp tufte/tufte-universal.js _site/tufte/
