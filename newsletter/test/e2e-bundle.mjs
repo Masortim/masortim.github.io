@@ -57,6 +57,11 @@ process.env.SUPABASE_URL = 'https://fake.supabase.co';
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'fake-key';
 process.env.RESEND_API_KEY = 'fake-resend';
 process.env.NEWSLETTER_API_BASE = 'https://masortim-newsletter.vercel.app';
+// Этот прогон проверяет Resend-транспорт (фейк api.resend.com ниже), поэтому
+// транспорт задаём явно: от адреса отправителя он уже не зависит.
+process.env.NEWSLETTER_TRANSPORT = 'resend';
+process.env.NEWSLETTER_FROM = 'Masortim <onboarding@resend.dev>';
+delete process.env.NEWSLETTER_SMTP_PASS;
 
 const { default: handler } = await import('/home/user/masortim.github.io/newsletter/edge/index.mjs');
 
