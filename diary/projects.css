@@ -161,6 +161,14 @@ body.archive-home { margin:0; padding:0; }
 .archive-bottom .feed-link { display:inline-flex; flex-wrap:nowrap; align-items:center; gap:.3em; color:inherit; font-size:13px; font-weight:700; line-height:1.2; text-decoration:underline; text-underline-offset:2px; white-space:nowrap; }
 .archive-bottom .feed-link:hover { text-decoration-thickness:2px; }
 .archive-bottom .feed-icon { flex:none; width:1.1em; height:1.1em; }
+/* Конверт Email-рассылки — зелёный, без плашки. Знак RSS намеренно остался
+   в оранжевом квадрате: его узнают именно по плашке. А письмо — просто
+   конверт, поэтому квадрат убран и цвет задан линией: в тёмной теме он
+   светлеет вместе с текстом, а не выпадает тёмным пятном.
+   Цвет берётся из --mail-icon-ink, чтобы обе темы правились в одном месте. */
+.archive-bottom { --mail-icon-ink: #2f7d4f; }
+body.dark-theme .archive-bottom, body.dark-theme .archive-top { --mail-icon-ink: #7cc79a; }
+.archive-bottom .mail-icon { color: var(--mail-icon-ink); }
 /* Текстовая доля держится единым куском: «RSS-рассылка ↗» должно
    читаться одной строкой, а не ломаться по дефису. */
 .archive-bottom .feed-link > span { flex:0 0 auto; min-width:0; white-space:nowrap; }
