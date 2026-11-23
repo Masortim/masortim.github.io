@@ -181,3 +181,26 @@ test('адрес API в конфиге совпадает с развёрнут�
     assert.ok(!/\/functions\/v1\/newsletter$/.test(base), `${base}: слаг newsletter зарезервирован, нужен newsletter-api`);
   }
 });
+
+test('функция Supabase срезает только слаг, а не /functions/v1', async () => {
+  // Ловушка, на которой всё сломалось: внутри функции путь приходит БЕЗ
+  // /functions/v1 — платформа его срезает сама. Если отрезать полный
+  // префикс, от пути остаётся мусор и роутер отвечает «not_found» на всё.
+  const entry = await readFile(resolve(HERE, '../edge/supabase-entry.ts'), 'utf8');
+  const match = /const PREFIX = '([^']+)'/.exec(entry);
+  assert.ok(match, 'в входе должна быть константа PREFIX');
+  assert.equal(match[1], '/newsletter-api', 'PREFIX — только слаг');
+
+  // Повторяем выражение среза из входа и проверяем на реальных путях.
+  const PREFIX = match[1];
+  const strip = (pathname) => (pathname === PREFIX || pathname === `${PREFIX}/`
+    ? '/'
+    : pathname.startsWith(`${PREFIX}/`)
+      ? pathname.slice(PREFIX.length)
+      : pathname);
+
+  assert.equal(strip('/newsletter-api/api/newsletter/health'), '/api/newsletter/health');
+  assert.equal(strip('/newsletter-api/api/newsletter/subscribe'), '/api/newsletter/subscribe');
+  assert.equal(strip('/newsletter-api'), '/');
+  assert.equal(strip('/newsletter-api/'), '/');
+});
