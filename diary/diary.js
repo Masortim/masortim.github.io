@@ -91,6 +91,15 @@
     updateThemeLabel();
   }
 
+  // Цвет системной полосы (Chrome на Android, Safari) под тему страницы.
+  // Без этого при тёмной теме адресная строка остаётся белой и страница
+  // «не вся тёмная». ES5: без let/const/стрелок и шаблонов.
+  var themeColorMeta = document.getElementById('theme-color-meta');
+  function updateThemeColor(isDark) {
+    if (!themeColorMeta) return;
+    themeColorMeta.setAttribute('content', isDark ? '#222222' : '#ffffff');
+  }
+
   function updateThemeLabel() {
     if (!themeButton) return;
     var isDark = document.body.className.indexOf('dark-theme') !== -1;
@@ -124,6 +133,7 @@
   var storedTheme = readPreference(themeKey) || readPreference(tufteThemeKey);
   if (storedTheme === 'dark') document.body.className += ' dark-theme';
   document.documentElement.style.colorScheme = storedTheme === 'dark' ? 'dark' : 'light';
+  updateThemeColor(storedTheme === 'dark');
   updateThemeLabel();
 
   if (themeButton) {
@@ -134,6 +144,7 @@
         : document.body.className.replace(/\s*dark-theme/g, '');
       var theme = isDark ? 'dark' : 'light';
       document.documentElement.style.colorScheme = theme;
+      updateThemeColor(isDark);
       savePreference(themeKey, theme);
       savePreference(tufteThemeKey, theme);
       updateThemeLabel();

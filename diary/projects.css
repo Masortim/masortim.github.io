@@ -338,6 +338,14 @@ font-size:clamp(2.4rem, 1.79rem + 2.8vw, 3.2rem); line-height:1.05; letter-spaci
 
 body.dark-theme .project-archive, body.dark-theme .project-note { color: #eee; }
 body.dark-theme .project-archive { background: #222; }
+/* Главная страница в тёмной теме: тёмным должен быть весь холст, а не
+   только центральная колонка. .project-archive — это min(960px, 76%),
+   поэтому на широком десктопе по бокам оставались белые поля: тело
+   страницы наследовало белый фон браузера. Фон body распространяется
+   на весь canvas (у html своего фона нет), так что поля становятся
+   тёмными при любой ширине окна. Правило привязано к .archive-home,
+   чтобы не перебивать собственный фон .tufte-note на страницах заметок. */
+body.dark-theme.archive-home { background: #222; }
 body.dark-theme .archive-sheet { --archive-grid-line:transparent; --archive-horizontal-line:transparent; --archive-subtle-line:transparent; border-color:var(--archive-grid-line); }
 body.dark-theme .archive-top, body.dark-theme .archive-columns, body.dark-theme .archive-bottom, body.dark-theme .archive-promos--second, body.dark-theme .archive-promos-flow { border-color:var(--archive-horizontal-line); }
 body.dark-theme .archive-columns::before, body.dark-theme .archive-column h2::after { background:var(--archive-subtle-line); }
