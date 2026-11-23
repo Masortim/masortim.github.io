@@ -58,19 +58,18 @@ jobs:
           NEWSLETTER_OWNER_EMAIL: ${{ secrets.NEWSLETTER_OWNER_EMAIL }}
         run: |
           echo '--- POST /api/newsletter/subscribe ---'
-          # В тестовом режиме Resend (onboarding@resend.dev) письмо доходит
-          # только до владельца аккаунта. Любой другой адрес Resend отклоняет
-          # с 403, и подписка честно отвечает 502 — это не поломка конвейера.
-          # Поэтому на чужой адрес проверяем только валидацию и защиту
-          # (400/422/502), а отправку — на адрес владельца, если он задан
-          # в секретах репозитория.
+          # Отправка идёт с адреса автора через SMTP Gmail, а он принимает
+          # не любой получатель: адрес с опечаткой вернёт отказ. Значит,
+          # 200 и 502 здесь одинаково нормальны — важен не факт доставки,
+          # а то, что конвейер жив и честно отвечает. Доставку проверяет
+          # шаг Full flow, где письмо уходит на адрес самого отправителя.
           address="${NEWSLETTER_OWNER_EMAIL:-probe@example.com}"
           code=$(curl -sS -o /tmp/sub2.json -w '%{http_code}' --max-time 25 \
             -X POST -H 'Content-Type: application/json' \
             -d "{\"email\":\"$address\",\"lang\":\"ru\"}" \
             https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
           echo "status: $code"; cat /tmp/sub2.json; echo
-          echo "::notice::SUB code=$code — 200 письмо ушло, 502 ключа нет или адрес не владельца"
+          echo "::notice::SUB code=$code — 200 письмо ушло, 502 транспорт отказал (см. шаг самодиагностики)"
           if [ "$code" != "200" ] && [ "$code" != "502" ]; then
             echo "::error::SUB code=$code body=$(head -c 300 /tmp/sub2.json | tr -d '\n')"
             exit 1
@@ -119,8 +118,12 @@ jobs:
       - name: Self-diagnosis says what is missing
         run: |
           echo '--- GET /api/newsletter/health ---'
-          # Эндпоинт сам проверяет окружение: есть ли ключи, верифицирован ли
-          # домен отправителя в Resend. Секретов не раскрывает — только да/нет.
+          # Эндпоинт сам проверяет окружение: выбран ли транспорт, задан ли
+          # пароль приложения, есть ли адрес отправителя. Секретов не
+          # раскрывает — только да/нет.
+          # Транспорт бывает двух видов: SMTP (Gmail, адрес автора) и Resend
+          # (нужен проверенный домен). health знает оба и не путает их:
+          # адрес на gmail.com сам по себе означает SMTP.
           code=$(curl -sS -o /tmp/health.json -w '%{http_code}' --max-time 25 \
             https://masortim-newsletter.vercel.app/api/newsletter/health || echo "000")
           echo "status: $code"
@@ -131,18 +134,28 @@ jobs:
           fi
           ready=$(node -p 'String(require("/tmp/health.json").ready)' 2>/dev/null || echo unknown)
           blocking=$(node -p 'require("/tmp/health.json").blocking.join("; ")' 2>/dev/null || echo '')
+          transport=$(node -p 'String(require("/tmp/health.json").checks.transport)' 2>/dev/null || echo unknown)
+          sender=$(node -p 'String(require("/tmp/health.json").checks.fromAddress)' 2>/dev/null || echo unknown)
           if [ "$ready" = "true" ]; then
-            echo "::notice::HEALTH ready=true — рассылка настроена, письма можно отправлять"
+            echo "::notice::HEALTH ready=true — транспорт $transport, отправитель $sender"
           else
             echo "::warning::HEALTH ready=false — осталось: ${blocking:-см. блок checks в логе}"
           fi
+          # Отправлять от чужого имени нельзя: получатель увидит подмену,
+          # а Gmail такие письма отклоняет. Проверяем адрес явно.
+          case "$sender" in
+            *@gmail.com*) ;;
+            *) [ "$transport" = "smtp" ] && {
+                 echo "::error::NEWSLETTER_FROM=$sender не может уходить через Gmail: нужен адрес @gmail.com"
+                 exit 1
+               } ;;
+          esac
 
       - name: Full flow when the API is ready
         env:
-          # Адрес владельца аккаунта Resend: единственный, куда письма
-          # доходят в тестовом режиме. Email-адреса не секретны, но
-          # хранятся в секретах, чтобы не светиться в логах чужих форков.
-          OWNER_EMAIL: ${{ secrets.NEWSLETTER_OWNER_EMAIL }}
+          # Адрес, на который приходит письмо. При SMTP Gmail это ящик
+          # отправителя: письмо, отправленное самому себе, доходит всегда.
+          OWNER_EMAIL: ${{ secrets.NEWSLETTER_OWNER_EMAIL || 'alex.typeface@gmail.com' }}
           # Приватные переменные проекта Vercel: по ним проба читает токен
           # подтверждения из базы. Значения пользователь вводит сам —
           # записать их в секреты репозитория агент не может (403 у интеграции).
@@ -150,16 +163,16 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           ready=$(node -p 'String(require("/tmp/health.json").ready)' 2>/dev/null || echo unknown)
-          sender=$(node -p 'String(require("/tmp/health.json").checks.senderMode)' 2>/dev/null || echo unknown)
+          transport=$(node -p 'String(require("/tmp/health.json").checks.transport)' 2>/dev/null || echo unknown)
           if [ "$ready" != "true" ]; then
-            echo "::notice::FLOW пропущен: API не готов (ready=$ready) — сначала ключ Resend"
+            echo "::notice::FLOW пропущен: API не готов (ready=$ready) — см. шаг самодиагностики"
             exit 0
           fi
 
           node newsletter/scripts/verify-live.mjs --health
 
           if [ -z "$OWNER_EMAIL" ]; then
-            echo "::notice::FLOW подписка и весь цикл пропущены: добавьте секрет NEWSLETTER_OWNER_EMAIL (адрес владельца аккаунта Resend)"
+            echo "::notice::FLOW подписка и весь цикл пропущены: задайте секрет NEWSLETTER_OWNER_EMAIL (ящик, на который приходит письмо)"
             node newsletter/scripts/verify-live.mjs --digest-dry-run
             exit 0
           fi
@@ -220,7 +233,7 @@ jobs:
             exit 1
           fi
           echo "::notice::FLOW цикл замкнут: подписка -> письмо -> подтверждение -> отписка -> строка удалена"
-          echo "::notice::FLOW режим отправителя: $sender"
+          echo "::notice::FLOW транспорт: $transport, отправитель: $OWNER_EMAIL"
 
           node newsletter/scripts/verify-live.mjs --digest-dry-run
 

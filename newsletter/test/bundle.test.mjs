@@ -42,7 +42,11 @@ test('каждый модуль обёрнут в IIFE', async () => {
   await buildBundle();
   const code = await readFile(BUNDLE, 'utf8');
   const wrappers = code.match(/^const __\w+ = \(\(\) => \{$/gm) ?? [];
-  assert.equal(wrappers.length, 8, `ожидалось 8 обёрток, найдено ${wrappers.length}`);
+  // Число берём из списка сборки, а не из константы: новый модуль не должен
+  // ломать тест, но и молча потеряться не должен.
+  const script = await readFile(resolve(ROOT, 'newsletter/scripts/bundle.mjs'), 'utf8');
+  const expected = (script.match(/\{ name: '__/g) ?? []).length;
+  assert.equal(wrappers.length, expected, `ожидалось ${expected} обёрток, найдено ${wrappers.length}`);
 });
 
 test('каждый модуль начинается с обёртки, а не с голого кода', async () => {
@@ -97,6 +101,9 @@ test('корневой обработчик отвечает на все мар�
     SUPABASE_URL: 'https://example.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'test-key',
   });
+  // Режим должен определяться адресом, а не остатками окружения.
+  process.env.NEWSLETTER_TRANSPORT = 'resend';
+  delete process.env.NEWSLETTER_SMTP_PASS;
   const { default: fresh } = await import(`${BUNDLE}?test=${Date.now()}`);
   const testMode = await (await fresh(new Request('https://example.test/api/newsletter/health'))).json();
   assert.equal(testMode.checks.senderMode, 'test');
@@ -107,6 +114,59 @@ test('корневой обработчик отвечает на все мар�
     if (!(key in saved)) delete process.env[key];
   }
   Object.assign(process.env, saved);
+
+  // Без пароля, но с адресом на gmail.com: транспорт всё равно SMTP,
+  // и подсказка должна требовать пароль приложения, а не ключ Resend.
+  {
+    const envSaved = { ...process.env };
+    Object.assign(process.env, {
+      NEWSLETTER_FROM: 'Masortim <alex.typeface@gmail.com>',
+      SUPABASE_URL: 'https://example.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'test-key',
+      RESEND_API_KEY: '',
+    });
+    delete process.env.NEWSLETTER_SMTP_PASS;
+    delete process.env.NEWSLETTER_TRANSPORT;
+    // Порядок тестов не должен влиять: значение по умолчанию подставляется
+    // только если переменная не задана, а её мог оставить соседний блок.
+    process.env.NEWSLETTER_FROM = 'Masortim <alex.typeface@gmail.com>';
+    const { default: pending } = await import(`${BUNDLE}?pending=${Date.now()}&${Math.random()}`);
+    const report = await (await pending(new Request('https://example.test/api/newsletter/health'))).json();
+    assert.equal(report.checks.transport, 'smtp');
+    assert.equal(report.ready, false);
+    assert.ok(
+      report.blocking.some((item) => /SMTP_PASS/.test(item)),
+      `ожидалась подсказка про пароль приложения, получено: ${JSON.stringify(report.blocking)}`,
+    );
+    for (const key of Object.keys(process.env)) {
+      if (!(key in envSaved)) delete process.env[key];
+    }
+    Object.assign(process.env, envSaved);
+  }
+
+  // SMTP: письма уходят с адреса автора, ключ Resend не нужен вовсе.
+  {
+    const envSaved = { ...process.env };
+    Object.assign(process.env, {
+      NEWSLETTER_SMTP_PASS: 'app-password',
+      NEWSLETTER_FROM: 'Masortim <alex.typeface@gmail.com>',
+      SUPABASE_URL: 'https://example.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'test-key',
+      RESEND_API_KEY: '',
+    });
+    delete process.env.NEWSLETTER_TRANSPORT;
+    const { default: smtpHandler } = await import(`${BUNDLE}?smtp=${Date.now()}`);
+    const report = await (await smtpHandler(new Request('https://example.test/api/newsletter/health'))).json();
+    assert.equal(report.checks.transport, 'smtp');
+    assert.equal(report.checks.smtp.user, 'alex.typeface@gmail.com');
+    assert.equal(report.checks.smtp.passSet, true);
+    assert.equal(report.ready, true, JSON.stringify(report.blocking));
+    assert.match(report.checks.fromAddress, /alex\.typeface@gmail\.com/);
+    for (const key of Object.keys(process.env)) {
+      if (!(key in envSaved)) delete process.env[key];
+    }
+    Object.assign(process.env, envSaved);
+  }
 
   // Без ключа почты подписка отвечает 502 — важно, что это не 500:
   // значит разбор тела и валидация адреса прошли.
