@@ -13,11 +13,10 @@
 
 /* --- Каркас: тот же холст, что у главной ------------------------------- */
 
-/* Гарнитура: Helvetica, а для кириллицы — Helvetica-совместимые шрифты.
-   Подробнее см. комментарий в diary/projects.css: у настоящей Helvetica нет
-   кириллицы, поэтому в стеке стоят Nimbus Sans / Arial. */
+/* Гарнитура: встроенный Arimo — свободный аналог Helvetica с кириллицей.
+   Подробнее см. комментарий в diary/projects.css и в fonts/arimo.css. */
 .newsletter-page {
-  --newsletter-font: "Helvetica Neue", Helvetica, "Nimbus Sans", "Liberation Sans", "Helvetica Cyrillic", Arial, sans-serif;
+  --newsletter-font: "Arimo", "Helvetica Neue", Helvetica, "Nimbus Sans", "Liberation Sans", Arial, sans-serif;
   /* Колонка главной: 960px максимум и 76% окна. */
   width: min(960px, 76%);
   margin: 0 auto;

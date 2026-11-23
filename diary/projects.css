@@ -2,19 +2,26 @@
 /* ---------------------------------------------------------------------------
    Гарнитура страницы.
 
-   Helvetica — но с оговоркой, которая важна для русских букв. У настоящей
-   Helvetica нет кириллицы: она рисует только латиницу. Поэтому в стеке после
-   неё стоят шрифты, которые выглядят как Helvetica и кириллицу поддерживают:
-   Nimbus Sans (метрический клон Helvetica, есть в Linux) и Arial (Windows,
-   macOS — почти та же гарнитура по рисунку). Если в системе установлен
-   шрифт с именем «Helvetica Cyrillic», он тоже попадёт в стек.
+   Первым стоит Arimo — шрифт, встроенный в сайт файлами (fonts/arimo.css).
+   Это свободная гарнитура, метрически совместимая с Helvetica и Arial, с
+   полным русским алфавитом. Так рисунок текста одинаков у всех читателей:
+   раньше на Windows и Linux настоящей Helvetica нет, и страница рисовалась
+   запасным шрифтом — у каждого своим.
 
-   Порядок именно такой: на macOS сработает Helvetica Neue, на Windows —
-   Arial, на Linux — Nimbus Sans / Liberation Sans. Меняется в одном месте.
+   Почему не сама Helvetica файлами: Helvetica и «Helvetica Cyrillic» —
+   коммерческие гарнитуры Monotype/Linotype, выкладывать их в открытый
+   репозиторий нельзя. Подробнее — в комментарии к fonts/arimo.css.
+
+   Дальше в стеке идут системные Helvetica и её клоны на случай, если Arimo
+   не загрузится (медленная сеть, отключённые веб-шрифты): Helvetica Neue и
+   Helvetica на macOS, Arial на Windows, Nimbus Sans и Liberation Sans на
+   Linux. Меняется в одном месте.
    --------------------------------------------------------------------------- */
 body.archive-home { margin:0; padding:0; }
 .project-archive {
-  --archive-font: "Helvetica Neue", Helvetica, "Nimbus Sans", "Liberation Sans", "Helvetica Cyrillic", Arial, sans-serif;
+  /* Arimo — встроенный шрифт (fonts/arimo.css), метрически совместимый с
+     Helvetica; системные Helvetica и клоны — запасной вариант. */
+  --archive-font: "Arimo", "Helvetica Neue", Helvetica, "Nimbus Sans", "Liberation Sans", Arial, sans-serif;
   --archive-gutter: 1.5%;
   /* Приглушённый серый для пояснительного текста: аннотация шапки,
      описания карточек, тексты нижних блоков. Заголовки (h1-h3) остаются
