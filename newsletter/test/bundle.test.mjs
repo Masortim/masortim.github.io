@@ -101,6 +101,9 @@ test('корневой обработчик отвечает на все мар�
     SUPABASE_URL: 'https://example.supabase.co',
     SUPABASE_SERVICE_ROLE_KEY: 'test-key',
   });
+  // Режим должен определяться адресом, а не остатками окружения.
+  process.env.NEWSLETTER_TRANSPORT = 'resend';
+  delete process.env.NEWSLETTER_SMTP_PASS;
   const { default: fresh } = await import(`${BUNDLE}?test=${Date.now()}`);
   const testMode = await (await fresh(new Request('https://example.test/api/newsletter/health'))).json();
   assert.equal(testMode.checks.senderMode, 'test');
@@ -112,6 +115,35 @@ test('корневой обработчик отвечает на все мар�
   }
   Object.assign(process.env, saved);
 
+  // Без пароля, но с адресом на gmail.com: транспорт всё равно SMTP,
+  // и подсказка должна требовать пароль приложения, а не ключ Resend.
+  {
+    const envSaved = { ...process.env };
+    Object.assign(process.env, {
+      NEWSLETTER_FROM: 'Masortim <alex.typeface@gmail.com>',
+      SUPABASE_URL: 'https://example.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'test-key',
+      RESEND_API_KEY: '',
+    });
+    delete process.env.NEWSLETTER_SMTP_PASS;
+    delete process.env.NEWSLETTER_TRANSPORT;
+    // Порядок тестов не должен влиять: значение по умолчанию подставляется
+    // только если переменная не задана, а её мог оставить соседний блок.
+    process.env.NEWSLETTER_FROM = 'Masortim <alex.typeface@gmail.com>';
+    const { default: pending } = await import(`${BUNDLE}?pending=${Date.now()}&${Math.random()}`);
+    const report = await (await pending(new Request('https://example.test/api/newsletter/health'))).json();
+    assert.equal(report.checks.transport, 'smtp');
+    assert.equal(report.ready, false);
+    assert.ok(
+      report.blocking.some((item) => /SMTP_PASS/.test(item)),
+      `ожидалась подсказка про пароль приложения, получено: ${JSON.stringify(report.blocking)}`,
+    );
+    for (const key of Object.keys(process.env)) {
+      if (!(key in envSaved)) delete process.env[key];
+    }
+    Object.assign(process.env, envSaved);
+  }
+
   // SMTP: письма уходят с адреса автора, ключ Resend не нужен вовсе.
   {
     const envSaved = { ...process.env };
@@ -122,6 +154,7 @@ test('корневой обработчик отвечает на все мар�
       SUPABASE_SERVICE_ROLE_KEY: 'test-key',
       RESEND_API_KEY: '',
     });
+    delete process.env.NEWSLETTER_TRANSPORT;
     const { default: smtpHandler } = await import(`${BUNDLE}?smtp=${Date.now()}`);
     const report = await (await smtpHandler(new Request('https://example.test/api/newsletter/health'))).json();
     assert.equal(report.checks.transport, 'smtp');

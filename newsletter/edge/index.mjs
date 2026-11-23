@@ -674,6 +674,10 @@ function transportKind() {
   const mode = (process.env.NEWSLETTER_TRANSPORT ?? '').trim().toLowerCase();
   if (mode === 'smtp' || mode === 'resend') return mode;
   if ((process.env.NEWSLETTER_SMTP_PASS ?? '').trim()) return 'smtp';
+  // Адрес отправителя на gmail.com означает именно SMTP: Resend не может
+  // отправлять от чужого домена без его подтверждения.
+  // FROM приходит как «Имя <user@host>», поэтому здесь @ уместен.
+  if (/@gmail\.com[>\s,;]?$/i.test(FROM)) return 'smtp';
   return 'resend';
 }
 
@@ -1284,9 +1288,15 @@ async function health() {
   // а домен отправителя — это gmail.com, который проверять негде и не за чем.
   const smtpPass = env('NEWSLETTER_SMTP_PASS');
   const mode = env('NEWSLETTER_TRANSPORT').toLowerCase();
+  // Адрес на gmail.com можно отправить только через SMTP этого ящика:
+  // Resend не выдаёт себя за чужой домен. Такой адрес считаем признаком
+  // выбранного транспорта, чтобы подсказка говорила «нужен пароль»,
+  // а не «нужен ключ Resend».
+  // domain — это уже часть после @, поэтому @ в шаблоне не нужен.
+  const gmailSender = /^gmail\.com$/i.test(domain);
   const transport = mode === 'smtp' || mode === 'resend'
     ? mode
-    : smtpPass ? 'smtp' : 'resend';
+    : smtpPass || gmailSender ? 'smtp' : 'resend';
   const smtpHost = env('NEWSLETTER_SMTP_HOST') || 'smtp.gmail.com';
   const smtpPort = Number(env('NEWSLETTER_SMTP_PORT') || 465);
   const smtpUser = env('NEWSLETTER_SMTP_USER') || 'alex.typeface@gmail.com';

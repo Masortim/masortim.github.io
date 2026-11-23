@@ -34,6 +34,10 @@ function transportKind() {
   const mode = (process.env.NEWSLETTER_TRANSPORT ?? '').trim().toLowerCase();
   if (mode === 'smtp' || mode === 'resend') return mode;
   if ((process.env.NEWSLETTER_SMTP_PASS ?? '').trim()) return 'smtp';
+  // Адрес отправителя на gmail.com означает именно SMTP: Resend не может
+  // отправлять от чужого домена без его подтверждения.
+  // FROM приходит как «Имя <user@host>», поэтому здесь @ уместен.
+  if (/@gmail\.com[>\s,;]?$/i.test(FROM)) return 'smtp';
   return 'resend';
 }
 
