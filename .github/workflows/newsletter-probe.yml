@@ -85,6 +85,22 @@ jobs:
             exit 1
           fi
 
+      - name: Token endpoint is closed
+        run: |
+          # Служебный маршрут выдаёт токен подтверждения по адресу, поэтому
+          # без секрета обязан отвечать 401 — иначе любой мог бы подтверждать
+          # и отписывать чужие адреса.
+          echo '--- GET /api/newsletter/token (no secret) ---'
+          code=$(curl -sS -o /tmp/tok.json -w '%{http_code}' --max-time 20 \
+            "https://masortim-newsletter.vercel.app/api/newsletter/token?email=probe%40example.com")
+          echo "status: $code"
+          cat /tmp/tok.json 2>/dev/null; echo
+          if [ "$code" != "401" ]; then
+            echo "::error::TOKEN без секрета ожидался 401, получен $code — маршрут открыт"
+            exit 1
+          fi
+          echo "::notice::TOKEN закрыт: без секрета 401"
+
       - name: CORS preflight for the site origin
         run: |
           echo '--- OPTIONS /api/newsletter/subscribe ---'
