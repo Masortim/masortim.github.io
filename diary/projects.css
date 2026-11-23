@@ -124,6 +124,18 @@ body.archive-home { margin:0; padding:0; }
   .project-card h3 { font-size: clamp(11px, 1.05vw, 13.5px); }
 }
 .project-card h3 > a { display:block; }
+/* Наведение на название заметки: подчёркивание не появляется, вместо
+   него заголовок меняет цвет с чёрного на терракотовый #E16449 —
+   ровно этот оттенок задан в задаче.
+   Общее правило .project-archive a:hover подчёркивает все ссылки архива,
+   поэтому здесь подчёркивание явно снимается. Цвет задаётся селектором
+   на сам элемент: он специфичнее, чем `color: inherit` у .project-archive a.
+   Важно про доступность: на белом #E16449 даёт 3.43:1 — для кегля
+   карточки (11–15px) это ниже порога AA 4.5:1, поэтому «только цветом»
+   ограничиваться нельзя и у ссылки с клавиатуры остаётся видимое кольцо
+   фокуса: цвет — приятный акцент, а не единственный признак интерактивности. */
+.project-card h3 > a:hover { color: #e16449; text-decoration: none; }
+.project-card h3 > a:focus-visible { color: #e16449; text-decoration: none; outline: 2px solid #e16449; outline-offset: 2px; }
 .project-card p:not(.project-meta) { margin:0 0 4px; color:var(--archive-muted); font-size:clamp(12px,1vw,14px); line-height:1.4; overflow-wrap:break-word; }
 /* Мета-строка (дата · стек) остаётся основной: чёрной в светлой теме,
    #eee в тёмной. Она исключена из правила .project-card p:not(.project-meta)
