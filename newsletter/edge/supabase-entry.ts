@@ -1,35 +1,83 @@
 /**
  * Функция рассылки для Supabase Edge Functions.
  *
- * Сам бэкенд — не здесь: он собран в один файл newsletter/edge/index.mjs
+ * Сам бэкенд лежит не здесь: он собран в один файл newsletter/edge/index.mjs
  * (npm run build в newsletter/) и публикуется вместе с сайтом как
- * /newsletter/bundle.js. Эта обёртка его импортирует.
+ * /newsletter/bundle.js. Эта функция его скачивает и выполняет.
  *
- * Почему через импорт, а не копией в теле функции: у Supabase нет загрузки
- * файлов для Edge Functions — платформа принимает функцию одним текстом, а
- * бэкенд занимает почти 70 КБ. Через публичный адрес кода бандл обновляется
- * вместе с сайтом: пересобрал → закоммитил → следующий запуск функции уже
- * на новом коде. Внешний вид и логика писем правятся в одном месте — в
- * newsletter/, — и не расходятся между Vercel и Supabase.
+ * Почему не обычный import по адресу: Supabase не загружает внешние
+ * ES-модули вообще — ни с сайта, ни с esm.sh, ответ всегда «Module not
+ * found» (проверено запросами к живой функции). А обычный fetch из функции
+ * работает: бандл приходит целиком, 66 627 байт. Поэтому код скачивается
+ * как текст и выполняется через new Function.
  *
- * Бандл — обычный ES-модуль: только node-встроенные импорты, без npm.
- * Supabase выполняет его в Deno, где node:net, node:tls и node:crypto есть.
- * Проверено пробным запросом: TLS-соединение с smtp.gmail.com:465 из Edge
- * Runtime открывается, значит письма уходят тем же SMTP-клиентом.
+ * Ещё одно отличие среды: Buffer в Supabase не определён. В бандле он нужен
+ * только в ветке для Node (склейка тела запроса и ответа Vercel), которая
+ * здесь не выполняется, но имя должно существовать — подставляем замену
+ * на Uint8Array.
+ *
+ * Обновление бэкенда: пересобрать (npm run build), закоммитить — следующий
+ * запуск функции возьмёт свежий бандл. Кеш здесь на минуту, чтобы не
+ * скачивать файл на каждый запрос.
  *
  * Адрес: /functions/v1/newsletter-api/api/newsletter/…
  *
  * Слаг — newsletter-api, а не newsletter: короткое имя платформа отдаёт
  * шаблонам функций Supabase, и запрос к нему возвращает пустой ответ ещё
- * до нашего кода (проверено: та же функция под другим слагом отвечает).
+ * до нашего кода.
  */
 
-import handler from 'https://masortim.github.io/newsletter/bundle.js';
+import { connect as netConnect } from 'node:net';
+import { connect as tlsConnect } from 'node:tls';
+import { randomBytes } from 'node:crypto';
 
-/** Префикс, под которым Supabase открывает функцию. */
-const PREFIX = '/functions/v1/newsletter-api';
+/**
+ * Так путь выглядит внутри функции: /functions/v1 платформа срезает сама.
+ * Проверено: /functions/v1/newsletter-api/api/newsletter/health приходит
+ * сюда как /newsletter-api/api/newsletter/health.
+ */
+const PREFIX = '/newsletter-api';
 
 const SITE = (Deno.env.get('NEWSLETTER_SITE') ?? 'https://masortim.github.io').replace(/\/$/, '');
+const BUNDLE_URL = `${SITE}/newsletter/bundle.js`;
+
+/** Сколько держим разобранный модуль в памяти изолята. */
+const CACHE_MS = 60_000;
+let cached = { handler: null, at: 0 };
+
+/**
+ * Скачивает бандл и превращает его в функцию-обработчик.
+ *
+ * Кеш на минуту: изолят переиспользуется, и разбирать 66 КБ на каждый
+ * запрос незачем. Правка бэкенда подхватывается сама, без перевыпуска
+ * функции.
+ */
+async function loadHandler() {
+  if (cached.handler && Date.now() - cached.at < CACHE_MS) return cached.handler;
+
+  const response = await fetch(BUNDLE_URL, { headers: { 'Cache-Control': 'no-cache' } });
+  if (!response.ok) throw new Error(`бандл: ${response.status} ${BUNDLE_URL}`);
+  const source = await response.text();
+
+  // Снимаем импорты платформы (модули уже переданы аргументами) и
+  // единственный export default — тело становится обычным скриптом.
+  const body = source
+    .replace(/^import\s+\{[^}]*\}\s+from\s+'node:[^']+';?[ \t]*$/gm, '')
+    .replace(/^export\s+default\s+async\s+function\s+handler/m, 'async function handler');
+
+  if (/^import\s/m.test(body)) throw new Error('в бандле остался import');
+
+  // Uint8Array вместо Buffer: в Edge Runtime Buffer не определён.
+  const polyfill = 'const Buffer = globalThis.Buffer ?? { from: (value) => (typeof value === \'string\' ? new TextEncoder().encode(value) : new Uint8Array(value)) };\n';
+
+  const factory = new Function(
+    'netConnect', 'tlsConnect', 'randomBytes', 'process',
+    `"use strict";\n${polyfill}${body}\nreturn { default: handler };`,
+  );
+  const module = factory(netConnect, tlsConnect, randomBytes, globalThis.process);
+  cached = { handler: module.default, at: Date.now() };
+  return module.default;
+}
 
 /** Разрешения для браузера: пускаем только сайт. */
 function corsHeaders() {
@@ -42,33 +90,46 @@ function corsHeaders() {
 }
 
 Deno.serve(async (request) => {
-  // Preflight: маршрутизатор Supabase его не обрабатывает, а POST с сайта
+  // Preflight: маршрутизатор Supabase OPTIONS не обрабатывает, а POST с сайта
   // на другой домен всегда предваряется таким запросом.
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders() });
   }
 
   const url = new URL(request.url);
-  // Supabase передаёт полный путь вместе с префиксом: /functions/v1/newsletter/api/…
-  // Роутер в бандле ищет маршруты от корня, поэтому префикс отрезаем.
-  const rest = url.pathname.startsWith(PREFIX)
-    ? url.pathname.slice(PREFIX.length) || '/'
-    : url.pathname;
-  const target = new URL(rest + url.search, SITE);
+  // Роутер в бандле ищет маршруты от корня, поэтому слаг отрезаем.
+  const rest = url.pathname === PREFIX || url.pathname === `${PREFIX}/`
+    ? '/'
+    : url.pathname.startsWith(`${PREFIX}/`)
+      ? url.pathname.slice(PREFIX.length)
+      : url.pathname;
 
   // Тело читаем целиком: исходный Request нельзя пересобрать с тем же потоком.
   const body = request.method === 'GET' || request.method === 'HEAD'
     ? undefined
     : await request.arrayBuffer();
 
-  const response = await handler(new Request(target, {
-    method: request.method,
-    headers: request.headers,
-    body,
-  }));
+  const target = new URL(rest + url.search, SITE);
 
-  // CORS на любой ответ, включая ошибки: иначе браузер покажет «нет связи»
-  // вместо настоящей причины.
+  let response;
+  try {
+    const handler = await loadHandler();
+    response = await handler(new Request(target, {
+      method: request.method,
+      headers: request.headers,
+      body,
+    }));
+  } catch (error) {
+    // Причину показываем текстом: иначе браузер напишет «нет связи» и
+    // виновник потеряется.
+    console.error('newsletter-api failed', error);
+    response = new Response(JSON.stringify({
+      error: 'server_error',
+      detail: String(error?.message ?? error).slice(0, 240),
+    }), { status: 500, headers: { 'Content-Type': 'application/json; charset=utf-8' } });
+  }
+
+  // CORS на любой ответ, включая ошибки.
   const headers = new Headers(response.headers);
   const extra = corsHeaders();
   for (const name of Object.keys(extra)) headers.set(name, extra[name]);
