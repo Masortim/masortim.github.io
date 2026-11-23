@@ -333,6 +333,23 @@ function messageDomain(from) {
   return match ? match[1] : 'localhost';
 }
 
+/**
+ * Голый адрес из значения заголовка From.
+ *
+ * Заголовок и конверт — разные вещи: в заголовке допустимо
+ * «Masortim <alex.typeface@gmail.com>», а в MAIL FROM принимается только
+ * адрес. Если отдать туда заголовок целиком, получается
+ * «MAIL FROM:<Masortim <alex.typeface@gmail.com>>», и Gmail отвечает
+ * 555 5.5.4 Unsupported option — именно эта ошибка и валила подписку.
+ */
+function envelopeAddress(from) {
+  const text = String(from ?? '').trim();
+  const angled = text.match(/<([^<>]+)>/);
+  if (angled) return angled[1].trim();
+  const bare = text.match(/[^\s<>,;"]+@[^\s<>,;"]+/);
+  return bare ? bare[0] : text;
+}
+
 /** Собирает MIME-письмо: text + html в multipart/alternative. */
 function buildMime({ from, to, subject, text, html, boundary }) {
   const mixed = boundary ?? `m${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
@@ -434,10 +451,10 @@ async function sendViaSmtp({ host, port, secure, user, pass, from, to, subject, 
       }
     }
 
-    // Адрес отправителя берём из параметра, но и после «<...>» некоторые
-    // серверы ждут его ещё раз (Gmail принимает оба варианта).
-    await session.command(`MAIL FROM:<${from}>`, [250]);
-    await session.command(`RCPT TO:<${to}>`, [250, 251]);
+    // В конверте — только адрес: «Masortim <a@b>» здесь недопустим.
+    const envelopeFrom = envelopeAddress(from);
+    await session.command(`MAIL FROM:<${envelopeFrom}>`, [250]);
+    await session.command(`RCPT TO:<${envelopeAddress(to)}>`, [250, 251]);
 
     const data = await session.command('DATA', [354]);
     if (data.code !== 354) {
@@ -482,7 +499,7 @@ async function sendViaSmtp({ host, port, secure, user, pass, from, to, subject, 
   }
 }
 
-return { encodeHeader, buildMime, sendViaSmtp };
+return { encodeHeader, envelopeAddress, buildMime, sendViaSmtp };
 })();
 
 // ─── newsletter/lib/subscribers.mjs ───
