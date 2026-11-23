@@ -133,7 +133,7 @@ jobs:
           transport=$(node -p 'String(require("/tmp/health.json").checks.transport)' 2>/dev/null || echo unknown)
           sender=$(node -p 'String(require("/tmp/health.json").checks.fromAddress)' 2>/dev/null || echo unknown)
           if [ "$ready" = "true" ]; then
-            echo "::notice::HEALTH ready=true — транспорт $transport, отправитель $sender"
+            echo "::notice::HEALTH ready=true — транспорт $transport"
           else
             echo "::warning::HEALTH ready=false — осталось: ${blocking:-см. блок checks в логе}"
           fi
@@ -148,6 +148,7 @@ jobs:
           esac
 
       - name: Full flow when the API is ready
+        id: flow
         env:
           # Адрес, на который приходит письмо. При SMTP Gmail это ящик
           # отправителя: письмо, отправленное самому себе, доходит всегда.
@@ -165,14 +166,24 @@ jobs:
             exit 0
           fi
 
-          node newsletter/scripts/verify-live.mjs --health
+          # health печатается без адреса отправителя: иначе GitHub вымарает
+          # значением секрета весь лог, и причина ошибки станет не видна.
+          node -e '
+            const r = require("/tmp/health.json");
+            console.log("health: ready=" + r.ready + " transport=" + r.checks.transport
+              + " pass=" + r.checks.smtp.passSet + " user=" + r.checks.smtp.user.replace(/^(.).*(@.*)$/, "$1***$2"));
+          '
 
           if [ -z "$OWNER_EMAIL" ]; then
             echo "::notice::FLOW подписка и весь цикл пропущены: задайте секрет NEWSLETTER_OWNER_EMAIL (ящик, на который приходит письмо)"
             exit 0
           fi
 
-          echo "--- подписка $OWNER_EMAIL ---"
+          # Адрес печатаем по частям: GitHub вымарывает любую строку, где
+          # встречается значение секрета, и без этого в логе остаются пустые
+          # строки вместо причины ошибки.
+          local_part="${OWNER_EMAIL%@*}"
+          echo "--- подписка ${local_part:0:3}***@${OWNER_EMAIL#*@} ---"
           code=$(curl -sS -o /tmp/sub_full.json -w '%{http_code}' --max-time 25 \
             -X POST -H 'Content-Type: application/json' -H 'Origin: https://masortim.github.io' \
             -d "{\"email\":\"$OWNER_EMAIL\",\"lang\":\"ru\"}" \
@@ -182,7 +193,7 @@ jobs:
             echo "::error::FLOW подписка вернула $code, хотя health говорит ready=true"
             exit 1
           fi
-          echo "::notice::FLOW подписка принята, письмо ушло на $OWNER_EMAIL (через SMTP Gmail)"
+          echo "::notice::FLOW подписка принята, письмо отправлено через SMTP Gmail"
 
           if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
             echo "::notice::FLOW подтверждение, отписка и выпуск пропущены: нет SUPABASE_* в секретах репозитория (см. SETUP-FINAL.md, шаг «Секреты репозитория»)"
@@ -228,7 +239,7 @@ jobs:
             exit 1
           fi
           echo "::notice::FLOW цикл замкнут: подписка -> письмо -> подтверждение -> отписка -> строка удалена"
-          echo "::notice::FLOW транспорт: $transport, отправитель: $OWNER_EMAIL"
+          echo "::notice::FLOW транспорт: $transport"
           # Выпуск в dry_run здесь не зовём: без CRON_SECRET он отвечает 401,
           # а это уже проверено шагом «Digest is protected». С секретом он
           # доступен вручную — команда есть в SETUP-FINAL.md, шаг 6.
