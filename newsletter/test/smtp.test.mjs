@@ -10,7 +10,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import net from 'node:net';
-import { sendViaSmtp, buildMime, encodeHeader } from '../lib/smtp.mjs';
+import { sendViaSmtp, buildMime, encodeHeader, envelopeAddress } from '../lib/smtp.mjs';
 
 /** Поднимает сервер на свободном порту и отдаёт сценарий диалога. */
 async function withServer(handler, run) {
@@ -152,6 +152,46 @@ test('отказ получателю не считается успехом', a
     assert.equal(result.ok, false);
     assert.equal(result.name, 'recipient_rejected');
   });
+});
+
+test('в MAIL FROM уходит адрес, а не заголовок с именем', async () => {
+  // Живой Gmail ответил на «MAIL FROM:<Masortim <a@b>>» кодом 555 и подписка
+  // падала с 502, хотя пароль приложения был верный. Заголовок From с именем
+  // допустим, конверт — только голый адрес.
+  const seen = [];
+  await withServer((line) => {
+    seen.push(line);
+    if (line.startsWith('MAIL FROM')) {
+      // Так же строго, как Gmail: внутри <> не должно быть ни имени, ни <>.
+      return /^MAIL FROM:<[^<>\s]+@[^<>\s]+>$/.test(line)
+        ? '250 Ok'
+        : '555 5.5.4 Unsupported option';
+    }
+    if (line.startsWith('EHLO')) return '250 test.local';
+    if (line.startsWith('RCPT TO')) return '250 Ok';
+    if (line === 'DATA') return { startData: true };
+    if (line === 'QUIT') return '221 Bye';
+    return null;
+  }, async (port) => {
+    const result = await sendViaSmtp({
+      host: '127.0.0.1',
+      port,
+      secure: false,
+      from: 'Masortim <alex.typeface@gmail.com>',
+      to: 'reader@example.com',
+      subject: 's',
+      text: 't',
+      html: '<p>t</p>',
+    });
+    assert.deepEqual(result.ok, true, JSON.stringify(result));
+  });
+  assert.ok(seen.includes('MAIL FROM:<alex.typeface@gmail.com>'), seen.join(' | '));
+});
+
+test('envelopeAddress оставляет только адрес', () => {
+  assert.equal(envelopeAddress('Masortim <alex.typeface@gmail.com>'), 'alex.typeface@gmail.com');
+  assert.equal(envelopeAddress('alex.typeface@gmail.com'), 'alex.typeface@gmail.com');
+  assert.equal(envelopeAddress(' <a@b.co> '), 'a@b.co');
 });
 
 test('Message-ID собирается без лишних скобок', () => {
