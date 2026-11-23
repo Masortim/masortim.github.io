@@ -11,7 +11,9 @@ name: Newsletter API probe
 
 on:
   # Секрет GITHUB_TOKEN интеграции не позволяет dispatch, поэтому ручной
-  # прогон делается push-ом с изменением в путях ниже.
+  # прогон делается push-ом с изменением в путях ниже. Выпуск проверяется
+  # через ?test_to=: письмо уходит только на свой ящик, живые подписчики
+  # не получают ничего, дата выпуска не двигается.
   workflow_dispatch:
   push:
     branches:
@@ -28,6 +30,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # Файлы репозитория нужны шагу про расписание (vercel.json) и
+      # проверкам, которые читают код. Без checkout рабочая копия пустая.
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            vercel.json
+            newsletter
+            api
+          sparse-checkout-cone-mode: false
+
       - name: Root endpoint
         run: |
           echo '--- GET / ---'
@@ -285,11 +298,32 @@ jobs:
           case "$dry" in
             *'"error"'*) echo "::error::DIGEST dry_run вернул ошибку: $dry"; exit 1 ;;
           esac
-          notes=$(printf '%s' "$dry" | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{const p=JSON.parse(s);process.stdout.write(String((p.notes||[]).length))}catch(e){process.stdout.write("0")}})')
-          if [ "$notes" = "0" ]; then
-            echo "::error::DIGEST не видит ни одной записи — сломан сбор заметок из feed.xml"
-            exit 1
-          fi
+          # Разбираем ответ по причине, а не по числу записей:
+          #   no_notes        — парсер не видит заметок, это поломка;
+          #   no_new_notes    — всё в порядке, новые записи уже разосланы;
+          #   duplicate_week  — на этой неделе выпуск уже был;
+          #   no_subscribers  — некому отправлять.
+          # Раньше любое «0 записей» считалось поломкой, и проба падала на
+          # нормальном ответе: выпуск к тому моменту уже ушёл подписчику.
+          verdict=$(printf '%s' "$dry" | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){
+            let p={}; try { p=JSON.parse(s) } catch(e) { console.log("parse_error"); return }
+            if (p.error) { console.log("error:" + p.error); return }
+            const n=(p.notes||[]).length;
+            console.log((p.reason||"") + "|" + n);
+          })')
+          echo "разбор: $verdict"
+          case "$verdict" in
+            no_notes\|*)
+              echo "::error::DIGEST не видит ни одной записи — сломан сбор заметок из feed.xml"
+              exit 1 ;;
+            error:*|parse_error)
+              echo "::error::DIGEST dry_run сломан: $dry"; exit 1 ;;
+            no_new_notes\|*)   echo "::notice::DIGEST новых записей нет — прошлый выпуск уже всё разослал" ;;
+            duplicate_week\|*) echo "::notice::DIGEST на этой неделе выпуск уже был" ;;
+            no_subscribers\|*) echo "::notice::DIGEST подписчиков нет" ;;
+            *\|0)              echo "::notice::DIGEST отправлять пока нечего" ;;
+            *)                 echo "::notice::DIGEST готов к отправке: записей $(echo "$verdict" | cut -d"|" -f2)" ;;
+          esac
 
           # 2. Настоящая отправка ровно на этот ящик.
           test=$(call "$api?test_to=$OWNER_EMAIL")
@@ -322,14 +356,20 @@ jobs:
           # На бесплатном плане Vercel запуск best-effort и с точностью «в
           # течение часа», поэтому одно из двух заданий может не состояться.
           echo '--- crons в vercel.json ---'
-          cat vercel.json | tr -d '\n' | sed 's/  */ /g'; echo
+          if [ ! -f vercel.json ]; then
+            echo "::warning::CRON vercel.json не найден в рабочей копии — шаг пропущен"
+            exit 0
+          fi
           node -e '
-            const cfg = require("./vercel.json");
+            const text = require("fs").readFileSync("vercel.json", "utf8");
+            const cfg = JSON.parse(text);
             const crons = (cfg.crons || []).filter((c) => c.path === "/api/newsletter/digest");
-            const days = crons.map((c) => c.schedule.split(" ").pop());
-            console.log("заданий digest:", crons.length, "-> дни:", days.join(", "));
-            const ok = days.includes("0") && days.includes("1");
-            if (!ok) { console.error("::error::CRON нужны задания на воскресенье (0) и понедельник (1)"); process.exit(1); }
+            const days = crons.map((c) => c.schedule.trim().split(/\s+/).pop());
+            console.log("заданий digest:", crons.length, "-> дни недели:", days.join(", "));
+            if (!days.includes("0") || !days.includes("1")) {
+              console.error("::error::CRON нужны задания на воскресенье (0) и понедельник (1)");
+              process.exit(1);
+            }
             console.log("::notice::CRON расписание: воскресенье + понедельник (09:00 UTC)");
           '
 
