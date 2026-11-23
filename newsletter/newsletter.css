@@ -31,7 +31,11 @@ body.dark-theme.newsletter-page { color: #eee; background: #222; }
 /* --- Шапка: сетка главной, но под одну страницу ------------------------ */
 
 .newsletter-top {
-  /* Три зоны: заголовок (2 колонки), вступление (3), контролы (1). */
+  /* Сетка главной: шесть колонок, заголовок слева, контролы справа.
+     display/grid-template были в projects.css — он больше не подключён,
+     поэтому сетку задаём здесь целиком. */
+  display: grid;
+  align-items: start;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   column-gap: 1.5%;
   box-sizing: border-box;
@@ -45,7 +49,7 @@ body.dark-theme.newsletter-page { color: #eee; background: #222; }
      строка 2 — вступление (1–5).
    Заголовок занимает пять колонок: «Email-рассылка» при 48px — около
    401px, и в три колонки на узком десктопе он не влезал. */
-.newsletter-brand { grid-column: 1 / span 5; padding-top: 0; }
+.newsletter-brand { grid-column: 1 / span 4; padding-top: 0; }
 
 /* Заголовок страницы: 48px — ровно кегль h1 заметки у Тафти (3.2rem при
    корне 15px). Плотный трекинг и вес 800 — от главной.
@@ -65,7 +69,7 @@ body.dark-theme.newsletter-page { color: #eee; background: #222; }
 /* Вступление: 21px, как .note-dek у Тафти (1.4rem), но прямым Arial
    и серым — приём главной, а не курсив Тафти. */
 .newsletter-summary {
-  grid-column: 1 / span 5;
+  grid-column: 1 / span 4;
   grid-row: 2;
   margin: 6px 0 0;
   color: #666;
@@ -76,10 +80,25 @@ body.dark-theme.newsletter-page { color: #eee; background: #222; }
 
 body.dark-theme.newsletter-page .newsletter-summary { color: #b4b4b4; }
 
-.newsletter-controls { grid-column: 6; grid-row: 1; margin-top: 2px; }
+.newsletter-controls {
+  grid-column: 5 / span 2;
+  grid-row: 1;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
 
-/* Контролы главной: чёрные плашки, прямые углы 6px, Arial. */
-.newsletter-page .archive-actions { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+/* Контролы главной: чёрные плашки, прямые углы 6px, Arial.
+   Переключатель языка и кнопка темы — в одной строке, поэтому контейнеру
+   нужен display:flex (в projects.css он был, здесь его нет) и запрет
+   переноса. */
+.newsletter-page .archive-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 5px;
+}
 
 /* diary.css делает .language-switch фиксированным к правому верхнему углу
    (для Tufte-заметок). Здесь контрол живёт в шапке, поэтому снимаем
@@ -103,7 +122,7 @@ body.dark-theme.newsletter-page .newsletter-summary { color: #b4b4b4; }
 .newsletter-page .archive-actions .language-switch button {
   min-width: 0;
   min-height: 0;
-  padding: 4px 8px;
+  padding: 4px 7px;
   border: 0;
   border-radius: 6px;
   color: #555;
@@ -300,8 +319,11 @@ body.dark-theme.newsletter-page .newsletter-alt a:hover { color: #e16449; border
   .newsletter-page { width: 90%; }
   .newsletter-top { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 2%; }
   .newsletter-brand { grid-column: 1 / span 3; }
-  .newsletter-summary { grid-column: 1 / span 2; margin-top: 16px; font-size: 19px; }
-  .newsletter-controls { grid-column: 3; margin-top: 16px; align-items: flex-end; }
+  .newsletter-summary { grid-column: 1 / span 2; grid-row: 2; margin-top: 16px; font-size: 19px; }
+  /* grid-row обязателен: в базовых стилях контролы стоят в первой строке,
+     а здесь заголовок занимает её целиком. Без сброса кнопки наложились
+     бы на заголовок. */
+  .newsletter-controls { grid-column: 3; grid-row: 2; margin-top: 16px; justify-content: flex-end; }
 }
 
 @media (max-width: 560px) {
@@ -309,7 +331,7 @@ body.dark-theme.newsletter-page .newsletter-alt a:hover { color: #e16449; border
   .newsletter-top { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 24px; }
   .newsletter-brand { grid-column: 1 / span 2; }
   .newsletter-summary { grid-column: 1 / span 2; font-size: 18px; }
-  .newsletter-controls { grid-column: 1 / span 2; margin-top: 18px; align-items: flex-start; }
+  .newsletter-controls { grid-column: 1 / span 2; grid-row: 3; margin-top: 18px; justify-content: flex-start; }
   .newsletter-brand h1 { font-size: clamp(30px, 9vw, 38px); line-height: 1; }
 
   .newsletter-masthead { flex-wrap: wrap; gap: .35rem .9rem; font-size: 11px; }
