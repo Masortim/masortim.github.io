@@ -70,10 +70,14 @@ async function runConfirm(token) {
 export async function GET(request) {
   const url = new URL(request.url);
   const token = url.searchParams.get('token') ?? '';
-  const { status, payload } = await runConfirm(token);
-  if (payload.error === 'not_found') return redirect('/newsletter/?state=invalid&lang=ru');
-  if (status === 500) return redirect('/newsletter/?state=error&lang=ru');
-  return redirect(`/newsletter/?state=${payload.result}&lang=${payload.lang}`);
+
+  // Действие выполняет только страница, после нажатия кнопки (POST). Здесь
+  // токен ни на что не влияет: адрес из старого письма могли заранее
+  // загрузить — почтовый клиент, антивирус, превью в мессенджере. Раньше
+  // такой заход расходовал токен, и человек, нажав кнопку, видел «ссылка
+  // не подошла».
+  if (!token) return redirect(`/newsletter/?state=invalid&lang=ru`);
+  return redirect(`/newsletter/?confirm=${encodeURIComponent(token)}&lang=ru`);
 }
 
 export async function POST(request) {
