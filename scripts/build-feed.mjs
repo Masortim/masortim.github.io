@@ -188,6 +188,10 @@ function rfc822(date) {
   return date.toUTCString();
 }
 
+/** Один момент времени на весь запуск: оба фида получают одинаковый
+ *  lastBuildDate, иначе RU и EN разъезжаются на доли секунды. */
+const BUILD_TIME = new Date();
+
 function buildFeed(notes, feed) {
   const items = notes
     .map((note) => {
@@ -199,7 +203,11 @@ function buildFeed(notes, feed) {
 
   if (!items.length) return null;
 
-  const lastBuild = rfc822(items[0].note.pubDate);
+  // lastBuildDate — момент СБОРКИ, а не дата первой заметки. Это важно:
+  // читалки RSS и агрегаторы смотрят на него, чтобы понять, менялся ли фид
+  // вообще. Пока здесь стояла дата топовой записи, фид после каждого деплоя
+  // выглядел неизменным (10 ноября), и обновления подхватывались неохотно.
+  const lastBuild = rfc822(BUILD_TIME);
 
   const itemXml = items
     .map(({ note, title, description, url }) => {
@@ -236,13 +244,18 @@ function buildFeed(notes, feed) {
     <webMaster>${escapeXml(AUTHOR)}</webMaster>
     <lastBuildDate>${lastBuild}</lastBuildDate>
     <generator>scripts/build-feed.mjs</generator>
+    <!-- ttl (RSS 2.0) — подсказка читалке, как часто перечитывать канал.
+         Фид пересобирается на каждый деплой сайта, поэтому час — разумный
+         интервал: свежая заметка попадёт в читалку максимум через час
+         после публикации, а лишних запросов не будет. -->
+    <ttl>60</ttl>
     <atom:link href="${escapeXml(`${SITE}/${feed.file}`)}" rel="self" type="application/rss+xml"/>
     <image>
       <url>${escapeXml(`${SITE}/feed-icon.svg`)}</url>
       <title>${escapeXml(feed.title)}</title>
       <link>${escapeXml(`${SITE}/`)}</link>
     </image>
-    <copyright>© ${new Date().getFullYear()} ${escapeXml(AUTHOR)}</copyright>
+    <copyright>© ${BUILD_TIME.getUTCFullYear()} ${escapeXml(AUTHOR)}</copyright>
 ${itemXml}
   </channel>
 </rss>

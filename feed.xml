@@ -7,8 +7,13 @@
     <language>ru</language>
     <managingEditor>Masortim</managingEditor>
     <webMaster>Masortim</webMaster>
-    <lastBuildDate>Tue, 10 Nov 2026 12:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 23 Nov 2026 06:50:08 GMT</lastBuildDate>
     <generator>scripts/build-feed.mjs</generator>
+    <!-- ttl (RSS 2.0) — подсказка читалке, как часто перечитывать канал.
+         Фид пересобирается на каждый деплой сайта, поэтому час — разумный
+         интервал: свежая заметка попадёт в читалку максимум через час
+         после публикации, а лишних запросов не будет. -->
+    <ttl>60</ttl>
     <atom:link href="https://masortim.github.io/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://masortim.github.io/feed-icon.svg</url>
