@@ -161,17 +161,15 @@ body.archive-home { margin:0; padding:0; }
 .archive-bottom .feed-link { display:inline-flex; flex-wrap:nowrap; align-items:center; gap:.3em; color:inherit; font-size:13px; font-weight:700; line-height:1.2; text-decoration:underline; text-underline-offset:2px; white-space:nowrap; }
 .archive-bottom .feed-link:hover { text-decoration-thickness:2px; }
 .archive-bottom .feed-icon { flex:none; width:1.1em; height:1.1em; }
-/* Конверт Email-рассылки — залитый зелёный конверт с белым клапаном,
-   без квадратной плашки. Знак RSS намеренно оставлен в оранжевом квадрате:
-   его узнают именно по плашке. Письмо узнают по самому конверту, поэтому
-   зелёным закрашено тело, а линии клапана белые — так иконка читается
-   такой же плотной, как оранжевая у RSS, и не выглядит контуром.
-   Цвет продублирован в разметке (fill="#16a34a"), а правило ниже только
-   светлит тело в тёмной теме. Клапан белый в обеих темах — это и есть
-   «зелёный конверт с белыми линиями», одинаковый в любом окружении. */
-.mail-icon .mail-icon-body { fill: #16a34a !important; }
-.mail-icon .mail-icon-flap { stroke: #fff !important; }
-body.dark-theme .mail-icon .mail-icon-body { fill: #22c55e !important; }
+/* Знак Email-рассылки повторяет геометрию знака RSS: квадратная плашка
+   24 × 24 с тем же радиусом 4.5 и белый рисунок внутри. Разница только
+   в цвете и сюжете — оранжевый квадрат с дугами против зелёного
+   с конвертом. Одинаковые габариты держат строку ровной: обе иконки
+   занимают один и тот же квадрат 1.1em на любом кегле.
+   Цвет продублирован в разметке (fill="#16a34a"), правила ниже дают
+   тёмной теме более светлый зелёный. Рисунок белый в обеих темах. */
+.mail-icon .mail-icon-plate { fill: #16a34a !important; }
+body.dark-theme .mail-icon .mail-icon-plate { fill: #22c55e !important; }
 /* Текстовая доля держится единым куском: «RSS-рассылка ↗» должно
    читаться одной строкой, а не ломаться по дефису. */
 .archive-bottom .feed-link > span { flex:0 0 auto; min-width:0; white-space:nowrap; }
