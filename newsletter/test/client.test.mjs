@@ -392,3 +392,43 @@ test('вход переводит POST ссылок в GET, пока сайт н
   assert.match(entry, /'\/api\/newsletter\/unsubscribe'/, 'отписка в списке');
   assert.match(entry, /response\.status === 405/, 'слой включается только на 405');
 });
+
+test('повторная подписка на подтверждённый адрес не обещает письмо', async () => {
+  // Симптом: человек подписывался второй раз и всякий раз читал «Готово.
+  // Проверьте почту» — хотя сервер подтверждённому адресу письма не шлёт.
+  const env = await load({
+    fetch: async () => new Response('{"ok":true,"already":true,"sent":false}', { status: 200 }),
+  });
+  const notice = await submit(env);
+
+  assert.match(notice.textContent, /уже подтверждён/i, 'сказано, что адрес уже в списке');
+  assert.doesNotMatch(notice.textContent, /проверьте почту/i, 'письмо не обещано');
+});
+
+test('повторная отправка подтверждения говорит об этом прямо', async () => {
+  const env = await load({
+    fetch: async () => new Response('{"ok":true,"sent":true,"resent":true}', { status: 200 }),
+  });
+  const notice = await submit(env);
+
+  assert.match(notice.textContent, /ещё раз/i);
+});
+
+test('принятый адрес без отправленного письма — честное сообщение', async () => {
+  const env = await load({
+    fetch: async () => new Response('{"ok":true,"sent":false}', { status: 200 }),
+  });
+  const notice = await submit(env);
+
+  assert.match(notice.textContent, /не удалось/i);
+  assert.doesNotMatch(notice.textContent, /проверьте почту/i);
+});
+
+test('новая подписка по-прежнему обещает письмо', async () => {
+  const env = await load({
+    fetch: async () => new Response('{"ok":true,"sent":true,"resent":false}', { status: 200 }),
+  });
+  const notice = await submit(env);
+
+  assert.match(notice.textContent, /проверьте почту/i);
+});
