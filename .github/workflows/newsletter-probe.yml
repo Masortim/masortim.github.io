@@ -122,7 +122,8 @@ jobs:
           # пароль приложения, есть ли адрес отправителя. Секретов не
           # раскрывает — только да/нет.
           # Транспорт бывает двух видов: SMTP (Gmail, адрес автора) и Resend
-          # (нужен проверенный домен). health знает оба и не путает их.
+          # (нужен проверенный домен). health знает оба и не путает их:
+          # адрес на gmail.com сам по себе означает SMTP.
           code=$(curl -sS -o /tmp/health.json -w '%{http_code}' --max-time 25 \
             https://masortim-newsletter.vercel.app/api/newsletter/health || echo "000")
           echo "status: $code"
