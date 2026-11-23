@@ -26,6 +26,9 @@
       network: 'Нет связи с сервером.',
       notConnected: 'Серверная часть рассылки пока не подключена — адрес сохранён не будет.',
       emailPending: 'Адрес принят, но отправка писем ещё настраивается. Подписка оформится, как только почта заработает.',
+      linkPending: 'Подтверждаю подписку…',
+      linkWaiting: 'Связываюсь с сервером — это может занять несколько секунд.',
+      rejected: 'Сервер не принял адрес. Проверьте его, пожалуйста.',
     },
     en: {
       invalid: 'That address looks mistyped. Please check it.',
@@ -41,6 +44,9 @@
       network: 'No connection to the server.',
       notConnected: 'The newsletter backend is not connected yet, so the address will not be saved.',
       emailPending: 'The address was accepted, but email delivery is still being set up. Your subscription will complete once it is ready.',
+      linkPending: 'Confirming your subscription…',
+      linkWaiting: 'Reaching the server — this may take a few seconds.',
+      rejected: 'The server did not accept the address. Please check it.',
     },
   };
 
@@ -63,6 +69,176 @@
     if (!submit) return;
     submit.disabled = busy;
     submit.setAttribute('aria-busy', busy ? 'true' : 'false');
+  }
+
+  /** Ключ запоминания рабочего адреса: чтобы не пробовать битый каждый раз. */
+  var BASE_KEY = 'masortim-newsletter-base';
+
+  function readBase() {
+    try { return window.localStorage.getItem(BASE_KEY) || ''; } catch (error) { return ''; }
+  }
+
+  function saveBase(base) {
+    try { window.localStorage.setItem(BASE_KEY, base); } catch (error) { /* приватный режим */ }
+  }
+
+  /**
+   * Адреса API в порядке обхода.
+   *
+   * Рабочий адрес с прошлого раза идёт первым: если читатель однажды попал
+   * на сеть, которая не пропускает *.vercel.app, незачем каждый раз ждать
+   * таймаут на нём. Порядок остальных — как в конфиге.
+   */
+  function apiBases() {
+    var list = [];
+    var configured = window.NEWSLETTER_API_BASES;
+    if (Object.prototype.toString.call(configured) === '[object Array]') {
+      for (var i = 0; i < configured.length; i += 1) {
+        if (typeof configured[i] === 'string' && configured[i]) list.push(configured[i]);
+      }
+    } else if (typeof window.NEWSLETTER_API_BASE === 'string' && window.NEWSLETTER_API_BASE) {
+      list.push(window.NEWSLETTER_API_BASE);
+    }
+    var trimmed = [];
+    for (var j = 0; j < list.length; j += 1) {
+      trimmed.push(list[j].replace(/\/+$/, ''));
+    }
+    var remembered = readBase();
+    if (!remembered) return trimmed;
+    var ordered = [];
+    for (var k = 0; k < trimmed.length; k += 1) {
+      if (trimmed[k] === remembered) ordered.push(trimmed[k]);
+    }
+    for (var m = 0; m < trimmed.length; m += 1) {
+      if (trimmed[m] !== remembered) ordered.push(trimmed[m]);
+    }
+    return ordered.length ? ordered : trimmed;
+  }
+
+  /**
+   * Запрос с переходом на следующий адрес.
+   *
+   * Меняем адрес только при сетевой ошибке (fetch отклонился) или ответе
+   * 5xx: 4xx — это осмысленный ответ сервера, его нужно показать как есть.
+   * Таймаут свой: у fetch нет встроенного, а провайдер может не прислать
+   * RST, а просто проглотить пакеты — тогда без таймаута форма висела бы.
+   */
+  var REQUEST_TIMEOUT = 12000;
+
+  function fetchOnce(url, options) {
+    if (typeof window.AbortController !== 'function') {
+      return window.fetch(url, options);
+    }
+    var controller = new window.AbortController();
+    var timer = window.setTimeout(function () { controller.abort(); }, REQUEST_TIMEOUT);
+    var config = {};
+    for (var key in options) {
+      if (Object.prototype.hasOwnProperty.call(options, key)) config[key] = options[key];
+    }
+    config.signal = controller.signal;
+    return window.fetch(url, config).then(function (response) {
+      window.clearTimeout(timer);
+      return response;
+    }, function (error) {
+      window.clearTimeout(timer);
+      throw error;
+    });
+  }
+
+  function requestWithFailover(bases, path, options) {
+    var index = 0;
+    function attempt() {
+      var base = bases[index];
+      return fetchOnce(base + path, options).then(function (response) {
+        if (response.status >= 500 && index + 1 < bases.length) {
+          index += 1;
+          return attempt();
+        }
+        saveBase(base);
+        return response;
+      }, function (error) {
+        if (index + 1 < bases.length) {
+          index += 1;
+          return attempt();
+        }
+        throw error;
+      });
+    }
+    return attempt();
+  }
+
+  /** Параметр из адресной строки. */
+  function queryParameter(name) {
+    var pattern = new RegExp('[?&]' + name + '=([^&]*)');
+    var match = pattern.exec(window.location.search || '');
+    return match ? decodeURIComponent(match[1]) : '';
+  }
+
+  /**
+   * Подтверждение и отписка по ссылке из письма.
+   *
+   * Кнопка в письме ведёт сюда, на страницу сайта, а не на домен функций:
+   * домен API у части читателей недоступен (провайдер рвёт соединение), и
+   * ссылка из письма не должна от него зависеть. Страница сама зовёт API —
+   * тем же путём, что и форма, включая запасной адрес.
+   */
+  function handleEmailLink() {
+    var token = queryParameter('confirm');
+    var action = 'confirm';
+    if (!token) {
+      token = queryParameter('unsubscribe');
+      action = 'unsubscribe';
+    }
+    if (!token) return;
+
+    var texts = MESSAGES[currentLanguage()];
+    var bases = apiBases();
+    if (!bases.length || typeof window.fetch !== 'function') {
+      showNotice(texts.notConnected, 'error');
+      return;
+    }
+
+    showNotice(texts.linkPending, 'info');
+    setBusy(true);
+    var slow = window.setTimeout(function () {
+      showNotice(texts.linkWaiting, 'info');
+    }, 4000);
+
+    requestWithFailover(bases, '/api/newsletter/' + action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: token }),
+    }).then(function (response) {
+      return response.json().then(function (payload) {
+        return { status: response.status, payload: payload };
+      });
+    }).then(function (result) {
+      window.clearTimeout(slow);
+      setBusy(false);
+      var data = result.payload || {};
+      if (result.status !== 200) {
+        showNotice(data.error === 'not_found' ? texts.invalidToken : texts.error, 'error');
+        return;
+      }
+      if (data.result === 'confirmed') {
+        showNotice(texts.confirmed, 'ok');
+      } else if (data.result === 'already') {
+        showNotice(texts.already, 'ok');
+      } else if (data.result === 'unsubscribed') {
+        showNotice(texts.unsubscribed, 'ok');
+      } else {
+        showNotice(texts.invalidToken, 'error');
+      }
+      // Токен больше не нужен: убираем его из адреса, чтобы обновление
+      // страницы не подтверждало подписку повторно.
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    }, function () {
+      window.clearTimeout(slow);
+      setBusy(false);
+      showNotice(texts.offline, 'error');
+    });
   }
 
   /** Сообщения о результате перехода по ссылке из письма (?state=…). */
@@ -101,18 +277,16 @@
       setBusy(true);
       showNotice(texts.sending, 'info');
 
-      // Адрес API (см. newsletter/config.js). Пустой — серверная часть ещё
-      // не подключена; сообщаем об этом честно, вместо «нет связи».
-      var apiBase = (typeof window.NEWSLETTER_API_BASE === 'string')
-        ? window.NEWSLETTER_API_BASE.replace(/\/$/, '')
-        : '';
-      if (!apiBase || typeof window.fetch !== 'function') {
+      // Адреса API (см. newsletter/config.js). Пустой список — серверная
+      // часть ещё не подключена; сообщаем об этом честно, вместо «нет связи».
+      var bases = apiBases();
+      if (!bases.length || typeof window.fetch !== 'function') {
         setBusy(false);
         showNotice(texts.notConnected, 'error');
         return;
       }
 
-      window.fetch(apiBase + '/api/newsletter/subscribe', {
+      requestWithFailover(bases, '/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, lang: currentLanguage() }),
@@ -151,4 +325,5 @@
   }
 
   reportState();
+  handleEmailLink();
 }());

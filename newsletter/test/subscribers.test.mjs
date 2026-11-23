@@ -107,14 +107,20 @@ test('токены уникальны', () => {
 });
 
 test('письма содержат ссылки подтверждения, отписки и записи', () => {
+  // Кнопки ведут на САЙТ, а не на домен функций: домен API у части читателей
+  // недоступен (провайдер рвёт соединение), а страница на GitHub Pages
+  // открывается всегда и сама зовёт API скриптом.
   const c = confirmationEmail({ email: 'a@b.co', lang: 'ru', token: 'T' });
   assert.match(c.subject, /Подтвердите/);
-  assert.match(c.text, /\/api\/newsletter\/confirm\?token=T/);
+  assert.match(c.text, /https:\/\/masortim\.github\.io\/newsletter\/\?confirm=T&lang=ru/);
+  assert.doesNotMatch(c.text, /vercel\.app/);
   const en = confirmationEmail({ email: 'a@b.co', lang: 'en', token: 'T' });
   assert.match(en.subject, /Confirm/);
+  assert.match(en.text, /\?confirm=T&lang=en/);
 
   const w = welcomeEmail({ email: 'a@b.co', lang: 'ru', token: 'T' });
-  assert.match(w.text, /\/api\/newsletter\/unsubscribe\?token=T/);
+  assert.match(w.text, /https:\/\/masortim\.github\.io\/newsletter\/\?unsubscribe=T&lang=ru/);
+  assert.doesNotMatch(w.text, /vercel\.app/);
 
   const d = digestEmail({ email: 'a@b.co', lang: 'en', token: 'T', notes: [{ slug: 'conferences', title: 'An event calendar', dek: 'Shows events.' }] });
   assert.match(d.subject, /new note/i);
