@@ -299,6 +299,8 @@ jobs:
           esac
 
           # Сначала dry_run: видно, какие записи пошли бы и кому.
+          # Если здесь notes=0 — сломан сбор заметок (feed.xml читается по
+          # <link>, а не по href), и настоящая отправка невозможна.
           dry=$(curl -sS --max-time 40 \
             -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" \
             "https://masortim-newsletter.vercel.app/api/newsletter/digest?dry_run=1")
