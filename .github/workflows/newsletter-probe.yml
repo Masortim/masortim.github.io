@@ -287,11 +287,32 @@ jobs:
           case "$dry" in
             *'"error"'*) echo "::error::DIGEST dry_run вернул ошибку: $dry"; exit 1 ;;
           esac
-          notes=$(printf '%s' "$dry" | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{const p=JSON.parse(s);process.stdout.write(String((p.notes||[]).length))}catch(e){process.stdout.write("0")}})')
-          if [ "$notes" = "0" ]; then
-            echo "::error::DIGEST не видит ни одной записи — сломан сбор заметок из feed.xml"
-            exit 1
-          fi
+          # Разбираем ответ по причине, а не по числу записей:
+          #   no_notes        — парсер не видит заметок, это поломка;
+          #   no_new_notes    — всё в порядке, новые записи уже разосланы;
+          #   duplicate_week  — на этой неделе выпуск уже был;
+          #   no_subscribers  — некому отправлять.
+          # Раньше любое «0 записей» считалось поломкой, и проба падала на
+          # нормальном ответе: выпуск к тому моменту уже ушёл подписчику.
+          verdict=$(printf '%s' "$dry" | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){
+            let p={}; try { p=JSON.parse(s) } catch(e) { console.log("parse_error"); return }
+            if (p.error) { console.log("error:" + p.error); return }
+            const n=(p.notes||[]).length;
+            console.log((p.reason||"") + "|" + n);
+          })')
+          echo "разбор: $verdict"
+          case "$verdict" in
+            no_notes\|*)
+              echo "::error::DIGEST не видит ни одной записи — сломан сбор заметок из feed.xml"
+              exit 1 ;;
+            error:*|parse_error)
+              echo "::error::DIGEST dry_run сломан: $dry"; exit 1 ;;
+            no_new_notes\|*)   echo "::notice::DIGEST новых записей нет — прошлый выпуск уже всё разослал" ;;
+            duplicate_week\|*) echo "::notice::DIGEST на этой неделе выпуск уже был" ;;
+            no_subscribers\|*) echo "::notice::DIGEST подписчиков нет" ;;
+            *\|0)              echo "::notice::DIGEST отправлять пока нечего" ;;
+            *)                 echo "::notice::DIGEST готов к отправке: записей $(echo "$verdict" | cut -d"|" -f2)" ;;
+          esac
 
           # 2. Настоящая отправка ровно на этот ящик.
           test=$(call "$api?test_to=$OWNER_EMAIL")
