@@ -1,123 +1,330 @@
-/* Страница подписки на email-рассылку.
-   Наследует типографику Tufte из tufte-universal.css и diary.css:
-   размеры в rem, поля 55% ширины, тонкие линейки вместо рамок. */
+/* Страница подписки на email-рассылку — в стиле главной (швейцарская
+   типографика), а не в стиле заметок (Тафти).
+
+   Что берём от главной: холст .project-archive (белый лист, узкая
+   колонка min(960px, 76%) по центру, Arial/Helvetica), шестиколоночную
+   сетку для шапки, чёрные жирные заголовки с плотным трекингом,
+   серый пояснительный текст и тонкие линейки.
+
+   Что оставляем от Тафти: КЕГЛИ. База tufte-universal.css — html 15px,
+   текст 1.4rem (21px), h1 3.2rem (48px), поля 1.4rem. Переводим их в px
+   от того же корня, чтобы на экране размеры совпадали с заметками
+   буквально: 21px / 48px / 30px интерлиньяжа. */
+
+/* --- Каркас: тот же холст, что у главной ------------------------------- */
+
+.newsletter-page {
+  /* Колонка главной: 960px максимум и 76% окна. */
+  width: min(960px, 76%);
+  margin: 0 auto;
+  color: #111;
+  background: #fff;
+  /* База главной — Arial. Кегль тела 21px — как текст заметок у Тафти. */
+  font: 400 21px/1.43 Arial, Helvetica, sans-serif;
+  -webkit-hyphens: none;
+  hyphens: none;
+}
+
+/* Тёмная тема — как у главной: тёмный холст и #eee вместо чёрного. */
+body.dark-theme.newsletter-page { color: #eee; background: #222; }
+
+/* --- Шапка: сетка главной, но под одну страницу ------------------------ */
+
+.newsletter-top {
+  /* Три зоны: заголовок (2 колонки), вступление (3), контролы (1). */
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  column-gap: 1.5%;
+  box-sizing: border-box;
+  min-height: 0;
+  padding: 34px 0 26px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Шапка в две строки, как на главной:
+     строка 1 — заголовок (1–5) и контролы (6),
+     строка 2 — вступление (1–5).
+   Заголовок занимает пять колонок: «Email-рассылка» при 48px — около
+   401px, и в три колонки на узком десктопе он не влезал. */
+.newsletter-brand { grid-column: 1 / span 5; padding-top: 0; }
+
+/* Заголовок страницы: 48px — ровно кегль h1 заметки у Тафти (3.2rem при
+   корне 15px). Плотный трекинг и вес 800 — от главной.
+   Кегль привязан к ширине холста: 48px достигаются на полной странице
+   (960px), а на узком десктопе сжимаются, чтобы слово не рвалось
+   посередине. 5vw ≈ 48px при 960px — то есть максимум совпадает
+   с тафтиевским кеглем, а ниже он плавно уменьшается. */
+.newsletter-brand h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  line-height: .95;
+  overflow-wrap: break-word;
+}
+
+/* Вступление: 21px, как .note-dek у Тафти (1.4rem), но прямым Arial
+   и серым — приём главной, а не курсив Тафти. */
+.newsletter-summary {
+  grid-column: 1 / span 5;
+  grid-row: 2;
+  margin: 6px 0 0;
+  color: #666;
+  font-size: 21px;
+  font-style: normal;
+  line-height: 1.43;
+}
+
+body.dark-theme.newsletter-page .newsletter-summary { color: #b4b4b4; }
+
+.newsletter-controls { grid-column: 6; grid-row: 1; margin-top: 2px; }
+
+/* Контролы главной: чёрные плашки, прямые углы 6px, Arial. */
+.newsletter-page .archive-actions { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+
+/* diary.css делает .language-switch фиксированным к правому верхнему углу
+   (для Tufte-заметок). Здесь контрол живёт в шапке, поэтому снимаем
+   позиционирование и всю «пилюлю»: на главной это простые плашки. */
+.newsletter-page .archive-actions .language-switch {
+  position: static;
+  z-index: auto;
+  top: auto;
+  right: auto;
+  display: flex;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+.newsletter-page .archive-actions .language-switch button {
+  min-width: 0;
+  min-height: 0;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  color: #555;
+  background: #eee;
+  cursor: pointer;
+  font: 700 12px/1.2 Arial, Helvetica, sans-serif;
+  letter-spacing: .02em;
+}
+
+.newsletter-page .archive-actions .language-switch button[aria-pressed="true"] {
+  color: #fff;
+  background: #111;
+}
+
+.newsletter-page .theme-toggle {
+  position: static;
+  width: 26px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  background: #111;
+  cursor: pointer;
+  font: 12px/1 Arial, Helvetica, sans-serif;
+  transform: none;
+}
+
+body.dark-theme.newsletter-page .archive-actions .language-switch button {
+  color: #ddd;
+  background: #333;
+}
+
+body.dark-theme.newsletter-page .archive-actions .language-switch button[aria-pressed="true"] {
+  color: #111;
+  background: #ddd;
+}
+
+body.dark-theme.newsletter-page .theme-toggle { color: #111; background: #ddd; }
+
+/* --- Мета-строка «назад в архив» --------------------------------------- */
+
+.newsletter-masthead {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 12px 0 11px;
+  border-bottom: 1px solid #ddd;
+  color: #666;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+body.dark-theme.newsletter-page .newsletter-masthead { color: #b4b4b4; border-color: #444; }
+body.dark-theme.newsletter-page .newsletter-top { border-color: #444; }
+
+/* --- Форма -------------------------------------------------------------- */
 
 .newsletter-page .newsletter-form {
-  width: 55%;
-  max-width: 39rem;
-  margin: 0 0 2rem;
+  width: 100%;
+  max-width: none;
+  margin: 30px 0 0;
 }
 
+/* Подпись поля: капитель 12px — как подписи блоков на главной. */
 .newsletter-label {
   display: block;
-  margin-bottom: .45rem;
-  color: var(--tufte-faint, #68645c);
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-  font-size: .95rem;
-  letter-spacing: .04em;
-  font-variant: small-caps;
+  margin-bottom: 8px;
+  color: #666;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
 
-.newsletter-row {
-  display: flex;
-  gap: .6rem;
-  align-items: stretch;
-}
+body.dark-theme.newsletter-page .newsletter-label { color: #b4b4b4; }
 
+.newsletter-row { display: flex; gap: 8px; align-items: stretch; }
+
+/* Поле ввода: 21px, как тело заметки, но прямой Arial и прямоугольное. */
 .newsletter-input {
   flex: 1 1 auto;
   min-width: 0;
-  padding: .7rem .85rem;
-  border: 1px solid var(--tufte-rule, #d9d5ca);
-  border-radius: 2px;
-  background: #fff;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #bbb;
+  border-radius: 0;
+  background: #f3f3f3;
   color: #111;
-  font: 400 1.05rem/1.3 Georgia, serif;
+  font: 400 21px/1.43 Arial, Helvetica, sans-serif;
 }
 
-.newsletter-input:focus {
-  outline: 2px solid #e8590c;
-  outline-offset: 1px;
+.newsletter-input:focus { outline: 2px solid #111; outline-offset: 1px; }
+
+body.dark-theme.newsletter-page .newsletter-input {
+  border-color: #555;
+  background: #333;
+  color: #eee;
 }
 
+body.dark-theme.newsletter-page .newsletter-input:focus { outline-color: #eee; }
+
+/* Кнопка: чёрная плашка главной, кегль 21px — как текст. */
 .newsletter-submit {
   flex: 0 0 auto;
-  padding: .7rem 1.35rem;
+  padding: 11px 22px;
   border: 0;
-  border-radius: 2px;
-  background: #e8590c;
+  border-radius: 6px;
+  background: #111;
   color: #fff;
-  font: 600 1rem/1.2 "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-  letter-spacing: .02em;
   cursor: pointer;
+  font: 700 21px/1.43 Arial, Helvetica, sans-serif;
+  letter-spacing: -.01em;
 }
 
-.newsletter-submit:hover { background: #cf4e09; }
-.newsletter-submit:disabled { opacity: .6; cursor: progress; }
+.newsletter-submit:hover { background: #333; }
+.newsletter-submit:disabled { opacity: .55; cursor: progress; }
+
+body.dark-theme.newsletter-page .newsletter-submit { background: #eee; color: #111; }
+body.dark-theme.newsletter-page .newsletter-submit:hover { background: #ccc; }
 
 .newsletter-hint {
-  margin: .6rem 0 0;
-  color: var(--tufte-faint, #68645c);
-  font-size: .95rem;
-  line-height: 1.5;
+  margin: 10px 0 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.45;
 }
 
-/* Сообщение о результате: зелёное для успеха, тёплое красное для ошибки. */
-.newsletter-notice {
-  width: 55%;
-  max-width: 39rem;
+body.dark-theme.newsletter-page .newsletter-hint { color: #b4b4b4; }
+
+/* --- Сообщение о результате -------------------------------------------- */
+
+.newsletter-page .newsletter-notice {
+  width: 100%;
+  max-width: none;
   box-sizing: border-box;
-  margin: 1.2rem 0;
-  padding: .8rem 1rem;
-  border-left: 3px solid var(--tufte-rule, #d9d5ca);
-  background: #f7f6f1;
-  font-size: 1rem;
-  line-height: 1.5;
+  margin: 22px 0 0;
+  padding: 12px 14px;
+  border-left: 4px solid #bbb;
+  background: #f3f3f3;
+  color: #111;
+  font-size: 21px;
+  line-height: 1.43;
 }
 
 .newsletter-notice--ok { border-left-color: #2f7d32; }
 .newsletter-notice--error { border-left-color: #b3261e; }
-.newsletter-notice--info { border-left-color: #e8590c; }
-
-.newsletter-alt {
-  width: 55%;
-  max-width: 39rem;
-  margin: 2rem 0 0;
-  padding-top: 1rem;
-  border-top: 1px solid var(--tufte-rule, #d9d5ca);
-  color: var(--tufte-faint, #68645c);
-  font-size: 1rem;
-}
-
-.newsletter-alt a { color: inherit; font-weight: 700; }
-
-/* Тёмная тема: та же схема, что у заметок (body.dark-theme). */
-body.dark-theme.newsletter-page .newsletter-input {
-  border-color: #4a4a4a;
-  background: #2a2a2a;
-  color: #eee;
-}
+.newsletter-notice--info { border-left-color: #111; }
 
 body.dark-theme.newsletter-page .newsletter-notice {
-  border-left-color: #4a4a4a;
-  background: #2a2a2a;
+  background: #2d2d2d;
+  border-left-color: #555;
+  color: #eee;
 }
 
 body.dark-theme.newsletter-page .newsletter-notice--ok { border-left-color: #66bb6a; }
 body.dark-theme.newsletter-page .newsletter-notice--error { border-left-color: #ef5350; }
-body.dark-theme.newsletter-page .newsletter-notice--info { border-left-color: #ff9f45; }
+body.dark-theme.newsletter-page .newsletter-notice--info { border-left-color: #eee; }
 
-/* На узких экранах — полная ширина, как у текста заметок. */
-@media (max-width: 760px) {
-  .newsletter-page .newsletter-form,
-  .newsletter-notice,
-  .newsletter-alt { width: 100%; }
+/* --- Альтернатива: RSS -------------------------------------------------- */
 
-  .newsletter-row { flex-wrap: wrap; }
-  .newsletter-submit { flex: 1 1 100%; }
+.newsletter-alt {
+  width: 100%;
+  max-width: none;
+  margin: 26px 0 0;
+  padding: 16px 0 40px;
+  border-top: 1px solid #ddd;
+  color: #666;
+  font-size: 21px;
+  line-height: 1.43;
 }
 
-/* Очень узкие экраны: кнопка и поле друг под другом без зазора по бокам. */
+.newsletter-alt a {
+  margin-left: .4em;
+  color: #111;
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 2px solid #111;
+}
+
+.newsletter-alt a:hover { color: #e16449; border-bottom-color: #e16449; }
+
+body.dark-theme.newsletter-page .newsletter-alt { color: #b4b4b4; border-color: #444; }
+body.dark-theme.newsletter-page .newsletter-alt a { color: #eee; border-bottom-color: #eee; }
+body.dark-theme.newsletter-page .newsletter-alt a:hover { color: #e16449; border-bottom-color: #e16449; }
+
+/* --- Узкие экраны ------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  /* Та же перестройка, что у главной: заголовок во всю ширину,
+     вступление на две колонки, контролы отдельной строкой. */
+  .newsletter-page { width: 90%; }
+  .newsletter-top { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 2%; }
+  .newsletter-brand { grid-column: 1 / span 3; }
+  .newsletter-summary { grid-column: 1 / span 2; margin-top: 16px; font-size: 19px; }
+  .newsletter-controls { grid-column: 3; margin-top: 16px; align-items: flex-end; }
+}
+
+@media (max-width: 560px) {
+  .newsletter-page { width: calc(100% - 1.5rem); }
+  .newsletter-top { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 24px; }
+  .newsletter-brand { grid-column: 1 / span 2; }
+  .newsletter-summary { grid-column: 1 / span 2; font-size: 18px; }
+  .newsletter-controls { grid-column: 1 / span 2; margin-top: 18px; align-items: flex-start; }
+  .newsletter-brand h1 { font-size: clamp(30px, 9vw, 38px); line-height: 1; }
+
+  .newsletter-masthead { flex-wrap: wrap; gap: .35rem .9rem; font-size: 11px; }
+
+  /* Поле и кнопка друг под другом: на телефоне так удобнее попадать. */
+  .newsletter-row { flex-wrap: wrap; }
+  .newsletter-input { flex: 1 1 100%; font-size: 17px; }
+  .newsletter-submit { flex: 1 1 100%; font-size: 18px; }
+
+  .newsletter-hint { font-size: 13px; }
+  .newsletter-alt { font-size: 18px; }
+  .newsletter-page .newsletter-notice { font-size: 17px; }
+}
+
+/* iOS: кегль меньше 16px вызывает автозум при фокусе. */
 @media (max-width: 400px) {
-  .newsletter-input { font-size: 16px; } /* без автозума на iOS */
+  .newsletter-input { font-size: 16px; }
 }
