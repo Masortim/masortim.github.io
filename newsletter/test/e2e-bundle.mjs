@@ -3,6 +3,8 @@
 // а вся остальная цепочка (роутер, логика, письма) — настоящая.
 const rows = new Map();
 const emails = [];
+// Состояние выпуска: одна строка id='digest'.
+const state = new Map();
 
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (input, init = {}) => {
@@ -18,6 +20,19 @@ globalThis.fetch = async (input, init = {}) => {
 
   if (url.hostname.endsWith('supabase.co')) {
     const method = (init.method ?? 'GET').toUpperCase();
+    if (url.pathname.endsWith('/newsletter_state')) {
+      if (method === 'GET') {
+        return new Response(JSON.stringify([...state.values()]), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      if (method === 'POST') {
+        const [row] = JSON.parse(init.body);
+        state.set(row.id, { ...(state.get(row.id) ?? {}), ...row });
+        return new Response('', { status: 201 });
+      }
+    }
     if (url.pathname.endsWith('/newsletter_subscribers')) {
       if (method === 'GET') {
         return new Response(JSON.stringify([...rows.values()]), {
@@ -143,7 +158,80 @@ delete process.env.CRON_SECRET;
 // 10. Digest закрыт секретом
 ok(`digest без секрета: 401`, (await req('/api/newsletter/digest')).status === 401);
 
-// 10. CORS preflight
+// 11. Выпуск: проба одному адресу, защита недели, только новые записи
+// Заметки для digest приходят с сайта — подменяем, чтобы прогон не зависел
+// от сети. Формат тот же, что отдаёт collectNotes.
+const siteNotes = [
+  { slug: 'fresh', date: '2099-01-05', titleRu: 'Свежая', titleEn: 'Fresh', dekRu: 'д', dekEn: 'd' },
+  { slug: 'older', date: '2099-01-01', titleRu: 'Старая', titleEn: 'Old', dekRu: 'д', dekEn: 'd' },
+];
+globalThis.fetch = ((inner) => async (input, init) => {
+  const url = new URL(String(input));
+  if (url.hostname === 'masortim.github.io' && url.pathname === '/feed.xml') {
+    return new Response(`<rss>${siteNotes.map((n) => `<link>https://masortim.github.io/diary/${n.slug}/?lang=ru</link>`).join('')}</rss>`, { status: 200 });
+  }
+  if (url.hostname === 'masortim.github.io' && url.pathname.startsWith('/diary/')) {
+    const slug = url.pathname.split('/')[2];
+    const note = siteNotes.find((n) => n.slug === slug);
+    return new Response(
+      `<html><p class="note-meta"><span>${note.date}</span></p>`
+      + `<h1><span data-language-content="ru">${note.titleRu}</span></h1>`
+      + `<p class="note-dek"><span data-language-content="ru">${note.dekRu}</span></p></html>`,
+      { status: 200 },
+    );
+  }
+  return inner(input, init);
+})(globalThis.fetch);
+
+process.env.CRON_SECRET = 'test-secret';
+state.clear();
+state.set('digest', { id: 'digest', last_digest_at: null, last_digest_iso_date: null, last_note_date: null });
+
+const beforeTest = emails.length;
+const testTo = await req('/api/newsletter/digest?test_to=probe%40example.com', {
+  headers: { Authorization: 'Bearer test-secret' },
+});
+const testBody = await testTo.json();
+// Первый выпуск по правилу берёт только самую свежую запись, а не архив.
+ok(`проба выпуска: sent=${testBody.sent}, заметок=${(testBody.notes ?? []).length}`,
+  testTo.status === 200 && testBody.sent === 1 && (testBody.notes ?? []).length === 1
+  && testBody.notes[0].slug === 'fresh');
+ok(`проба ушла только на probe@example.com`, emails.length === beforeTest + 1 && emails.at(-1).to?.[0] === 'probe@example.com');
+ok(`проба не сдвинула дату выпуска`, !state.get('digest')?.last_digest_at);
+
+// Первый настоящий выпуск — должен уйти и запомнить дату.
+rows.clear();
+rows.set('real@example.com', {
+  email: 'real@example.com', lang: 'ru', status: 'confirmed', token: 'tok',
+  created_at: new Date().toISOString(), confirmed_at: new Date().toISOString(), unsubscribed_at: null,
+});
+const first = await req('/api/newsletter/digest', { headers: { Authorization: 'Bearer test-secret' } });
+const firstBody = await first.json();
+ok(`первый выпуск: sent=${firstBody.sent}, заметок=${firstBody.notes}`,
+  first.status === 200 && firstBody.sent === 1 && firstBody.notes === 1);
+ok(`дата выпуска запомнена: ${state.get('digest')?.last_note_date}`,
+  state.get('digest')?.last_note_date === '2099-01-05');
+
+// Немедленный повтор — молчит.
+const second = await req('/api/newsletter/digest', { headers: { Authorization: 'Bearer test-secret' } });
+const secondBody = await second.json();
+ok(`повтор в ту же неделю: sent=${secondBody.sent}, reason=${secondBody.reason}`,
+  secondBody.sent === 0 && secondBody.reason === 'duplicate_week');
+
+// Через неделю и без новых записей — честное «новых нет», письма нет.
+state.set('digest', {
+  id: 'digest',
+  last_digest_at: new Date(Date.now() - 8 * 24 * 3600 * 1000).toISOString(),
+  last_note_date: '2099-01-05',
+});
+const beforeIdle = emails.length;
+const idle = await req('/api/newsletter/digest', { headers: { Authorization: 'Bearer test-secret' } });
+const idleBody = await idle.json();
+ok(`новых заметок нет: reason=${idleBody.reason}`, idleBody.sent === 0 && idleBody.reason === 'no_new_notes');
+ok(`письма не отправлены`, emails.length === beforeIdle);
+delete process.env.CRON_SECRET;
+
+// 12. CORS preflight
 const pre = await req('/api/newsletter/subscribe', { method: 'OPTIONS' });
 ok(`preflight: ${pre.status}, origin ${pre.headers.get('access-control-allow-origin')}`,
   pre.status === 204 && pre.headers.get('access-control-allow-origin') === 'https://masortim.github.io');

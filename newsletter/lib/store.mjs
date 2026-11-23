@@ -14,6 +14,11 @@
  */
 
 const TABLE = 'newsletter_subscribers';
+// Состояние рассылки: когда ушёл прошлый выпуск. Отдельная таблица, а не
+// файл и не переменная: серверных функций несколько, они не помнят ничего
+// между вызовами, а выпуск должен уходить ровно один раз в неделю.
+const STATE_TABLE = 'newsletter_state';
+const STATE_ID = 'digest';
 
 export function createStore(options = {}) {
   const url = options.url ?? process.env.SUPABASE_URL ?? '';
@@ -26,8 +31,16 @@ export function createStore(options = {}) {
 /** Память процесса: локальная разработка и тесты. */
 function createMemoryStore() {
   let data = { version: 1, subscribers: [] };
+  let state = { lastDigestAt: null, lastDigestIsoDate: null, lastNoteDate: null };
   return {
     kind: 'memory',
+    async readState() {
+      return { ...state };
+    },
+    async writeState(next) {
+      state = { ...state, ...next };
+      return true;
+    },
     async read() {
       return JSON.parse(JSON.stringify(data));
     },
@@ -99,6 +112,37 @@ function createSupabaseStore({ url, key }) {
 
   return {
     kind: 'supabase',
+
+    /**
+     * Состояние рассылки. Если таблицы нет или строки нет — считаем, что
+     * выпусков ещё не было; это не ошибка, а первый запуск.
+     */
+    async readState() {
+      const response = await request(`${STATE_TABLE}?id=eq.${STATE_ID}&select=*`);
+      const rows = await response.json();
+      const row = Array.isArray(rows) ? rows[0] : null;
+      if (!row) return { lastDigestAt: null, lastDigestIsoDate: null, lastNoteDate: null };
+      return {
+        lastDigestAt: row.last_digest_at ?? null,
+        lastDigestIsoDate: row.last_digest_iso_date ?? null,
+        lastNoteDate: row.last_note_date ?? null,
+      };
+    },
+
+    async writeState(next) {
+      await request(`${STATE_TABLE}?on_conflict=id`, {
+        method: 'POST',
+        headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify([{
+          id: STATE_ID,
+          last_digest_at: next.lastDigestAt ?? null,
+          last_digest_iso_date: next.lastDigestIsoDate ?? null,
+          last_note_date: next.lastNoteDate ?? null,
+          updated_at: new Date().toISOString(),
+        }]),
+      });
+      return true;
+    },
 
     async read() {
       const response = await request(`${TABLE}?select=*&order=created_at.asc`);

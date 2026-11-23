@@ -265,69 +265,73 @@ jobs:
           echo "::notice::FLOW транспорт: $transport"
 
       - name: Weekly digest actually sends
+        # Проверяем настоящую отправку, но только на свой ящик: ?test_to
+        # не двигает дату выпуска и не рассылает живым подписчикам.
         env:
           OWNER_EMAIL: ${{ secrets.NEWSLETTER_OWNER_EMAIL || 'alex.typeface@gmail.com' }}
           NEWSLETTER_CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          # Выпуск — единственное, что дойдёт до читателей без их действий,
-          # поэтому проверяем настоящую отправку, а не только dry_run.
-          # Схема без мусора: подписка -> подтверждение -> выпуск на одного
-          # человека (этот же ящик) -> отписка. После шага строк в базе нет.
-          if [ -z "${NEWSLETTER_CRON_SECRET:-}" ] || [ -z "${OWNER_EMAIL:-}" ]; then
-            echo "::notice::DIGEST пропущен: нет CRON_SECRET или NEWSLETTER_OWNER_EMAIL"
+          if [ -z "${NEWSLETTER_CRON_SECRET:-}" ]; then
+            echo "::notice::DIGEST пропущен: в репозитории нет секрета CRON_SECRET"
             exit 0
           fi
 
-          mail=$(curl -sS --max-time 25 \
-            -X POST -H 'Content-Type: application/json' \
-            -d "{\"email\":\"$OWNER_EMAIL\",\"lang\":\"ru\"}" \
-            https://masortim-newsletter.vercel.app/api/newsletter/subscribe)
-          echo "подписка: $mail"
-          token=$(curl -sS --max-time 25 \
-            -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" \
-            "https://masortim-newsletter.vercel.app/api/newsletter/token?email=$OWNER_EMAIL" \
-            | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{process.stdout.write(String(JSON.parse(s).token||""))}catch(e){}})')
-          if [ -z "$token" ]; then
-            echo "::error::DIGEST токен не получен — подписка не записалась"
-            exit 1
-          fi
-          confirmed=$(curl -sS -o /dev/null -w '%{redirect_url}' --max-time 25 \
-            "https://masortim-newsletter.vercel.app/api/newsletter/confirm?token=$token")
-          case "$confirmed" in
-            *state=confirmed*|*state=already*) echo "подтверждение: принято" ;;
-            *) echo "::error::DIGEST подтверждение не сработало: $confirmed"; exit 1 ;;
-          esac
+          api=https://masortim-newsletter.vercel.app/api/newsletter/digest
+          call() { curl -sS --max-time 90 -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" "$1"; }
 
-          # Сначала dry_run: видно, какие записи пошли бы и кому.
-          # Если здесь notes=0 — сломан сбор заметок (feed.xml читается по
-          # <link>, а не по href), и настоящая отправка невозможна.
-          dry=$(curl -sS --max-time 40 \
-            -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" \
-            "https://masortim-newsletter.vercel.app/api/newsletter/digest?dry_run=1")
+          # 1. Что вообще есть: какие записи, сколько живых подписчиков.
+          dry=$(call "$api?dry_run=1")
           echo "dry_run: $dry"
-          notes=$(printf '%s' "$dry" | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{process.stdout.write(String((JSON.parse(s).notes||[]).length))}catch(e){process.stdout.write("0")}})')
           case "$dry" in
             *'"error"'*) echo "::error::DIGEST dry_run вернул ошибку: $dry"; exit 1 ;;
           esac
-
+          notes=$(printf '%s' "$dry" | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{const p=JSON.parse(s);process.stdout.write(String((p.notes||[]).length))}catch(e){process.stdout.write("0")}})')
           if [ "$notes" = "0" ]; then
-            echo "::notice::DIGEST записей нет — рассылать нечего, отправка пропущена"
-          else
-            real=$(curl -sS --max-time 90 \
-              -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" \
-              "https://masortim-newsletter.vercel.app/api/newsletter/digest")
-            echo "отправка: $real"
-            sent=$(printf '%s' "$real" | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{process.stdout.write(String(JSON.parse(s).sent))}catch(e){process.stdout.write("-1")}})')
-            if [ "$sent" = "0" ]; then
-              echo "::error::DIGEST не отправлено ни одного письма: $real"
-              exit 1
-            fi
-            echo "::notice::DIGEST выпуск отправлен: писем $sent, записей $notes"
+            echo "::error::DIGEST не видит ни одной записи — сломан сбор заметок из feed.xml"
+            exit 1
           fi
 
-          # Убираем за собой: отписка удаляет строку.
-          curl -sS -o /dev/null --max-time 25 \
-            "https://masortim-newsletter.vercel.app/api/newsletter/unsubscribe?token=$token" || true
+          # 2. Настоящая отправка ровно на этот ящик.
+          test=$(call "$api?test_to=$OWNER_EMAIL")
+          echo "test_to: $test"
+          sent=$(printf '%s' "$test" | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{process.stdout.write(String(JSON.parse(s).sent))}catch(e){process.stdout.write("-1")}})')
+          if [ "$sent" != "1" ]; then
+            echo "::error::DIGEST пробное письмо не ушло (sent=$sent): $test"
+            exit 1
+          fi
+          echo "::notice::DIGEST пробное письмо отправлено на скрытый ящик, живые подписчики не тронуты"
+
+          # 3. Повторный запуск не должен слать второй раз: дата выпуска
+          #    за эту неделю уже стоит, либо выпуск честно ждёт воскресенья.
+          again=$(call "$api")
+          echo "повторный запуск: $again"
+          case "$again" in
+            *'"reason":"duplicate_week"'*)
+              echo "::notice::DIGEST защита от дубля работает: за эту неделю выпуск уже был" ;;
+            *'"sent":0'*)
+              echo "::notice::DIGEST второй раз не отправляет: новых заметок нет или выпуск уже ушёл" ;;
+            *'"error"'*)
+              echo "::error::DIGEST повторный запуск вернул ошибку: $again"; exit 1 ;;
+            *)
+              echo "::error::DIGEST повторный запуск отправил письма ещё раз: $again"; exit 1 ;;
+          esac
+
+      - name: Digest schedule covers Sunday and Monday
+        run: |
+          # Штатный выпуск — воскресенье 09:00 UTC, страховка — понедельник.
+          # На бесплатном плане Vercel запуск best-effort и с точностью «в
+          # течение часа», поэтому одно из двух заданий может не состояться.
+          echo '--- crons в vercel.json ---'
+          cat vercel.json | tr -d '\n' | sed 's/  */ /g'; echo
+          node -e '
+            const cfg = require("./vercel.json");
+            const crons = (cfg.crons || []).filter((c) => c.path === "/api/newsletter/digest");
+            const days = crons.map((c) => c.schedule.split(" ").pop());
+            console.log("заданий digest:", crons.length, "-> дни:", days.join(", "));
+            const ok = days.includes("0") && days.includes("1");
+            if (!ok) { console.error("::error::CRON нужны задания на воскресенье (0) и понедельник (1)"); process.exit(1); }
+            console.log("::notice::CRON расписание: воскресенье + понедельник (09:00 UTC)");
+          '
 
       - name: Does the site point at this API
         run: |
