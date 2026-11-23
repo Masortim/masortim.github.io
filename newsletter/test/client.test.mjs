@@ -204,3 +204,109 @@ test('функция Supabase срезает только слаг, а не /fun
   assert.equal(strip('/newsletter-api'), '/');
   assert.equal(strip('/newsletter-api/'), '/');
 });
+
+test('в «Ссылках» на главной стоит YouTube с красной плашкой', async () => {
+  // Блок «Ссылки» внизу главной — единственное место, где собраны внешние
+  // профили. GitHub оттуда убран, его место занял канал на YouTube.
+  const page = await readFile(resolve(HERE, '../..', 'index.html'), 'utf8');
+  const css = await readFile(resolve(HERE, '../..', 'diary/projects.css'), 'utf8');
+
+  const block = /<h2><span[^>]*>Ссылки<\/span>[\s\S]*?<\/section>/.exec(page);
+  assert.ok(block, 'должен быть блок «Ссылки»');
+  assert.ok(!/github\.com/.test(block[0]), 'GitHub из «Ссылок» убран');
+
+  // Адрес канала в процентах: кириллица в href должна быть закодирована,
+  // иначе часть браузеров и RSS-читалок портит адрес.
+  const href = /href="(https:\/\/www\.youtube\.com\/@[^"]+)"/.exec(block[0]);
+  assert.ok(href, 'ссылка на YouTube');
+  const decoded = decodeURIComponent(href[1]);
+  assert.match(decoded, /^https:\/\/www\.youtube\.com\/@\S+$/);
+  assert.ok(!/%[0-9A-F]{2}/i.test(href[1].replace(/@[^/]*/, '')), 'адрес закодирован целиком');
+
+  // Обе языковые версии ведут на один канал.
+  assert.equal((block[0].match(/youtube\.com/g) ?? []).length, 2, 'RU и EN');
+
+  // Плашка: класс есть в разметке и правило есть в стилях обеих тем.
+  assert.equal((block[0].match(/social-icon-plate/g) ?? []).length, 2, 'класс на плашке в обеих версиях');
+  assert.match(css, /\.social-icon \.social-icon-plate \{ fill: #e01b16/);
+  assert.match(css, /body\.dark-theme \.social-icon \.social-icon-plate/);
+
+  // Габариты совпадают с RSS и Email: тот же квадрат 24 × 24 и радиус 4.5.
+  assert.match(block[0], /<rect class="social-icon-plate" width="24" height="24" rx="4\.5"/);
+});
+
+test('вход передачи Buffer использует настоящий node:buffer', async () => {
+  // В Edge Runtime нет глобального Buffer, и подстановка Uint8Array вместо
+  // него давала «97,108,99,…» вместо base64. Gmail отвечал «501 5.5.4»
+  // на AUTH, и подписка падала с «нет связи».
+  const entry = await readFile(resolve(HERE, '../edge/supabase-entry.ts'), 'utf8');
+
+  assert.match(entry, /from 'node:buffer'/, 'Buffer нужно брать из node:buffer');
+  assert.match(entry, /globalThis\.Buffer \?\? BufferImpl/, 'настоящий Buffer передаётся в бандл');
+  assert.ok(
+    !/new Uint8Array\(value\)/.test(entry),
+    'Uint8Array вместо Buffer не кодирует base64',
+  );
+
+  // Проверяем поведение, а не только текст: именно так бандл кодирует
+  // логин в SMTP и тело письма.
+  const real = Buffer.from('alex.typeface@gmail.com', 'utf8').toString('base64');
+  assert.equal(real, 'YWxleC50eXBlZmFjZUBnbWFpbC5jb20=');
+
+  const fake = new TextEncoder().encode('alex.typeface@gmail.com').toString('base64');
+  assert.notEqual(fake, real, 'у Uint8Array base64 не получается — это и роняло отправку');
+});
+
+test('сгенерированный код собирается с настоящими переводами строк', async () => {
+  // Двойной бэкслеш в шаблоне давал литерал «\n» вместо перевода строки,
+  // и весь бандл склеивался в одну строку — new Function падал на
+  // комментарии в начале файла.
+  const entry = await readFile(resolve(HERE, '../edge/supabase-entry.ts'), 'utf8');
+
+  const polyfillMatch = /const polyfill = ('.*');/.exec(entry);
+  assert.ok(polyfillMatch, 'должна быть строка полифилла');
+  const polyfill = eval(polyfillMatch[1]);
+  assert.ok(polyfill.includes('\n'), 'полифилл должен заканчиваться переводом строки');
+  assert.match(polyfill, /BufferImpl/);
+
+  const factory = new Function(
+    'BufferImpl',
+    `"use strict";\n${polyfill}const out = Buffer.from('hi', 'utf8').toString('base64');\nreturn out;`,
+  );
+  assert.equal(factory(Buffer), 'aGk=', 'new Function должен видеть Buffer и настоящий base64');
+});
+
+test('маршруты подтверждения и отписки принимают POST со страницы', async () => {
+  // Письмо ведёт на сайт, сайт шлёт POST { token } и ждёт JSON, а маршруты
+  // принимали только GET и отвечали редиректом. Из браузера это выглядело
+  // как «Нет связи с сервером» — 405 на POST.
+  for (const name of ['confirm', 'unsubscribe']) {
+    const source = await readFile(resolve(HERE, '../..', `api/newsletter/${name}.mjs`), 'utf8');
+
+    assert.match(source, /export async function POST/, `${name}: нужен POST-обработчик`);
+    assert.match(source, /export async function OPTIONS/, `${name}: нужен preflight`);
+    assert.match(source, /Access-Control-Allow-Origin/, `${name}: нужен CORS`);
+    assert.match(source, /result: 'confirmed'|result: 'unsubscribed'/, `${name}: POST отвечает result`);
+    // Сборка должна видеть эти экспорты, иначе маршрут вернёт 405 и на сайте.
+  }
+
+  // Собранный бандл тоже обязан содержать POST у обоих маршрутов.
+  const bundle = await readFile(resolve(HERE, '../edge/index.mjs'), 'utf8');
+  const posts = (bundle.match(/^async function POST\(request\)/gm) ?? []).length;
+  assert.ok(posts >= 3, `в бандле должно быть не меньше трёх POST (подписка, подтверждение, отписка), найдено ${posts}`);
+
+  const page = await readFile(resolve(HERE, '../newsletter.js'), 'utf8');
+  assert.match(page, /method: 'POST'/);
+  assert.match(page, /JSON\.stringify\(\{ token: token \}\)/);
+});
+
+test('вход переводит POST ссылок в GET, пока сайт не обновился', async () => {
+  // Страница берёт бандл с сайта. Пока там старая версия, POST { token }
+  // получает 405 и читатель видит «Нет связи с сервером».
+  const entry = await readFile(resolve(HERE, '../edge/supabase-entry.ts'), 'utf8');
+
+  assert.match(entry, /const POST_TO_GET = new Set\(\[/, 'должен быть список маршрутов');
+  assert.match(entry, /'\/api\/newsletter\/confirm'/, 'подтверждение в списке');
+  assert.match(entry, /'\/api\/newsletter\/unsubscribe'/, 'отписка в списке');
+  assert.match(entry, /response\.status === 405/, 'слой включается только на 405');
+});
