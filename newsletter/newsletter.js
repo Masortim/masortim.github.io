@@ -26,6 +26,11 @@
       network: 'Нет связи с сервером.',
       notConnected: 'Серверная часть рассылки пока не подключена — адрес сохранён не будет.',
       emailPending: 'Адрес принят, но отправка писем ещё настраивается. Подписка оформится, как только почта заработает.',
+      confirmQuestion: 'Подтвердить подписку на этом адресе?',
+      confirmButton: 'Подтвердить подписку',
+      unsubscribeQuestion: 'Отписаться от рассылки на этом адресе?',
+      unsubscribeButton: 'Отписаться',
+      cancelAnswer: 'Ничего не меняю',
       linkPending: 'Подтверждаю подписку…',
       linkWaiting: 'Связываюсь с сервером — это может занять несколько секунд.',
       rejected: 'Сервер не принял адрес. Проверьте его, пожалуйста.',
@@ -44,6 +49,11 @@
       network: 'No connection to the server.',
       notConnected: 'The newsletter backend is not connected yet, so the address will not be saved.',
       emailPending: 'The address was accepted, but email delivery is still being set up. Your subscription will complete once it is ready.',
+      confirmQuestion: 'Confirm the subscription for this address?',
+      confirmButton: 'Confirm subscription',
+      unsubscribeQuestion: 'Unsubscribe this address from the newsletter?',
+      unsubscribeButton: 'Unsubscribe',
+      cancelAnswer: 'Leave it as is',
       linkPending: 'Confirming your subscription…',
       linkWaiting: 'Reaching the server — this may take a few seconds.',
       rejected: 'The server did not accept the address. Please check it.',
@@ -182,6 +192,30 @@
    * ссылка из письма не должна от него зависеть. Страница сама зовёт API —
    * тем же путём, что и форма, включая запасной адрес.
    */
+  /**
+   * Кнопка действия под сообщением: «Подтвердить подписку» или «Отписаться».
+   *
+   * Раньше страница выполняла действие сразу, едва в адресе появлялся токен.
+   * Из-за этого ссылку достаточно было открыть — а такое умеет любой
+   * почтовый клиент, который заранее загружает адрес, чтобы показать превью.
+   * Стоило такому клиенту прогрузить ссылку, и отписка срабатывала сама:
+   * человек нажимал кнопку уже по «мёртвому» токену и получал «ссылка
+   * не подошла». Повторное нажатие — то же сообщение, выхода нет.
+   *
+   * Теперь токен ничего не меняет, пока человек не нажмёт кнопку здесь.
+   */
+  function showActionButton(label, onPress) {
+    if (!notice) return null;
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'newsletter-notice-action';
+    button.appendChild(document.createTextNode(label));
+    button.addEventListener('click', onPress);
+    notice.appendChild(document.createElement('br'));
+    notice.appendChild(button);
+    return button;
+  }
+
   function handleEmailLink() {
     var token = queryParameter('confirm');
     var action = 'confirm';
@@ -198,13 +232,46 @@
       return;
     }
 
+    // Шаг 1: спрашиваем, а не действуем. Токен остаётся в адресе — он нужен
+    // для шага 2, но сам по себе ничего не меняет.
+    showNotice(action === 'confirm' ? texts.confirmQuestion : texts.unsubscribeQuestion, 'info');
+
+    var pressed = showActionButton(
+      action === 'confirm' ? texts.confirmButton : texts.unsubscribeButton,
+      function () {
+        if (pressed && pressed.parentNode) pressed.parentNode.removeChild(pressed);
+        runEmailAction(action, token, texts);
+      }
+    );
+
+    // Отказ тоже должен быть явным: иначе страница с «вопросом» и живым
+    // токеном остаётся открытой и путает при обновлении.
+    if (pressed) {
+      var cancel = document.createElement('button');
+      cancel.type = 'button';
+      cancel.className = 'newsletter-notice-cancel';
+      cancel.appendChild(document.createTextNode(texts.cancelAnswer));
+      cancel.addEventListener('click', function () {
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState(null, '', window.location.pathname);
+        }
+        showNotice('', 'info');
+        hideNotice();
+      });
+      notice.appendChild(document.createTextNode(' '));
+      notice.appendChild(cancel);
+    }
+  }
+
+  /** Шаг 2: выполняет действие после явного нажатия. */
+  function runEmailAction(action, token, texts) {
     showNotice(texts.linkPending, 'info');
     setBusy(true);
     var slow = window.setTimeout(function () {
       showNotice(texts.linkWaiting, 'info');
     }, 4000);
 
-    requestWithFailover(bases, '/api/newsletter/' + action, {
+    requestWithFailover(apiBases(), '/api/newsletter/' + action, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: token }),
