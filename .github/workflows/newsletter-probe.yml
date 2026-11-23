@@ -345,14 +345,16 @@ jobs:
           # На бесплатном плане Vercel запуск best-effort и с точностью «в
           # течение часа», поэтому одно из двух заданий может не состояться.
           echo '--- crons в vercel.json ---'
-          cat vercel.json | tr -d '\n' | sed 's/  */ /g'; echo
           node -e '
-            const cfg = require("./vercel.json");
+            const text = require("fs").readFileSync("vercel.json", "utf8");
+            const cfg = JSON.parse(text);
             const crons = (cfg.crons || []).filter((c) => c.path === "/api/newsletter/digest");
-            const days = crons.map((c) => c.schedule.split(" ").pop());
-            console.log("заданий digest:", crons.length, "-> дни:", days.join(", "));
-            const ok = days.includes("0") && days.includes("1");
-            if (!ok) { console.error("::error::CRON нужны задания на воскресенье (0) и понедельник (1)"); process.exit(1); }
+            const days = crons.map((c) => c.schedule.trim().split(/\s+/).pop());
+            console.log("заданий digest:", crons.length, "-> дни недели:", days.join(", "));
+            if (!days.includes("0") || !days.includes("1")) {
+              console.error("::error::CRON нужны задания на воскресенье (0) и понедельник (1)");
+              process.exit(1);
+            }
             console.log("::notice::CRON расписание: воскресенье + понедельник (09:00 UTC)");
           '
 
