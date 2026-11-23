@@ -2,7 +2,7 @@
    типографика), а не в стиле заметок (Тафти).
 
    Что берём от главной: холст .project-archive (белый лист, узкая
-   колонка min(960px, 76%) по центру, Arial/Helvetica), шестиколоночную
+   колонка min(960px, 76%) по центру, Helvetica), шестиколоночную
    сетку для шапки, чёрные жирные заголовки с плотным трекингом,
    серый пояснительный текст и тонкие линейки.
 
@@ -13,14 +13,18 @@
 
 /* --- Каркас: тот же холст, что у главной ------------------------------- */
 
+/* Гарнитура: Helvetica, а для кириллицы — Helvetica-совместимые шрифты.
+   Подробнее см. комментарий в diary/projects.css: у настоящей Helvetica нет
+   кириллицы, поэтому в стеке стоят Nimbus Sans / Arial. */
 .newsletter-page {
+  --newsletter-font: "Helvetica Neue", Helvetica, "Nimbus Sans", "Liberation Sans", "Helvetica Cyrillic", Arial, sans-serif;
   /* Колонка главной: 960px максимум и 76% окна. */
   width: min(960px, 76%);
   margin: 0 auto;
   color: #111;
   background: #fff;
-  /* База главной — Arial. Кегль тела 21px — как текст заметок у Тафти. */
-  font: 400 21px/1.43 Arial, Helvetica, sans-serif;
+  /* База главной — Helvetica. Кегль тела 21px — как текст заметок у Тафти. */
+  font: 400 21px/1.43 var(--newsletter-font);
   -webkit-hyphens: none;
   hyphens: none;
 }
@@ -117,7 +121,7 @@ body.dark-theme.newsletter-page .newsletter-summary { color: #b4b4b4; }
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--newsletter-font);
   font-size: 12px;
 }
 
@@ -130,7 +134,7 @@ body.dark-theme.newsletter-page .newsletter-summary { color: #b4b4b4; }
   color: #555;
   background: #eee;
   cursor: pointer;
-  font: 700 12px/1.2 Arial, Helvetica, sans-serif;
+  font: 700 12px/1.2 var(--newsletter-font);
   letter-spacing: .02em;
 }
 
@@ -149,7 +153,7 @@ body.dark-theme.newsletter-page .newsletter-summary { color: #b4b4b4; }
   color: #fff;
   background: #111;
   cursor: pointer;
-  font: 12px/1 Arial, Helvetica, sans-serif;
+  font: 12px/1 var(--newsletter-font);
   transform: none;
 }
 
@@ -216,7 +220,7 @@ body.dark-theme.newsletter-page .newsletter-label { color: #b4b4b4; }
   border-radius: 0;
   background: #f3f3f3;
   color: #111;
-  font: 400 21px/1.43 Arial, Helvetica, sans-serif;
+  font: 400 21px/1.43 var(--newsletter-font);
 }
 
 .newsletter-input:focus { outline: 2px solid #111; outline-offset: 1px; }
@@ -238,7 +242,7 @@ body.dark-theme.newsletter-page .newsletter-input:focus { outline-color: #eee; }
   background: #111;
   color: #fff;
   cursor: pointer;
-  font: 700 21px/1.43 Arial, Helvetica, sans-serif;
+  font: 700 21px/1.43 var(--newsletter-font);
   letter-spacing: -.01em;
 }
 
@@ -283,7 +287,7 @@ body.dark-theme.newsletter-page .newsletter-hint { color: #b4b4b4; }
   border-radius: 4px;
   background: #111;
   color: #fff;
-  font: 700 17px/1.2 Arial, Helvetica, sans-serif;
+  font: 700 17px/1.2 var(--newsletter-font);
   cursor: pointer;
 }
 
