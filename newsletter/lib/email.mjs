@@ -10,13 +10,6 @@ import { sendViaSmtp } from './smtp.mjs';
 const SITE = process.env.NEWSLETTER_SITE ?? 'https://masortim.github.io';
 
 /**
- * Адрес серверных функций. Сайт на GitHub Pages, функции живут отдельно,
- * поэтому запросы формы идут на API, а не на SITE.
- * Если переменная не задана (локальный прогон), берётся тот же origin.
- */
-const API = (process.env.NEWSLETTER_API_BASE ?? SITE).replace(/\/$/, '');
-
-/**
  * Куда ведут кнопки в письмах.
  *
  * Только на САЙТ, никогда на домен функций. Причина: домен функции может

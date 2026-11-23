@@ -23,7 +23,16 @@ function element() {
   return {
     value: '', disabled: false, hidden: false, className: '', textContent: '',
     listeners: {},
+    children: [],
     addEventListener(type, handler) { this.listeners[type] = handler; },
+    appendChild(child) {
+      this.children.push(child);
+      // Так же, как в браузере: текст узла складывается в textContent.
+      if (child && typeof child.text === 'string') this.textContent += child.text;
+      else if (child && typeof child.textContent === 'string') this.textContent += child.textContent;
+      return child;
+    },
+    removeChild(child) { this.children = this.children.filter((item) => item !== child); return child; },
     setAttribute() {},
     focus() {},
   };
@@ -63,6 +72,9 @@ async function load({ search = '', storage = {}, fetch: fetchImpl } = {}) {
     querySelector: (selector) => parts[selector] ?? null,
     querySelectorAll: () => [],
     documentElement: { lang: 'ru' },
+    // Кнопки подтверждения создаются на лету: нужен минимальный узел.
+    createElement: () => element(),
+    createTextNode: (text) => ({ text }),
   };
 
   // Скрипт рассчитан на браузер и берёт window/document при выполнении.
@@ -139,27 +151,69 @@ test('рабочий адрес запоминается и идёт первы�
   assert.ok(env.calls[0].startsWith(VERCEL), 'запомненный адрес должен быть первым');
 });
 
-test('ссылка подтверждения из письма обрабатывается страницей', async () => {
+test('ссылка из письма ждёт нажатия и только потом действует', async () => {
+  // Почтовый клиент может заранее загрузить адрес из письма, чтобы показать
+  // превью. Если страница действует сразу, отписка срабатывает без человека,
+  // и кнопка «Отписаться» потом натыкается на мёртвый токен — «ссылка
+  // не подошла». Поэтому первый заход обязан только спросить.
+  const env = await load({
+    search: '?unsubscribe=TOKEN123&lang=ru',
+    fetch: async () => new Response('{"result":"unsubscribed"}', { status: 200 }),
+  });
+  await new Promise((done) => setTimeout(done, 50));
+  const notice = env.parts['#newsletter-notice'];
+
+  assert.deepEqual(env.calls, [], 'ни одного запроса до нажатия');
+  assert.match(notice.textContent, /отписаться/i, 'страница спрашивает');
+
+  const action = notice.children.find((child) => child.className === 'newsletter-notice-action');
+  assert.ok(action, 'есть кнопка действия');
+  assert.equal(action.textContent, 'Отписаться');
+
+  action.listeners.click();
+  await new Promise((done) => setTimeout(done, 50));
+
+  assert.ok(env.calls.some((url) => url.endsWith('/api/newsletter/unsubscribe')), env.calls.join(', '));
+  assert.match(notice.textContent, /отписаны/i);
+  assert.equal(env.window.history._last, '/newsletter/', 'токен убран из адреса');
+});
+
+test('подтверждение подписки тоже требует нажатия', async () => {
   const env = await load({
     search: '?confirm=TOKEN123&lang=ru',
     fetch: async () => new Response('{"result":"confirmed"}', { status: 200 }),
   });
   await new Promise((done) => setTimeout(done, 50));
   const notice = env.parts['#newsletter-notice'];
-  assert.ok(env.calls.some((url) => url.endsWith('/api/newsletter/confirm')), env.calls.join(', '));
+
+  assert.deepEqual(env.calls, [], 'предзагрузка ссылки ничего не подтверждает');
+  assert.match(notice.textContent, /подтвердить подписку/i);
+
+  const action = notice.children.find((child) => child.className === 'newsletter-notice-action');
+  assert.ok(action);
+  action.listeners.click();
+  await new Promise((done) => setTimeout(done, 50));
+
+  assert.ok(env.calls.some((url) => url.endsWith('/api/newsletter/confirm')));
   assert.match(notice.textContent, /подтверждена/i);
-  // Токен убираем из адреса: обновление страницы не должно подтверждать снова.
-  assert.equal(env.window.history._last, '/newsletter/');
 });
 
-test('ссылка отписки из письма обрабатывается страницей', async () => {
+test('отказ оставляет подписку как есть и убирает токен', async () => {
   const env = await load({
     search: '?unsubscribe=TOKEN123&lang=ru',
     fetch: async () => new Response('{"result":"unsubscribed"}', { status: 200 }),
   });
   await new Promise((done) => setTimeout(done, 50));
-  assert.ok(env.calls.some((url) => url.endsWith('/api/newsletter/unsubscribe')));
-  assert.match(env.parts['#newsletter-notice'].textContent, /отписаны/i);
+  const notice = env.parts['#newsletter-notice'];
+
+  const cancel = notice.children.find((child) => child.className === 'newsletter-notice-cancel');
+  assert.ok(cancel, 'есть кнопка отказа');
+  cancel.listeners.click();
+  await new Promise((done) => setTimeout(done, 50));
+
+  assert.deepEqual(env.calls, [], 'отказ не ходит на сервер');
+  assert.equal(env.window.history._last, '/newsletter/');
+  assert.equal(notice.hidden, true, 'сообщение убрано');
 });
 
 test('устаревший токен — понятное сообщение, а не «нет связи»', async () => {
@@ -168,7 +222,13 @@ test('устаревший токен — понятное сообщение, �
     fetch: async () => new Response('{"error":"not_found"}', { status: 404 }),
   });
   await new Promise((done) => setTimeout(done, 50));
-  assert.match(env.parts['#newsletter-notice'].textContent, /устарела/i);
+  const notice = env.parts['#newsletter-notice'];
+
+  const action = notice.children.find((child) => child.className === 'newsletter-notice-action');
+  action.listeners.click();
+  await new Promise((done) => setTimeout(done, 50));
+
+  assert.match(notice.textContent, /устарела/i);
 });
 
 test('адрес API в конфиге совпадает с развёрнутой функцией', async () => {

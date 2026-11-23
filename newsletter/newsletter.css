@@ -272,6 +272,48 @@ body.dark-theme.newsletter-page .newsletter-hint { color: #b4b4b4; }
   line-height: 1.43;
 }
 
+/* Кнопки под сообщением: «Подтвердить подписку» / «Отписаться» и отказ.
+   Действие выполняется только по нажатию — почтовый клиент, заранее
+   загрузивший ссылку, больше ничего не меняет. */
+.newsletter-page .newsletter-notice-action,
+.newsletter-page .newsletter-notice-cancel {
+  margin: 10px 8px 0 0;
+  padding: 8px 14px;
+  border: 1px solid #111;
+  border-radius: 4px;
+  background: #111;
+  color: #fff;
+  font: 700 17px/1.2 Arial, Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.newsletter-page .newsletter-notice-cancel {
+  border-color: #bbb;
+  background: transparent;
+  color: #111;
+  font-weight: 400;
+}
+
+.newsletter-page .newsletter-notice-action:hover { background: #333; }
+
+.newsletter-page .newsletter-notice-cancel:hover { border-color: #111; }
+
+body.dark-theme.newsletter-page .newsletter-notice-action {
+  border-color: #eee;
+  background: #eee;
+  color: #161513;
+}
+
+body.dark-theme.newsletter-page .newsletter-notice-action:hover { background: #fff; }
+
+body.dark-theme.newsletter-page .newsletter-notice-cancel {
+  border-color: #666;
+  background: transparent;
+  color: #eee;
+}
+
+body.dark-theme.newsletter-page .newsletter-notice-cancel:hover { border-color: #eee; }
+
 .newsletter-notice--ok { border-left-color: #2f7d32; }
 .newsletter-notice--error { border-left-color: #b3261e; }
 .newsletter-notice--info { border-left-color: #111; }
