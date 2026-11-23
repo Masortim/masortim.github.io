@@ -99,23 +99,36 @@ const link = emails[0].text.match(/https:\/\/\S+confirm\?token=\S+/)?.[0];
 ok(`ссылка ведёт на API: ${link.split('?')[0]}`, link.startsWith('https://masortim-newsletter.vercel.app/api/newsletter/confirm'));
 
 const token = new URL(link).searchParams.get('token');
-const conf = await req('/api/newsletter/confirm?token=' + encodeURIComponent(token));
-ok(`подтверждение редиректит: ${conf.headers.get('location')}`,
-  conf.status === 302 && conf.headers.get('location').includes('state=confirmed'));
+
+// Ссылку из письма может открыть почтовый клиент заранее — сам по себе
+// заход ничего не подтверждает.
+const prefetch = await req('/api/newsletter/confirm?token=' + encodeURIComponent(token));
+ok(`предзагрузка ведёт на страницу с кнопкой: ${prefetch.headers.get('location')}`,
+  prefetch.status === 302 && prefetch.headers.get('location').includes(`confirm=${token}`));
+ok(`предзагрузка не меняет статус: ${[...rows.values()][0].status}`,
+  [...rows.values()][0].status === 'pending');
+
+const conf = await post('/api/newsletter/confirm', { token });
+ok(`подтверждение по POST: ${conf.status}`,
+  conf.status === 200 && (await conf.json()).result === 'confirmed');
 ok(`статус confirmed`, [...rows.values()][0].status === 'confirmed');
 ok(`приветственное письмо: «${emails[1]?.subject}»`, emails.length === 2);
 
 // 3. Повторное подтверждение
-const again = await req('/api/newsletter/confirm?token=' + encodeURIComponent(token));
-ok(`повторное подтверждение: ${again.headers.get('location').split('?')[1]}`,
-  again.headers.get('location').includes('state=already'));
+const again = await post('/api/newsletter/confirm', { token });
+ok(`повторное подтверждение: ${(await again.json()).result}`,
+  again.status === 200 && (await post('/api/newsletter/confirm', { token }).then((r) => r.status)) === 200);
 
 // 4. Отписка по ссылке из приветственного письма
 const unsubLink = emails[1].text.match(/https:\/\/\S+unsubscribe\?token=\S+/)[0];
 const unsubToken = new URL(unsubLink).searchParams.get('token');
-const unsub = await req('/api/newsletter/unsubscribe?token=' + encodeURIComponent(unsubToken));
-ok(`отписка: ${unsub.headers.get('location').split('?')[1]}`,
-  unsub.headers.get('location').includes('state=unsubscribed'));
+const unsubPage = await req('/api/newsletter/unsubscribe?token=' + encodeURIComponent(unsubToken));
+ok(`ссылка отписки ведёт на страницу: ${unsubPage.headers.get('location')}`,
+  unsubPage.headers.get('location').includes(`unsubscribe=${unsubToken}`));
+const unsub = await post('/api/newsletter/unsubscribe', { token: unsubToken });
+const unsubBody = await unsub.json();
+ok(`отписка по POST: ${unsub.status} ${unsubBody.result}`,
+  unsub.status === 200 && unsubBody.result === 'unsubscribed');
 ok(`строка удалена из базы (${rows.size})`, rows.size === 0);
 
 // 5. Повторная подписка отписавшегося — для базы это новый адрес, язык EN
@@ -135,8 +148,8 @@ const bad = await post('/api/newsletter/subscribe', { email: 'not-an-email', lan
 ok(`невалидный адрес: 400`, bad.status === 400 && (await bad.json()).error === 'invalid_email');
 
 // 8. Неизвестный токен
-const unknown = await req('/api/newsletter/confirm?token=unknown-token');
-ok(`неизвестный токен: state=invalid`, unknown.headers.get('location').includes('state=invalid'));
+const unknown = await post('/api/newsletter/confirm', { token: 'unknown-token' });
+ok(`неизвестный токен: ${unknown.status}`, unknown.status === 404);
 
 // 9. Служебный эндпоинт токена закрыт секретом и отдаёт токен по ключу
 // Проба в Actions проходит подтверждение именно через него.
