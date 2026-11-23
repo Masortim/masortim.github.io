@@ -33,6 +33,11 @@ const __store = (() => {
  */
 
 const TABLE = 'newsletter_subscribers';
+// Состояние рассылки: когда ушёл прошлый выпуск. Отдельная таблица, а не
+// файл и не переменная: серверных функций несколько, они не помнят ничего
+// между вызовами, а выпуск должен уходить ровно один раз в неделю.
+const STATE_TABLE = 'newsletter_state';
+const STATE_ID = 'digest';
 
 function createStore(options = {}) {
   const url = options.url ?? process.env.SUPABASE_URL ?? '';
@@ -45,8 +50,16 @@ function createStore(options = {}) {
 /** Память процесса: локальная разработка и тесты. */
 function createMemoryStore() {
   let data = { version: 1, subscribers: [] };
+  let state = { lastDigestAt: null, lastDigestIsoDate: null, lastNoteDate: null };
   return {
     kind: 'memory',
+    async readState() {
+      return { ...state };
+    },
+    async writeState(next) {
+      state = { ...state, ...next };
+      return true;
+    },
     async read() {
       return JSON.parse(JSON.stringify(data));
     },
@@ -118,6 +131,37 @@ function createSupabaseStore({ url, key }) {
 
   return {
     kind: 'supabase',
+
+    /**
+     * Состояние рассылки. Если таблицы нет или строки нет — считаем, что
+     * выпусков ещё не было; это не ошибка, а первый запуск.
+     */
+    async readState() {
+      const response = await request(`${STATE_TABLE}?id=eq.${STATE_ID}&select=*`);
+      const rows = await response.json();
+      const row = Array.isArray(rows) ? rows[0] : null;
+      if (!row) return { lastDigestAt: null, lastDigestIsoDate: null, lastNoteDate: null };
+      return {
+        lastDigestAt: row.last_digest_at ?? null,
+        lastDigestIsoDate: row.last_digest_iso_date ?? null,
+        lastNoteDate: row.last_note_date ?? null,
+      };
+    },
+
+    async writeState(next) {
+      await request(`${STATE_TABLE}?on_conflict=id`, {
+        method: 'POST',
+        headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify([{
+          id: STATE_ID,
+          last_digest_at: next.lastDigestAt ?? null,
+          last_digest_iso_date: next.lastDigestIsoDate ?? null,
+          last_note_date: next.lastNoteDate ?? null,
+          updated_at: new Date().toISOString(),
+        }]),
+      });
+      return true;
+    },
 
     async read() {
       const response = await request(`${TABLE}?select=*&order=created_at.asc`);
@@ -953,6 +997,135 @@ async function collectNotes({ site, limit = 20 } = {}) {
 return { toText, parseNote, collectNotes };
 })();
 
+// ─── newsletter/lib/digest.mjs ───
+const __digest = (() => {
+/**
+ * Логика еженедельного выпуска.
+ *
+ * Вынесена из обработчика, чтобы правила отправки можно было проверить
+ * тестами без сети: что уходит только новое, что в одну неделю выпуск
+ * бывает один раз и что пробный прогон не трогает живых подписчиков.
+ *
+ * Правила:
+ *
+ *   1. Выпуск — раз в неделю. Если прошлый ушёл меньше семи дней назад,
+ *      повторный запуск ничего не отправляет (duplicate_week). Это защита
+ *      от двух вещей сразу: от страховочного запуска в понедельник после
+ *      удачного воскресного и от повторного срабатывания cron на стороне
+ *      Vercel, которое та допускает.
+ *
+ *   2. В письмо идут только новые записи — свежее даты прошлого выпуска.
+ *      Нет ничего нового — письма нет (no_new_notes). Повторять «три
+ *      последние» нельзя: подписчик получал один и тот же выпуск дважды.
+ *
+ *   3. Первый выпуск (истории нет) отправляет только самые свежие записи,
+ *      а не весь архив: иначе человеку прилетит письмо про 2021 год.
+ *
+ *   4. Пробный режим (test_to) отправляет настоящее письмо ровно одному
+ *      адресу и не двигает дату выпуска. Так внешняя проверка видит
+ *      реальную доставку, а живые подписчики ничего лишнего не получают.
+ */
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+/** Сколько записей максимум попадает в выпуск. */
+const MAX_NOTES = 3;
+
+/** Сколько записей берёт первый выпуск, когда истории ещё нет. */
+const FIRST_DIGEST_NOTES = 1;
+
+function toIsoDate(value) {
+  const text = String(value ?? '').trim();
+  return /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : null;
+}
+
+/**
+ * Решает, что отправить.
+ *
+ * Возвращает одно из:
+ *   { action: 'dry', notes, recipients } — только показать, без отправки;
+ *   { action: 'send', notes, recipients, state } — отправить и запомнить state;
+ *   { action: 'week', reason: 'duplicate_week' } — в эту неделю уже был выпуск;
+ *   { action: 'none', reason: 'no_notes' | 'no_new_notes' | 'no_subscribers' }.
+ */
+function planDigest({ notes, subscribers, state, now = new Date(), testTo = '', dryRun = false }) {
+  const allNotes = Array.isArray(notes) ? notes.filter(Boolean) : [];
+  if (!allNotes.length) return { action: 'none', reason: 'no_notes' };
+
+  // Свежие сверху — на это опираются срезы ниже.
+  const sorted = [...allNotes].sort((a, b) => (a.date < b.date ? 1 : -1));
+
+  const lastAt = state?.lastDigestAt ? new Date(state.lastDigestAt) : null;
+  // Дата прошлого выпуска: колонка ISO-даты надёжнее, чем разбор timestamp.
+  // Если её нет (старая строка), выводим из времени отправки.
+  const lastDate = toIsoDate(state?.lastNoteDate)
+    ?? (lastAt && !Number.isNaN(lastAt.getTime()) ? lastAt.toISOString().slice(0, 10) : null);
+
+  // Пробный прогон: собрать письмо по тем же правилам, но без памяти недели
+  // и без изменения состояния.
+  if (testTo) {
+    const sample = lastDate
+      ? sorted.filter((n) => n.date > lastDate).slice(0, MAX_NOTES)
+      : sorted.slice(0, FIRST_DIGEST_NOTES);
+    // Новых записей нет — всё равно шлём пробу, иначе нечем проверить
+    // доставку. Берём самую свежую запись, письмо помечается как пробное.
+    const notesForTest = sample.length ? sample : sorted.slice(0, 1);
+    return {
+      action: 'test',
+      notes: notesForTest,
+      recipients: [{ email: testTo, lang: 'ru' }],
+      state: null,
+      sample: !sample.length,
+    };
+  }
+
+  // Правило недели: повторный запуск в те же семь дней молчит.
+  if (lastAt && !Number.isNaN(lastAt.getTime()) && now.getTime() - lastAt.getTime() < WEEK_MS) {
+    return { action: 'week', reason: 'duplicate_week', lastDigestAt: lastAt.toISOString() };
+  }
+
+  const recipients = Array.isArray(subscribers) ? subscribers : [];
+  if (!recipients.length) return { action: 'none', reason: 'no_subscribers' };
+
+  const fresh = lastDate
+    ? sorted.filter((n) => n.date > lastDate)
+    : sorted.slice(0, FIRST_DIGEST_NOTES);
+
+  if (!fresh.length) {
+    return {
+      action: 'none',
+      reason: lastDate ? 'no_new_notes' : 'no_notes',
+      lastNoteDate: lastDate,
+      recipients: recipients.length,
+    };
+  }
+
+  const chosen = fresh.slice(0, MAX_NOTES);
+  return {
+    action: dryRun ? 'dry' : 'send',
+    notes: chosen,
+    recipients,
+    // Запоминаем самую свежую из отправленных записей: следующая неделя
+    // возьмёт только то, что появилось после неё.
+    state: {
+      lastDigestAt: now.toISOString(),
+      lastDigestIsoDate: now.toISOString().slice(0, 10),
+      lastNoteDate: chosen[0].date,
+    },
+  };
+}
+
+/** Тексты для разных исходов: без «ошибки» там, где всё в порядке. */
+const DIGEST_REASONS = {
+  no_notes: 'заметок для выпуска нет',
+  no_new_notes: 'новых заметок нет — письмо не отправлено',
+  no_subscribers: 'подписчиков нет — письмо не отправлено',
+  duplicate_week: 'выпуск за эту неделю уже отправлен',
+};
+
+return { planDigest, DIGEST_REASONS };
+})();
+
 // ─── api/newsletter/subscribe.mjs ───
 const __subscribeApi = (() => {
 const { createStore } = __store;
@@ -1148,9 +1321,10 @@ return { GET };
 // ─── api/newsletter/digest.mjs ───
 const __digestApi = (() => {
 const { createStore } = __store;
-const { confirmedSubscribers } = __subscribers;
+const { confirmedSubscribers, isValidEmail, normalizeEmail } = __subscribers;
 const { digestEmail, send } = __email;
 const { collectNotes } = __notes;
+const { planDigest, DIGEST_REASONS } = __digest;
 /**
  * GET /api/newsletter/digest
  *
@@ -1158,12 +1332,17 @@ const { collectNotes } = __notes;
  * с заголовком Authorization: Bearer ${CRON_SECRET}.
  *
  * Параметры:
- *   ?since=YYYY-MM-DD  — отправлять записи начиная с даты (по умолчанию три последние)
- *   ?dry_run=1         — показать получателей, ничего не отправляя
+ *   ?since=YYYY-MM-DD  — считать новые записи начиная с этой даты
+ *   ?dry_run=1         — показать получателей и записи, ничего не отправляя
+ *   ?test_to=адрес     — отправить настоящее письмо ровно этому адресу и
+ *                        не запоминать выпуск. Нужен внешней проверке:
+ *                        она видит реальную доставку, а живые подписчики
+ *                        не получают лишних писем.
  *
- * Записи берутся с сайта (те же страницы diary/<slug>/index.html, что и у RSS),
- * поэтому новый каталог заметки попадает в выпуск автоматически.
+ * Правила отправки живут в newsletter/lib/digest.mjs: раз в неделю, только
+ * новые записи, повторный запуск молчит.
  */
+
 
 
 
@@ -1187,12 +1366,32 @@ function authorized(request) {
   return header === `Bearer ${secret}`;
 }
 
+/** Письмо с записями выпуска на одном языке. */
+function buildMessage({ email, lang, token, notes, test = false }) {
+  const message = digestEmail({
+    email,
+    lang,
+    token,
+    notes: notes.map((n) => ({
+      slug: n.slug,
+      title: lang === 'en' ? n.titleEn : n.titleRu,
+      dek: lang === 'en' ? n.dekEn : n.dekRu,
+    })),
+  });
+  if (!test) return message;
+  // Пробное письмо помечаем в теме: иначе человек примет его за настоящий
+  // выпуск и решит, что рассылка сломалась или прислала старое.
+  return { ...message, subject: `[проба] ${message.subject}` };
+}
+
 async function GET(request) {
   if (!authorized(request)) return json(401, { error: 'unauthorized' });
 
   const url = new URL(request.url);
   const since = url.searchParams.get('since') ?? '';
   const dryRun = url.searchParams.get('dry_run') === '1';
+  const testTo = normalizeEmail(url.searchParams.get('test_to') ?? '');
+  if (testTo && !isValidEmail(testTo)) return json(400, { error: 'invalid_test_to' });
 
   let notes;
   try {
@@ -1202,34 +1401,73 @@ async function GET(request) {
     return json(502, { error: 'notes_unavailable' });
   }
 
-  const fresh = since ? notes.filter((n) => n.date >= since) : notes.slice(0, 3);
-  if (!fresh.length) return json(200, { ok: true, sent: 0, reason: 'no_notes' });
+  // Явный ?since= перекрывает память: ручной запуск за нужный период.
+  const dated = since ? notes.filter((n) => n.date >= since) : notes;
 
   const store = createStore();
-  const subscribers = await confirmedSubscribers(store);
+  let state = { lastDigestAt: null, lastDigestIsoDate: null, lastNoteDate: null };
+  let subscribers = [];
+  try {
+    if (typeof store.readState === 'function') state = await store.readState();
+    // Для пробного прогона список живых подписчиков не нужен вовсе.
+    if (!testTo) subscribers = await confirmedSubscribers(store);
+  } catch (error) {
+    console.error('digest: failed to read state', error);
+    return json(500, { error: 'state_unavailable' });
+  }
 
-  if (dryRun) {
+  const plan = planDigest({
+    notes: dated,
+    subscribers,
+    state,
+    now: new Date(),
+    testTo,
+    dryRun,
+  });
+
+  if (plan.action === 'none') {
+    const reason = plan.reason ?? 'no_notes';
+    return json(200, {
+      ok: true,
+      sent: 0,
+      reason,
+      message: DIGEST_REASONS[reason] ?? reason,
+      lastNoteDate: plan.lastNoteDate ?? null,
+      recipients: plan.recipients ?? 0,
+    });
+  }
+
+  if (plan.action === 'week') {
+    return json(200, {
+      ok: true,
+      sent: 0,
+      reason: 'duplicate_week',
+      message: DIGEST_REASONS.duplicate_week,
+      lastDigestAt: plan.lastDigestAt,
+    });
+  }
+
+  const summary = plan.notes.map((n) => ({ slug: n.slug, date: n.date, title: n.titleRu }));
+
+  if (plan.action === 'dry') {
     return json(200, {
       ok: true,
       dryRun: true,
-      notes: fresh.map((n) => ({ slug: n.slug, date: n.date, title: n.titleRu })),
-      recipients: subscribers.map((s) => ({ email: s.email, lang: s.lang })),
+      notes: summary,
+      recipients: plan.recipients.map((s) => ({ email: s.email, lang: s.lang })),
     });
   }
 
   let sent = 0;
   const failed = [];
-  for (const subscriber of subscribers) {
+  for (const subscriber of plan.recipients) {
     const lang = subscriber.lang === 'en' ? 'en' : 'ru';
-    const message = digestEmail({
+    const message = buildMessage({
       email: subscriber.email,
       lang,
       token: subscriber.token,
-      notes: fresh.map((n) => ({
-        slug: n.slug,
-        title: lang === 'en' ? n.titleEn : n.titleRu,
-        dek: lang === 'en' ? n.dekEn : n.dekRu,
-      })),
+      notes: plan.notes,
+      test: plan.action === 'test',
     });
     const result = await send(message);
     if (result.ok) sent += 1;
@@ -1237,7 +1475,39 @@ async function GET(request) {
   }
 
   for (const f of failed) console.error(`digest: ${f.email}: ${f.error}`);
-  return json(200, { ok: true, sent, failed: failed.length, notes: fresh.length });
+
+  if (plan.action === 'test') {
+    return json(sent ? 200 : 502, {
+      ok: sent > 0,
+      test: true,
+      sent,
+      failed: failed.length,
+      notes: summary,
+      sample: Boolean(plan.sample),
+      reason: plan.sample ? 'no_new_notes' : undefined,
+      message: plan.sample ? 'новых заметок нет — отправлена проба на последней записи' : undefined,
+    });
+  }
+
+  // Состояние двигаем только после того, как выпуск действительно ушёл:
+  // иначе неудачная отправка «съела» бы неделю и письма не было бы вовсе.
+  let stateSaved = true;
+  if (sent > 0 && plan.state) {
+    try {
+      await store.writeState(plan.state);
+    } catch (error) {
+      stateSaved = false;
+      console.error('digest: failed to save state', error);
+    }
+  }
+
+  return json(200, {
+    ok: sent > 0,
+    sent,
+    failed: failed.length,
+    notes: plan.notes.length,
+    stateSaved,
+  });
 }
 
 return { GET };

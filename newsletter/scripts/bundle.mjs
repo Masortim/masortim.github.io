@@ -29,6 +29,7 @@ const MODULES = [
   { name: '__subscribers', file: 'newsletter/lib/subscribers.mjs' },
   { name: '__email', file: 'newsletter/lib/email.mjs' },
   { name: '__notes', file: 'newsletter/lib/notes.mjs' },
+  { name: '__digest', file: 'newsletter/lib/digest.mjs' },
   { name: '__subscribeApi', file: 'api/newsletter/subscribe.mjs' },
   { name: '__confirmApi', file: 'api/newsletter/confirm.mjs' },
   { name: '__unsubscribeApi', file: 'api/newsletter/unsubscribe.mjs' },
@@ -154,7 +155,16 @@ await writeFile(target, `${code}\n`, 'utf8');
 console.log(`собрано: ${target} (${code.length} байт)`);
 
 // vercel.json для деплоя: только cron. Настройки функции задаются в проекте.
-const deployConfig = { crons: [{ path: '/api/newsletter/digest', schedule: '0 9 * * 0' }] };
+// Воскресенье — штатный выпуск, понедельник — страховка: на бесплатном плане
+// Vercel cron срабатывает best-effort и с точностью «в течение часа», поэтому
+// воскресный запуск может не состояться. Понедельничный его догоняет, а
+// правило «один выпуск в неделю» внутри функции не даёт отправить дважды.
+const deployConfig = {
+  crons: [
+    { path: '/api/newsletter/digest', schedule: '0 9 * * 0' },
+    { path: '/api/newsletter/digest', schedule: '0 9 * * 1' },
+  ],
+};
 await writeFile(
   resolve(ROOT, 'newsletter/edge/vercel.json'),
   `${JSON.stringify(deployConfig, null, 2)}\n`,
