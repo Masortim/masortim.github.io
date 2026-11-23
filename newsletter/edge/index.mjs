@@ -1241,10 +1241,10 @@ const { createStore } = __store;
 const { confirm } = __subscribers;
 const { send, welcomeEmail } = __email;
 /**
- * GET /api/newsletter/confirm?token=…
- *
- * Подтверждает подписку и уводит читателя на страницу с результатом.
- * Страница сама показывает нужный язык по ?lang=.
+ * GET  /api/newsletter/confirm?token=…  — ссылка из письма: подтверждает
+ *      подписку и уводит читателя на страницу с результатом.
+ * POST /api/newsletter/confirm  { token } — тот же шаг, но со страницы:
+ *      она сама показывает сообщение, поэтому отвечаем JSON, без редиректа.
  */
 
 
@@ -1256,10 +1256,38 @@ function redirect(path) {
   return new Response(null, { status: 302, headers: { Location: `${SITE}${path}`, 'Cache-Control': 'no-store' } });
 }
 
-async function GET(request) {
-  const url = new URL(request.url);
-  const token = url.searchParams.get('token') ?? '';
-  if (!token) return redirect('/newsletter/?state=invalid&lang=ru');
+function json(status, payload) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
+      'Access-Control-Allow-Origin': SITE,
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
+}
+
+/** Preflight: страница и API на разных доменах. */
+async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': SITE,
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
+}
+
+/**
+ * Общий шаг подтверждения для GET и POST.
+ * Возвращает { status, payload } — его и отдаёт каждый маршрут по-своему.
+ */
+async function runConfirm(token) {
+  if (!token) return { status: 400, payload: { error: 'not_found' } };
 
   const store = createStore();
   let outcome;
@@ -1267,21 +1295,41 @@ async function GET(request) {
     outcome = await confirm({ store, token });
   } catch (error) {
     console.error('confirm failed', error);
-    return redirect('/newsletter/?state=error&lang=ru');
+    return { status: 500, payload: { error: 'server_error' } };
   }
 
-  if (outcome.result === 'not_found') return redirect('/newsletter/?state=invalid&lang=ru');
+  if (outcome.result === 'not_found') return { status: 404, payload: { error: 'not_found' } };
 
   const lang = outcome.subscriber?.lang === 'en' ? 'en' : 'ru';
   if (outcome.result === 'confirmed') {
     const result = await send(welcomeEmail({ email: outcome.subscriber.email, lang, token }));
     if (!result.ok) console.error('welcome email failed', result.error);
-    return redirect(`/newsletter/?state=confirmed&lang=${lang}`);
+    return { status: 200, payload: { result: 'confirmed', lang } };
   }
-  return redirect(`/newsletter/?state=already&lang=${lang}`);
+  return { status: 200, payload: { result: 'already', lang } };
 }
 
-return { GET };
+async function GET(request) {
+  const url = new URL(request.url);
+  const token = url.searchParams.get('token') ?? '';
+  const { status, payload } = await runConfirm(token);
+  if (payload.error === 'not_found') return redirect('/newsletter/?state=invalid&lang=ru');
+  if (status === 500) return redirect('/newsletter/?state=error&lang=ru');
+  return redirect(`/newsletter/?state=${payload.result}&lang=${payload.lang}`);
+}
+
+async function POST(request) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json(400, { error: 'invalid_json' });
+  }
+  const { status, payload } = await runConfirm(String(body?.token ?? ''));
+  return json(status, payload);
+}
+
+return { OPTIONS, GET, POST };
 })();
 
 // ─── api/newsletter/unsubscribe.mjs ───
@@ -1289,9 +1337,10 @@ const __unsubscribeApi = (() => {
 const { createStore } = __store;
 const { unsubscribe } = __subscribers;
 /**
- * GET /api/newsletter/unsubscribe?token=…
- *
- * Отписывает адрес и уводит читателя на страницу с результатом.
+ * GET  /api/newsletter/unsubscribe?token=…  — ссылка из письма: отписывает
+ *      адрес и уводит читателя на страницу с результатом.
+ * POST /api/newsletter/unsubscribe  { token } — тот же шаг со страницы:
+ *      отвечаем JSON, сообщение показывает сама страница.
  */
 
 
@@ -1302,10 +1351,38 @@ function redirect(path) {
   return new Response(null, { status: 302, headers: { Location: `${SITE}${path}`, 'Cache-Control': 'no-store' } });
 }
 
-async function GET(request) {
-  const url = new URL(request.url);
-  const token = url.searchParams.get('token') ?? '';
-  if (!token) return redirect('/newsletter/?state=invalid&lang=ru');
+function json(status, payload) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
+      'Access-Control-Allow-Origin': SITE,
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
+}
+
+/** Preflight: страница и API на разных доменах. */
+async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': SITE,
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
+}
+
+/**
+ * Общий шаг отписки для GET и POST.
+ * Возвращает { status, payload } — маршрут отдаёт его по-своему.
+ */
+async function runUnsubscribe(token) {
+  if (!token) return { status: 400, payload: { error: 'not_found' } };
 
   const store = createStore();
   let outcome;
@@ -1313,24 +1390,44 @@ async function GET(request) {
     outcome = await unsubscribe({ store, token });
   } catch (error) {
     console.error('unsubscribe failed', error);
-    return redirect('/newsletter/?state=error&lang=ru');
+    return { status: 500, payload: { error: 'server_error' } };
   }
 
-  if (outcome.result === 'not_found') return redirect('/newsletter/?state=invalid&lang=ru');
+  if (outcome.result === 'not_found') return { status: 404, payload: { error: 'not_found' } };
 
   // Строку убираем из базы: отписавшийся адрес не должен храниться.
   try {
     await store.remove(outcome.subscriber.email);
   } catch (error) {
     console.error('unsubscribe cleanup failed', error);
-    return redirect('/newsletter/?state=error&lang=ru');
+    return { status: 500, payload: { error: 'server_error' } };
   }
 
   const lang = outcome.subscriber?.lang === 'en' ? 'en' : 'ru';
-  return redirect(`/newsletter/?state=unsubscribed&lang=${lang}`);
+  return { status: 200, payload: { result: 'unsubscribed', lang } };
 }
 
-return { GET };
+async function GET(request) {
+  const url = new URL(request.url);
+  const token = url.searchParams.get('token') ?? '';
+  const { status, payload } = await runUnsubscribe(token);
+  if (payload.error === 'not_found') return redirect('/newsletter/?state=invalid&lang=ru');
+  if (status === 500) return redirect('/newsletter/?state=error&lang=ru');
+  return redirect(`/newsletter/?state=${payload.result}&lang=${payload.lang}`);
+}
+
+async function POST(request) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json(400, { error: 'invalid_json' });
+  }
+  const { status, payload } = await runUnsubscribe(String(body?.token ?? ''));
+  return json(status, payload);
+}
+
+return { OPTIONS, GET, POST };
 })();
 
 // ─── api/newsletter/digest.mjs ───

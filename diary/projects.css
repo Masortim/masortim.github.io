@@ -190,6 +190,14 @@ body.archive-home { margin:0; padding:0; }
    тёмной теме более светлый зелёный. Рисунок белый в обеих темах. */
 .mail-icon .mail-icon-plate { fill: #16a34a !important; }
 body.dark-theme .mail-icon .mail-icon-plate { fill: #22c55e !important; }
+/* Знак YouTube в блоке «Ссылки»: та же квадратная плашка 24 × 24 с тем же
+   радиусом 4.5, что у RSS и Email, — строка остаётся ровной. Красный
+   взят из фирменного цвета YouTube; в тёмной теме он чуть светлее, иначе
+   плашка сливается с фоном #222. Рисунок — белый треугольник запуска,
+   без слова «YouTube»: мелкий текст внутри иконки не читается, а название
+   и так стоит рядом. */
+.social-icon .social-icon-plate { fill: #e01b16 !important; }
+body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
 /* Текстовая доля держится единым куском: «RSS-рассылка ↗» должно
    читаться одной строкой, а не ломаться по дефису. */
 .archive-bottom .feed-link > span { flex:0 0 auto; min-width:0; white-space:nowrap; }
