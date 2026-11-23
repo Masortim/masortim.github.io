@@ -123,7 +123,24 @@ ok(`невалидный адрес: 400`, bad.status === 400 && (await bad.json
 const unknown = await req('/api/newsletter/confirm?token=unknown-token');
 ok(`неизвестный токен: state=invalid`, unknown.headers.get('location').includes('state=invalid'));
 
-// 9. Digest закрыт секретом
+// 9. Служебный эндпоинт токена закрыт секретом и отдаёт токен по ключу
+// Проба в Actions проходит подтверждение именно через него.
+const tokenNoSecret = await req('/api/newsletter/token?email=reader@example.com');
+ok(`token без секрета: ${tokenNoSecret.status}`, tokenNoSecret.status === 401);
+process.env.CRON_SECRET = 'test-secret';
+const tokenWithSecret = await req('/api/newsletter/token?email=reader@example.com', {
+  headers: { Authorization: 'Bearer test-secret' },
+});
+const tokenBody = await tokenWithSecret.json();
+ok(`token с секретом: ${tokenWithSecret.status}, статус ${tokenBody.status}`,
+  tokenWithSecret.status === 200 && tokenBody.token === rows.get('reader@example.com').token);
+const tokenGone = await req('/api/newsletter/token?email=nobody@example.com', {
+  headers: { Authorization: 'Bearer test-secret' },
+});
+ok(`token для чужого адреса: ${tokenGone.status}`, tokenGone.status === 404);
+delete process.env.CRON_SECRET;
+
+// 10. Digest закрыт секретом
 ok(`digest без секрета: 401`, (await req('/api/newsletter/digest')).status === 401);
 
 // 10. CORS preflight

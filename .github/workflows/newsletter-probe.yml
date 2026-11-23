@@ -10,6 +10,8 @@ name: Newsletter API probe
 # Запускается вручную и на каждый push, затрагивающий серверную часть.
 
 on:
+  # Секрет GITHUB_TOKEN интеграции не позволяет dispatch, поэтому ручной
+  # прогон делается push-ом с изменением в путях ниже.
   workflow_dispatch:
   push:
     branches:
@@ -153,11 +155,11 @@ jobs:
           # Адрес, на который приходит письмо. При SMTP Gmail это ящик
           # отправителя: письмо, отправленное самому себе, доходит всегда.
           OWNER_EMAIL: ${{ secrets.NEWSLETTER_OWNER_EMAIL || 'alex.typeface@gmail.com' }}
-          # Приватные переменные проекта Vercel: по ним проба читает токен
-          # подтверждения из базы. Значения пользователь вводит сам —
-          # записать их в секреты репозитория агент не может (403 у интеграции).
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # Токен подтверждения проба берёт у самого API
+          # (/api/newsletter/token), а не из базы: ключ service_role в
+          # секреты репозитория записать нельзя, да и незачем — функции уже
+          # знают его из окружения Vercel. Эндпоинт закрыт CRON_SECRET.
+          NEWSLETTER_CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           ready=$(node -p 'String(require("/tmp/health.json").ready)' 2>/dev/null || echo unknown)
           transport=$(node -p 'String(require("/tmp/health.json").checks.transport)' 2>/dev/null || echo unknown)
@@ -199,19 +201,17 @@ jobs:
           fi
           echo "::notice::FLOW подписка принята, письмо отправлено через SMTP Gmail"
 
-          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
-            echo "::notice::FLOW подтверждение, отписка и выпуск пропущены: нет SUPABASE_* в секретах репозитория (см. SETUP-FINAL.md, шаг «Секреты репозитория»)"
+          if [ -z "${NEWSLETTER_CRON_SECRET:-}" ]; then
+            echo "::notice::FLOW подтверждение и отписка пропущены: в репозитории нет секрета CRON_SECRET (тот же, что в переменных Vercel)"
             exit 0
           fi
 
-          token=$(node -e '
-            const url=process.env.SUPABASE_URL, key=process.env.SUPABASE_SERVICE_ROLE_KEY;
-            const r=await fetch(`${url}/rest/v1/newsletter_subscribers?email=eq.${process.argv[1]}&select=token`,{headers:{apikey:key,Authorization:`Bearer ${key}`}});
-            const rows=await r.json();
-            if(rows&&rows[0])process.stdout.write(rows[0].token);
-          ' "$OWNER_EMAIL")
+          token=$(curl -sS --max-time 25 \
+            -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" \
+            "https://masortim-newsletter.vercel.app/api/newsletter/token?email=$OWNER_EMAIL" \
+            | node -e 'let s="";process.stdin.on("data",function(d){s+=d}).on("end",function(){try{process.stdout.write(String(JSON.parse(s).token||""))}catch(e){}})')
           if [ -z "$token" ]; then
-            echo "::error::FLOW токен не найден в базе — подписка не записалась"
+            echo "::error::FLOW токен не найден через /api/newsletter/token — подписка не записалась или эндпоинт закрыт"
             exit 1
           fi
 
@@ -232,12 +232,15 @@ jobs:
           esac
 
           # Строка должна исчезнуть: отписавшийся адрес в базе не хранится.
-          left=$(node -e '
-            const url=process.env.SUPABASE_URL, key=process.env.SUPABASE_SERVICE_ROLE_KEY;
-            const r=await fetch(`${url}/rest/v1/newsletter_subscribers?email=eq.${process.argv[1]}&select=email`,{headers:{apikey:key,Authorization:`Bearer ${key}`}});
-            const rows=await r.json();
-            process.stdout.write(String(Array.isArray(rows)?rows.length:-1));
-          ' "$OWNER_EMAIL")
+          left=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 25 \
+            -H "Authorization: Bearer $NEWSLETTER_CRON_SECRET" \
+            "https://masortim-newsletter.vercel.app/api/newsletter/token?email=$OWNER_EMAIL")
+          # 404 — строки нет, это успех; 200 — адрес всё ещё в списке.
+          case "$left" in
+            404) left=0 ;;
+            200) left=1 ;;
+            *) [ -n "$left" ] || left=unknown ;;
+          esac
           if [ "$left" != "0" ]; then
             echo "::error::FLOW после отписки в базе осталось строк: $left"
             exit 1
