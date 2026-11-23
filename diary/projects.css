@@ -146,6 +146,14 @@ body.archive-home { margin:0; padding:0; }
 .archive-view-all { margin:auto 0 8px; font-size:14px; font-weight:700; }
 .archive-bottom { padding-bottom:18px; border-bottom:1px solid var(--archive-horizontal-line); }
 .archive-bottom section { padding:14px 0 10px; overflow-wrap:break-word; }
+/* «О дневнике» занимает два столбца: это единственный блок с фразой
+   в две строки, и в одну узкую колонку она рвалась на «Короткие /
+   разборы репозиториев…». Текст тянется на оба столбца и читается
+   цельной строкой. Блоков в .archive-bottom теперь пять, поэтому
+   раскладка складывается без дыр на всех трёх сетках сразу:
+   6 колонок → 2+1+1+1+1, 3 колонки → 2+1 и 1+1+1, 2 колонки →
+   2 и две пары по 1. */
+.archive-bottom .about-section { grid-column: span 2; }
 /* Нижняя граница поднята с 13px: на 320px h2 совпадал с кеглем названий
    карточек и переставал читаться как заголовок блока.
    На узких экранах (≤760px) — 15px, чтобы заметно отличаться от h3 12px. */
