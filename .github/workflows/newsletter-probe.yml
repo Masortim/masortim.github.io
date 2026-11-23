@@ -10,6 +10,8 @@ name: Newsletter API probe
 # Запускается вручную и на каждый push, затрагивающий серверную часть.
 
 on:
+  # Секрет GITHUB_TOKEN интеграции не позволяет dispatch, поэтому ручной
+  # прогон делается push-ом с изменением в путях ниже.
   workflow_dispatch:
   push:
     branches:
