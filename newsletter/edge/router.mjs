@@ -10,6 +10,7 @@ const ROUTES = {
   '/api/newsletter/confirm': confirmApi,
   '/api/newsletter/unsubscribe': unsubscribeApi,
   '/api/newsletter/digest': digestApi,
+  '/api/newsletter/token': __tokenApi,
 };
 
 /**

@@ -76,7 +76,9 @@ test('корневой обработчик отвечает на все мар�
   const root = await handler(new Request('https://example.test/'));
   assert.equal(root.status, 200);
   const payload = await root.json();
-  assert.equal(payload.endpoints.length, 4);
+  // subscribe, confirm, unsubscribe, digest, token
+  assert.equal(payload.endpoints.length, 5);
+  assert.ok(payload.endpoints.includes('/api/newsletter/token'), payload.endpoints.join(', '));
 
   const unknown = await handler(new Request('https://example.test/api/newsletter/nope'));
   assert.equal(unknown.status, 404);

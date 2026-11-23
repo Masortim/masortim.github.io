@@ -33,6 +33,7 @@ const MODULES = [
   { name: '__confirmApi', file: 'api/newsletter/confirm.mjs' },
   { name: '__unsubscribeApi', file: 'api/newsletter/unsubscribe.mjs' },
   { name: '__digestApi', file: 'api/newsletter/digest.mjs' },
+  { name: '__tokenApi', file: 'newsletter/edge/token-handler.mjs' },
 ];
 
 /**
@@ -109,6 +110,7 @@ async function build() {
  *   GET  /api/newsletter/confirm     ?token=
  *   GET  /api/newsletter/unsubscribe ?token=
  *   GET  /api/newsletter/digest      Authorization: Bearer CRON_SECRET
+ *   GET  /api/newsletter/token       Authorization: Bearer CRON_SECRET (?email=)
  */`,
   ];
 
