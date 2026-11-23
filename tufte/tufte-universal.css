@@ -199,7 +199,13 @@ h1 {
   text-align: left;
   clear: both;
   overflow-wrap: break-word;
-  hyphens: auto;
+  /* Заголовки не переносятся по слогам: слово не рвётся через дефис.
+     Правило наследуется от .project-archive (hyphens:auto в
+     diary/projects.css), поэтому отменяем его явно. overflow-wrap выше
+     остаётся страховкой от переполнения — перенос по границе блока,
+     без дефиса, только если слово шире колонки целиком. */
+  -webkit-hyphens: none;
+  hyphens: none;
 }
 h2 {
   font-weight: 400;
