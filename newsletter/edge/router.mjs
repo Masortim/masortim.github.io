@@ -158,9 +158,13 @@ async function health() {
     ready,
     // Что именно осталось сделать — короткими ключами, без лишних слов.
     blocking: [
+      // Подсказка не привязана к площадке: один и тот же бандл работает и на
+      // Vercel, и в Supabase Edge Functions, а переменные задаются там, где
+      // развёрнута функция.
       transport === 'smtp' && !smtpPass
-        && 'добавьте NEWSLETTER_SMTP_PASS в Vercel (пароль приложения Gmail) и перевыпустите деплой',
-      transport === 'resend' && !checks.resendKey && 'добавьте RESEND_API_KEY в Vercel и перевыпустите деплой',
+        && 'добавьте NEWSLETTER_SMTP_PASS в переменные окружения функции (пароль приложения Gmail) и перевыпустите деплой',
+      transport === 'resend' && !checks.resendKey
+        && 'добавьте RESEND_API_KEY в переменные окружения функции и перевыпустите деплой',
       checks.resendKey && domains.keyValid === false
         && `Resend отклонил ключ (${domains.error}) — выпустите новый в resend.com/api-keys`,
       !checks.supabaseUrl && 'нет SUPABASE_URL',

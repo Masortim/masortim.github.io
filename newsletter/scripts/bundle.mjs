@@ -98,20 +98,12 @@ function transformModule(source, file) {
   return { body: body.trim(), exports: [...names], bridges, builtins };
 }
 
-async function build() {
+async function build(header) {
   const chunks = [
     `/**
  * Сгенерировано newsletter/scripts/bundle.mjs — не редактировать вручную.
  *
- * Единая функция Vercel: маршрутизация и все обработчики в одном файле.
- * Исходники: api/newsletter/*.mjs и newsletter/lib/*.mjs.
- *
- * Адреса:
- *   POST /api/newsletter/subscribe   { email, lang }
- *   GET  /api/newsletter/confirm     ?token=
- *   GET  /api/newsletter/unsubscribe ?token=
- *   GET  /api/newsletter/digest      Authorization: Bearer CRON_SECRET
- *   GET  /api/newsletter/token       Authorization: Bearer CRON_SECRET (?email=)
+ * ${header}
  */`,
   ];
 
@@ -148,9 +140,27 @@ async function build() {
   return chunks.join('\n');
 }
 
+/**
+ * Шапка собранного файла. Код одинаков для всех площадок, расходятся только
+ * адреса: Vercel открывает функцию на своём домене, а Supabase Edge Functions
+ * импортирует этот же файл как модуль (см. newsletter/edge/supabase-entry.ts).
+ */
+const HEADER = `Единая функция рассылки: маршрутизация и все обработчики в одном файле.
+ * Исходники: api/newsletter/*.mjs и newsletter/lib/*.mjs.
+ *
+ * Адреса:
+ *   POST /api/newsletter/subscribe   { email, lang }
+ *   GET  /api/newsletter/confirm     ?token=
+ *   GET  /api/newsletter/unsubscribe ?token=
+ *   GET  /api/newsletter/digest      Authorization: Bearer CRON_SECRET
+ *   GET  /api/newsletter/token       Authorization: Bearer CRON_SECRET (?email=)
+ *
+ * Публикуется вместе с сайтом как /newsletter/bundle.js: Supabase Edge
+ * Functions импортирует его как модуль (у площадки нет загрузки файлов).`;
+
 const outIndex = process.argv.indexOf('--out');
 const target = outIndex > -1 ? process.argv[outIndex + 1] : resolve(ROOT, 'newsletter/edge/index.mjs');
-const code = await build();
+const code = await build(HEADER);
 await writeFile(target, `${code}\n`, 'utf8');
 console.log(`собрано: ${target} (${code.length} байт)`);
 

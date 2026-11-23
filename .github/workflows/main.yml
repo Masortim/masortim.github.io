@@ -84,6 +84,10 @@ jobs:
           cp newsletter/newsletter.css _site/newsletter/newsletter.css
           cp newsletter/newsletter.js _site/newsletter/newsletter.js
           cp newsletter/config.js _site/newsletter/config.js
+          # Бэкенд рассылки одним модулем: его импортирует функция в Supabase
+          # Edge Functions (newsletter/edge/supabase-entry.ts). У Supabase нет
+          # загрузки файлов, поэтому код раздаётся вместе с сайтом.
+          cp newsletter/edge/index.mjs _site/newsletter/bundle.js
           cp feed.xml _site/feed.xml
           cp feed-en.xml _site/feed-en.xml
           cp feed-icon.svg _site/feed-icon.svg

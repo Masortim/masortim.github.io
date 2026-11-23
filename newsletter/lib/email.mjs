@@ -10,11 +10,23 @@ import { sendViaSmtp } from './smtp.mjs';
 const SITE = process.env.NEWSLETTER_SITE ?? 'https://masortim.github.io';
 
 /**
- * Адрес серверных функций. Сайт на GitHub Pages, функции на Vercel, поэтому
- * ссылки подтверждения и отписки должны вести на Vercel, а не на SITE.
+ * Адрес серверных функций. Сайт на GitHub Pages, функции живут отдельно,
+ * поэтому запросы формы идут на API, а не на SITE.
  * Если переменная не задана (локальный прогон), берётся тот же origin.
  */
 const API = (process.env.NEWSLETTER_API_BASE ?? SITE).replace(/\/$/, '');
+
+/**
+ * Куда ведут кнопки в письмах.
+ *
+ * Только на САЙТ, никогда на домен функций. Причина: домен функции может
+ * быть недоступен у читателя (например, *.vercel.app рвётся у части
+ * российских провайдеров на уровне TCP), и тогда кнопка «Подтвердить
+ * подписку» из письма не открывалась бы вовсе. Страница /newsletter/ —
+ * обычный HTML на GitHub Pages, он открывается всегда, а подтверждение
+ * она запрашивает со своего адреса скриптом.
+ */
+const LINK_BASE = SITE.replace(/\/$/, '');
 const FROM = process.env.NEWSLETTER_FROM ?? 'Masortim <alex.typeface@gmail.com>';
 
 const OWNER = 'alex.typeface@gmail.com';
@@ -107,7 +119,7 @@ function button(url, label) {
 /** Письмо с просьбой подтвердить подписку (double opt-in). */
 export function confirmationEmail({ email, lang, token }) {
   const t = COPY[lang] ?? COPY.ru;
-  const url = `${API}/api/newsletter/confirm?token=${encodeURIComponent(token)}`;
+  const url = `${LINK_BASE}/newsletter/?confirm=${encodeURIComponent(token)}&lang=${lang}`;
   return {
     to: email,
     subject: t.confirmSubject,
@@ -120,7 +132,7 @@ export function confirmationEmail({ email, lang, token }) {
 /** Письмо после успешного подтверждения — с ссылкой на отписку. */
 export function welcomeEmail({ email, lang, token }) {
   const t = COPY[lang] ?? COPY.ru;
-  const unsubscribe = `${API}/api/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
+  const unsubscribe = `${LINK_BASE}/newsletter/?unsubscribe=${encodeURIComponent(token)}&lang=${lang}`;
   return {
     to: email,
     subject: t.confirmedSubject,
@@ -141,7 +153,7 @@ export function digestEmail({ email, lang, token, notes }) {
 <p style="margin:0"><a href="${escapeHtml(url)}" style="color:#e8590c;font:600 15px Arial,sans-serif">${escapeHtml(t.digestRead)} →</a></p>`;
     })
     .join('\n');
-  const unsubscribe = `${API}/api/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
+  const unsubscribe = `${LINK_BASE}/newsletter/?unsubscribe=${encodeURIComponent(token)}&lang=${lang}`;
   return {
     to: email,
     subject: t.digestSubject(notes.length),
