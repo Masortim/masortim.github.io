@@ -1,6 +1,20 @@
 /* Six-column modular archive based on the supplied 2009 reference. */
+/* ---------------------------------------------------------------------------
+   Гарнитура страницы.
+
+   Helvetica — но с оговоркой, которая важна для русских букв. У настоящей
+   Helvetica нет кириллицы: она рисует только латиницу. Поэтому в стеке после
+   неё стоят шрифты, которые выглядят как Helvetica и кириллицу поддерживают:
+   Nimbus Sans (метрический клон Helvetica, есть в Linux) и Arial (Windows,
+   macOS — почти та же гарнитура по рисунку). Если в системе установлен
+   шрифт с именем «Helvetica Cyrillic», он тоже попадёт в стек.
+
+   Порядок именно такой: на macOS сработает Helvetica Neue, на Windows —
+   Arial, на Linux — Nimbus Sans / Liberation Sans. Меняется в одном месте.
+   --------------------------------------------------------------------------- */
 body.archive-home { margin:0; padding:0; }
 .project-archive {
+  --archive-font: "Helvetica Neue", Helvetica, "Nimbus Sans", "Liberation Sans", "Helvetica Cyrillic", Arial, sans-serif;
   --archive-gutter: 1.5%;
   /* Приглушённый серый для пояснительного текста: аннотация шапки,
      описания карточек, тексты нижних блоков. Заголовки (h1-h3) остаются
@@ -11,7 +25,7 @@ body.archive-home { margin:0; padding:0; }
   margin: 0 auto;
   color: #111;
   background: #fff;
-  font: 16px/1.2 Arial, Helvetica, sans-serif;
+  font: 16px/1.2 var(--archive-font);
   /* Плотная шестиколоночная сетка архива переносится по слогам.
      Заметки (.project-note) — наоборот, без переносов (см. diary.css). */
   -webkit-hyphens:auto;
@@ -59,14 +73,14 @@ body.archive-home { margin:0; padding:0; }
 .archive-summary { position:relative; z-index:1; grid-column:3 / span 2; margin:30px 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; }
 .archive-controls { position:relative; z-index:1; grid-column:6; display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-top:17px; min-width:0; }
 .archive-actions { display: flex; align-items: flex-start; flex-direction: column; gap: 5px; font-size: 12px; }
-.archive-actions button, .archive-actions .forum-link { display: inline-block; box-sizing:border-box; max-width:100%; border: 0; border-radius: 6px; padding: 4px 7px; color: #fff; background: #111; font: 700 clamp(10px, .9vw, 12px) Arial, sans-serif; overflow-wrap:break-word; cursor: pointer; }
+.archive-actions button, .archive-actions .forum-link { display: inline-block; box-sizing:border-box; max-width:100%; border: 0; border-radius: 6px; padding: 4px 7px; color: #fff; background: #111; font: 700 clamp(10px, .9vw, 12px) var(--archive-font); overflow-wrap:break-word; cursor: pointer; }
 .archive-actions #grid-toggle { background: #aaa; }
 .archive-actions .language-switch { position: static; display: flex; gap: 4px; padding: 0; border: 0; border-radius: 0; box-shadow: none; font-size: 14px; }
 .archive-actions .language-switch button { min-width: 0; min-height: 0; padding: 4px 7px; border: 0; border-radius:4px; color: #555; background: transparent; cursor: pointer; font: inherit; }
 .archive-actions .language-switch button[aria-pressed="true"] { color: #111; background: #ddd; }
 .archive-actions #theme-toggle { padding: 2px 5px; font-size: 12px; }
 .archive-search { align-self:stretch; margin-top:44px; }
-.archive-search input { display: block; box-sizing: border-box; width: 100%; height: 23px; padding: 3px 6px; border: 1px solid #bbb; border-radius: 0; background: #f3f3f3; color: #111; font: 12px Arial, sans-serif; }
+.archive-search input { display: block; box-sizing: border-box; width: 100%; height: 23px; padding: 3px 6px; border: 1px solid #bbb; border-radius: 0; background: #f3f3f3; color: #111; font: 12px var(--archive-font); }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 .archive-columns {
   position:relative;
@@ -229,7 +243,7 @@ body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
 .promo-card span { max-width:100%; font-size:clamp(11px, 1.05vw, 14px); line-height:1.3; overflow-wrap:break-word; }
 .promo-card--dark { background: #0b0b0b; }
 .promo-card--paper { color: #24133c !important; background: #f6e7e2; }
-.promo-card--paper strong { font-family: Georgia, serif; font-style: italic; }
+.promo-card--paper strong { font-family: var(--archive-font); font-style: italic; }
 .promo-card--type { background: #111; }
 .promo-card--type strong { color: #e84467; }
 .promo-card--grid { color: #111 !important; background-color: #f8f8f4; background-image: linear-gradient(#ddd 1px, transparent 1px), linear-gradient(90deg, #ddd 1px, transparent 1px); background-size: 22px 22px; }
@@ -247,7 +261,7 @@ body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
      .project-note h1 — заголовок документа (3.2rem, прямой, как h1.title);
      .project-note h2 — раздел (2.2rem, курсив, как h1 в tufte-universal);
      .project-note h3 — подраздел (1.7rem, курсив, как h2 в tufte-universal).
-   Хром — санс-серифом (Gill Sans, выбор Тафти для подписей), капителью,
+   Хром — Helvetica (санс-сериф с кириллицей), капителью,
    без моноширинного. Старые классы .note-sidenote/.note-marginnote/
    .note-figure/.note-infographic сохранены как алиасы новых .sidenote/
    .marginnote/figure/.tufte-chart.
@@ -270,22 +284,22 @@ body.tufte-note { background: var(--tufte-bg, #fffff8); }
    абсолютные дети (right:0) отсчитываются от её padding-box. */
 .project-note .note-controls { position:relative; display:block; height:2.6rem; margin:1rem 2.5rem 0 0; }
 /* Правый отступ от края окна: кнопки не прилипают к границе браузера. */
-.project-note .language-switch { position:absolute; top:50%; right:2.5rem; display:flex; gap:0; margin:0; padding:.15rem; border:1px solid var(--tufte-rule, #d9d5ca); border-radius:999px; box-shadow:none; background:var(--tufte-bg, #fffff8); font-family:"Gill Sans", "Gill Sans MT", Calibri, sans-serif; font-size:.8rem; letter-spacing:.03em; transform:translateY(-50%); }
+.project-note .language-switch { position:absolute; top:50%; right:2.5rem; display:flex; gap:0; margin:0; padding:.15rem; border:1px solid var(--tufte-rule, #d9d5ca); border-radius:999px; box-shadow:none; background:var(--tufte-bg, #fffff8); font-family:var(--archive-font); font-size:.8rem; letter-spacing:.03em; transform:translateY(-50%); }
 .project-note .language-switch::before { position:absolute; z-index:0; top:.15rem; bottom:.15rem; left:.15rem; width:calc((100% - .3rem)/2); border-radius:999px; background:#70513e; content:""; transition:transform .22s ease; }
 .project-note .language-switch:has(button[data-language-choice="en"][aria-pressed="true"])::before { transform:translateX(calc(100% + .15rem)); }
 .project-note .language-switch button { position:relative; z-index:1; flex:1; min-width:2.2rem; min-height:1.8rem; padding:.25rem .4rem; border:0; border-radius:999px; color:var(--tufte-muted, #514e46); background:transparent; cursor:pointer; font:inherit; transition:color .22s ease; }
 .project-note .language-switch button[aria-pressed="true"] { color:#fff; background:transparent; }
-.project-note .theme-toggle { display:grid; width:2rem; height:2rem; padding:0; place-items:center; position:absolute; top:50%; right:0; margin:0; border:0; border-radius:50%; color:#fff; background:#70513e; cursor:pointer; font:.8rem/1 Arial,sans-serif; transform:translateY(-50%); }
-.project-note .note-masthead { display:flex; width:55%; justify-content:space-between; gap:1rem; padding-bottom:.7rem; border-bottom:1px solid var(--tufte-rule, #d9d5ca); color:var(--tufte-faint, #68645c); font-family:"Gill Sans", "Gill Sans MT", Calibri, sans-serif; font-size:.95rem; letter-spacing:.05em; font-variant:small-caps; }
+.project-note .theme-toggle { display:grid; width:2rem; height:2rem; padding:0; place-items:center; position:absolute; top:50%; right:0; margin:0; border:0; border-radius:50%; color:#fff; background:#70513e; cursor:pointer; font:.8rem/1 var(--archive-font); transform:translateY(-50%); }
+.project-note .note-masthead { display:flex; width:55%; justify-content:space-between; gap:1rem; padding-bottom:.7rem; border-bottom:1px solid var(--tufte-rule, #d9d5ca); color:var(--tufte-faint, #68645c); font-family:var(--archive-font); font-size:.95rem; letter-spacing:.05em; font-variant:small-caps; }
 .project-note h1 { width:75%; margin:2rem 0 .8rem; font-weight:400; font-style:normal; /* Заголовок заметки: одна плавная формула на все ширины, без ступенек
    на границах медиазапросов. Минимум 2.4rem (36px) — заметно крупнее
    текста 21px даже на 320px; максимум — тафтиевские 3.2rem (48px). */
 font-size:clamp(2.4rem, 1.79rem + 2.8vw, 3.2rem); line-height:1.05; letter-spacing:0; }
 .project-note .note-dek { width:55%; max-width:39rem; margin:1rem 0 2rem; color:var(--tufte-muted, #514e46); font-size:1.4rem; line-height:1.6; font-style:italic; }
-.project-note .note-meta { display:flex; width:55%; flex-wrap:wrap; gap:.5rem 1.25rem; margin:0; padding:.8rem 0; border-top:1px solid var(--tufte-rule, #d9d5ca); border-bottom:1px solid var(--tufte-rule, #d9d5ca); color:var(--tufte-faint, #68645c); font-family:"Gill Sans", "Gill Sans MT", Calibri, sans-serif; font-size:.95rem; letter-spacing:.03em; font-variant:small-caps; }
+.project-note .note-meta { display:flex; width:55%; flex-wrap:wrap; gap:.5rem 1.25rem; margin:0; padding:.8rem 0; border-top:1px solid var(--tufte-rule, #d9d5ca); border-bottom:1px solid var(--tufte-rule, #d9d5ca); color:var(--tufte-faint, #68645c); font-family:var(--archive-font); font-size:.95rem; letter-spacing:.03em; font-variant:small-caps; }
 .project-note h2 { width:55%; margin:2.1rem 0 0; font-weight:400; font-style:italic; font-size:2.2rem; line-height:1; }
 .project-note h3 { width:55%; margin:2rem 0 0; font-weight:400; font-style:italic; font-size:1.7rem; line-height:1; }
-.project-note .note-footer { width:55%; margin-top:3rem; padding-top:1rem; border-top:1px solid var(--tufte-rule, #d9d5ca); font-family:"Gill Sans", "Gill Sans MT", Calibri, sans-serif; font-size:.95rem; letter-spacing:.03em; }
+.project-note .note-footer { width:55%; margin-top:3rem; padding-top:1rem; border-top:1px solid var(--tufte-rule, #d9d5ca); font-family:var(--archive-font); font-size:.95rem; letter-spacing:.03em; }
 .project-note .note-footer a { font-family:inherit; }
 /* Алиасы старых классов заметок → канонические .sidenote/.marginnote. */
 .project-note .note-sidenote, .project-note .note-marginnote {
@@ -301,7 +315,7 @@ font-size:clamp(2.4rem, 1.79rem + 2.8vw, 3.2rem); line-height:1.05; letter-spaci
 .project-note .note-figure { max-width:55%; margin:0 0 3em; clear:both; }
 .project-note .note-figure img, .project-note .note-figure svg { display:block; max-width:100%; height:auto; }
 .project-note .note-figure figcaption { float:right; clear:right; max-width:40%; margin-top:0; font-size:1.1rem; line-height:1.6; }
-.project-note .note-infographic { display:grid; width:100%; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.75rem; align-items:stretch; margin:2rem 0; font-family:"Gill Sans", "Gill Sans MT", Calibri, sans-serif; font-size:1.1rem; line-height:1.4; letter-spacing:.03em; }
+.project-note .note-infographic { display:grid; width:100%; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.75rem; align-items:stretch; margin:2rem 0; font-family:var(--archive-font); font-size:1.1rem; line-height:1.4; letter-spacing:.03em; }
 .project-note .note-infographic__item { min-width:0; padding:.8rem 0; border-top:2px solid #916044; border-bottom:1px solid var(--tufte-rule, #d9d5ca); }
 .project-note .note-infographic__item strong { display:block; margin-bottom:.35rem; font-size:1.1rem; }
 .project-note .note-infographic__arrow { align-self:center; color:#916044; text-align:center; font-size:1.3rem; }
