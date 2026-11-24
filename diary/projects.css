@@ -102,7 +102,12 @@ body.archive-home { margin:0; padding:0; }
   hyphens:none;
   overflow-wrap:break-word;
 }
-.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; margin:30px 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; }
+/* Вводный абзац под шапкой. Переносов по слогам нет: родитель
+   .project-archive ставит hyphens:auto для плотной шестиколоночной сетки,
+   но для связного текста дефисы в середине слов читаются плохо.
+   overflow-wrap — страховка на случай, если слово всё же не поместится:
+   тогда оно перейдёт на новую строку целиком, без дефиса. */
+.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; margin:30px 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
 .archive-controls { position:relative; z-index:1; grid-column:6; display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-top:17px; min-width:0; }
 .archive-actions { display: flex; align-items: flex-start; flex-direction: column; gap: 5px; font-size: 12px; }
 .archive-actions button, .archive-actions .forum-link { display: inline-block; box-sizing:border-box; max-width:100%; border: 0; border-radius: 6px; padding: 4px 7px; color: #fff; background: #111; font: 700 clamp(10px, .9vw, 12px) var(--archive-font); overflow-wrap:break-word; cursor: pointer; }
