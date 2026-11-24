@@ -273,6 +273,12 @@ body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
 .promo-card { display:flex; box-sizing:border-box; width:100%; height:227px; padding:clamp(10px, 2vw, 22px); align-items:center; justify-content:center; flex-direction:column; gap:clamp(8px, 1.4vw, 16px); color:#fff !important; text-align:center; text-decoration:none; }
 .promo-card strong { max-width:100%; font-size:clamp(15px, 2.3vw, 30px); font-weight:800; line-height:.98; letter-spacing:-.04em; overflow-wrap:break-word; }
 .promo-card span { max-width:100%; font-size:clamp(11px, 1.05vw, 14px); line-height:1.3; overflow-wrap:break-word; }
+/* Крупная надпись на квадрате. Внутри <strong> лежат два <span>а — русский
+   и английский варианты, переключаемые [hidden]. Без этого правила они
+   попадают под .promo-card span выше (равная специфичность, но объявлено
+   позже) и заголовок съёживается до кегля подписи: было 30px, стало 14px.
+   Возвращаем им кегль, вес и трекинг самого <strong>. */
+.promo-card strong span { max-width:100%; font-size:inherit; font-weight:inherit; letter-spacing:inherit; line-height:.98; }
 .promo-card--dark { background: #0b0b0b; }
 .promo-card--paper { color: #24133c !important; background: #f6e7e2; }
 .promo-card--paper strong { font-family: var(--archive-font); font-style: italic; }
@@ -554,6 +560,11 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
      «UAV CLASSIFICATION» при 15px рвалось на «CLASSIFICATIO/N». */
   .promo-card strong { font-size: clamp(11px, 3.6vw, 30px); }
   .promo-card span { font-size: clamp(10px, 2.9vw, 14px); }
+  /* Та же поправка, что и в основном блоке: span'ы внутри <strong> — это
+     языковые варианты крупной надписи, а не подпись. Узкая карточка уже
+     ограничивает кегль через сам <strong>, поэтому здесь достаточно
+     вернуть наследование. */
+  .promo-card strong span { font-size: inherit; }
 }
 
 #grid-toggle[aria-pressed="true"] { outline:none; box-shadow:none; }
