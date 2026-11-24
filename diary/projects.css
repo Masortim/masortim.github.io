@@ -87,15 +87,15 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
    Предел 3.7rem и три колонки. Раньше под заголовок было отведено две
    колонки из шести, и на десктопе кегль упирался в 48.4px: слово
    «разработчика» занимало 300.7px из 310.4px колонки — запас 9.7px. Чтобы
-   заголовок стал крупнее, колонок стало три (см. .archive-brand:
-   grid-column 1 / span 3), а .archive-controls ушли в 4–6, на своё место
-   в том же ряду. Аннотация переехала во второй ряд и тянется во всю
-   ширину листа: в три колонки она бы шла по 5–6 слов в строку.
+   заголовок стал крупнее, ему отдана третья колонка (см. .archive-brand:
+   grid-column 1 / span 3). Остальные блоки шапки остались на своих местах,
+   в том же ряду: аннотация сдвинулась на одну колонку вправо (3→4, тоже
+   две колонки), контролы по-прежнему в шестой.
 
    Потолок 3.7rem (55.5px) — это +14.6% к прежним 48.4px. Выше нельзя:
-   при 3.8rem слово «разработчика» (6.21 кегля) занимает 365px против
+   при 3.8rem слово «разработчика» (6.29 кегля) занимает 365px против
    362px колонки на 1240px и начинает рваться. Проверено от 240 до
-   1920px: запас не меньше 10px нигде, разрывов нет ни при какой ширине.
+   1920px: запас не меньше 6px нигде, разрывов нет ни при какой ширине.
    На 901–1000px выигрыш больше всех — там кегль был придавлен узкой
    колонкой (34.5px) и вырос до 52.6–55.5px.
    Первая строка font-size — запасной вариант для браузеров без
@@ -123,8 +123,8 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
    но для связного текста дефисы в середине слов читаются плохо.
    overflow-wrap — страховка на случай, если слово всё же не поместится:
    тогда оно перейдёт на новую строку целиком, без дефиса. */
-.archive-summary { position:relative; z-index:1; grid-column:1 / span 6; grid-row:2; margin:10px 0 24px; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
-.archive-controls { position:relative; z-index:1; grid-column:4 / span 3; grid-row:1; display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-top:17px; min-width:0; }
+.archive-summary { position:relative; z-index:1; grid-column:4 / span 2; margin:30px 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
+.archive-controls { position:relative; z-index:1; grid-column:6; display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-top:17px; min-width:0; }
 .archive-actions { display: flex; align-items: flex-start; flex-direction: column; gap: 5px; font-size: 12px; }
 .archive-actions button, .archive-actions .forum-link { display: inline-block; box-sizing:border-box; max-width:100%; border: 0; border-radius: 6px; padding: 4px 7px; color: #fff; background: #111; font: 700 clamp(10px, .9vw, 12px) var(--archive-font); overflow-wrap:break-word; cursor: pointer; }
 .archive-actions #grid-toggle { background: #aaa; }
@@ -654,11 +654,8 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
   .archive-sheet::before { display: none; }
   .archive-top { height:auto; min-height:220px; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0 2%; padding-bottom:12px; }
   .archive-brand { grid-column:1 / span 3; padding-top:20px; }
-  /* grid-row сбрасываем: базовая раскладка ставит аннотацию во второй ряд,
-     а контролы в первый — на трёхколоночной сетке заголовок занимает весь
-     первый ряд, и контролы с явным grid-row:1 наложились бы на него. */
-  .archive-summary { grid-column:2; grid-row:auto; margin-top:20px; }
-  .archive-controls { grid-column:3; grid-row:auto; margin-top:34px; }
+  .archive-summary { grid-column:2; margin-top:20px; }
+  .archive-controls { grid-column:3; margin-top:34px; }
   .archive-search { margin-top:0; }
   .archive-columns { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .archive-column { min-height: 0; padding: 0 0 1rem; }
@@ -680,8 +677,8 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
   .archive-top { grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: 210px; }
   .archive-columns { grid-template-columns:1fr; }
   .archive-brand { grid-column:1 / span 2; padding-top:12px; }
-  .archive-summary { grid-column:1 / span 2; grid-row:auto; margin-top:12px; }
-  .archive-controls { grid-column:1 / span 2; grid-row:auto; margin:12px 0 4px; flex-direction:row; align-items:flex-start; }
+  .archive-summary { grid-column:1 / span 2; margin-top:12px; }
+  .archive-controls { grid-column:1 / span 2; margin:12px 0 4px; flex-direction:row; align-items:flex-start; }
   .archive-actions { flex-direction:row; flex-wrap:wrap; }
   .archive-search { flex:1; min-width:110px; }
   .archive-bottom { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -746,31 +743,6 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
 
 #grid-toggle[aria-pressed="true"] { outline:none; box-shadow:none; }
 #grid-toggle:focus-visible { outline:2px solid #111; outline-offset:2px; }
-/* Показать сетку. Линии считаются от шестиколоночной сетки: ширина колонки
-   (g − 5s)/6 при зазоре s = 1.5% ширины листа, поэтому граница c стоит на
-   c·(g + s)/6 − s/2, то есть на 16.6667 / 33.3333 / 50 / 66.6667 / 83.3333%.
-   Сетка шапки теперь 3+3, а не 2+2+2: у неё всего одна граница, посередине,
-   поэтому ниже она перерисовывается. Без этого красные линии шапки не
-   совпадали бы с её колонками. */
 body.show-grid .archive-sheet { --archive-grid-line:rgba(210,40,40,.7); --archive-horizontal-line:rgba(210,40,40,.7); --archive-subtle-line:rgba(210,40,40,.7); }
-body.show-grid .archive-sheet::before {
-  background-image:
-    linear-gradient(90deg, transparent calc(16.666667% - .5px), var(--archive-grid-line) calc(16.666667% - .5px), var(--archive-grid-line) calc(16.666667% + .5px), transparent calc(16.666667% + .5px)),
-    linear-gradient(90deg, transparent calc(33.333333% - .5px), var(--archive-grid-line) calc(33.333333% - .5px), var(--archive-grid-line) calc(33.333333% + .5px), transparent calc(33.333333% + .5px)),
-    linear-gradient(90deg, transparent calc(50% - .5px), var(--archive-grid-line) calc(50% - .5px), var(--archive-grid-line) calc(50% + .5px), transparent calc(50% + .5px)),
-    linear-gradient(90deg, transparent calc(66.666667% - .5px), var(--archive-grid-line) calc(66.666667% - .5px), var(--archive-grid-line) calc(66.666667% + .5px), transparent calc(66.666667% + .5px)),
-    linear-gradient(90deg, transparent calc(83.333333% - .5px), var(--archive-grid-line) calc(83.333333% - .5px), var(--archive-grid-line) calc(83.333333% + .5px), transparent calc(83.333333% + .5px));
-}
-body.show-grid .archive-top { position: relative; }
-body.show-grid .archive-top::before {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  pointer-events: none;
-  content: "";
-  background-repeat: no-repeat;
-  background-image:
-    linear-gradient(90deg, transparent calc(50% - .5px), var(--archive-grid-line) calc(50% - .5px), var(--archive-grid-line) calc(50% + .5px), transparent calc(50% + .5px));
-}
 .project-card[hidden] { display: none; }
 ''
