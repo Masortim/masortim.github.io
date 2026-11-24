@@ -270,7 +270,77 @@ body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
 .archive-promos-flow { display: contents; }
 .promo-module { grid-column:span 2; min-width:0; }
 .promo-module h2 { margin:0 0 11px; font-size:clamp(14px, 1.35vw, 19px); line-height:1.1; overflow-wrap:break-word; }
-.promo-card { display:flex; box-sizing:border-box; width:100%; height:227px; padding:clamp(10px, 2vw, 22px); align-items:center; justify-content:center; flex-direction:column; gap:clamp(8px, 1.4vw, 16px); color:#fff !important; text-align:center; text-decoration:none; }
+/* Квадрат-промо: анимированное подчёркивание при наведении.
+   Одна черта, а не text-decoration: text-decoration:underline подчёркивает
+   каждую строку отдельно, а нужна одна линия.
+
+   Как это нарисовано. Псевдоэлемент ::after размером с карточку несёт фон —
+   полосу толщиной 3px вдоль диагонали. Полоса сделана градиентом: области
+   одного цвета в градиенте — это изолинии, перпендикулярные его
+   направлению. Чтобы изолиния легла ровно по диагонали квадрата,
+   направление градиента поворачивают на 90° к ней, то есть на угол
+   atan2(227px, 100cqw). Высота карточки — та же константа 227px, что стоит
+   в height ниже; ширина берётся из cqw, потому что карточка занимает 1–2
+   колонки сетки и её ширина зависит от окна. Контейнер — inline-size (не
+   size): ширина карточки и так задана сеткой, поэтому containment по
+   горизонтали безопасен и не трогает высоту дорожки субгрида на телефоне.
+
+   Как это проявляется. Сдвигать такую полосу вдоль диагонали нельзя:
+   вся диагональ лежит на одной изолинии, поэтому она появлялась бы вся
+   сразу. Поэтому полоса неподвижна, а по ней едет маска — градиент слева
+   направо, от непрозрачного к прозрачному. Пересечение полосы и маски
+   даёт черту, растущую слева направо: от верхней строки надписи до нижней.
+   Маска читается из переменной --promo-wipe, и она анимируется, потому что
+   зарегистрирована через @property (иначе браузер не знает, что это число,
+   и переключил бы значение рывком).
+
+   Совместимость: @property — baseline с 2024 (Chrome 85, Safari 16.4,
+   Firefox 128), CSS-тригонометрия — с 2023. Где чего-то нет, черта просто
+   появляется без плавного прорастания; сама черта рисуется всегда. */
+
+@property --promo-wipe {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+.promo-card { position:relative; overflow:hidden; container-type:inline-size; display:flex; box-sizing:border-box; width:100%; height:227px; padding:clamp(10px, 2vw, 22px); align-items:center; justify-content:center; flex-direction:column; gap:clamp(8px, 1.4vw, 16px); color:#fff !important; text-align:center; text-decoration:none; }
+.promo-card::after {
+  position:absolute;
+  inset:0;
+  z-index:1;
+  content:"";
+  pointer-events:none;
+  /* Толщина черты. */
+  --promo-rule-width: 3px;
+  /* Угол изолинии вдоль диагонали. Запасной вариант (36deg) — для браузеров
+     без CSS-тригонометрии; он верен для пропорций 227/310 (широкий экран). */
+  --promo-rule-angle: 36deg;
+  --promo-rule-angle: atan2(227px, 100cqw);
+  background-image: linear-gradient(var(--promo-rule-angle),
+    transparent calc(50% - var(--promo-rule-width) / 2),
+    currentColor calc(50% - var(--promo-rule-width) / 2),
+    currentColor calc(50% + var(--promo-rule-width) / 2),
+    transparent calc(50% + var(--promo-rule-width) / 2));
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  /* Маска едет слева направо: слева непрозрачно, справа прозрачно,
+     граница — на --promo-wipe. */
+  -webkit-mask-image: linear-gradient(to right, #000 var(--promo-wipe), transparent var(--promo-wipe));
+  mask-image: linear-gradient(to right, #000 var(--promo-wipe), transparent var(--promo-wipe));
+  --promo-wipe: 0%;
+  transition: --promo-wipe .45s cubic-bezier(.4, 0, .2, 1);
+}
+/* Финал: маска открыта целиком, черта прошла от верхней строки до нижней. */
+.promo-card:hover::after,
+.promo-card:focus-visible::after {
+  --promo-wipe: 100%;
+}
+/* Общее правило архива подчёркивает все ссылки при наведении — здесь оно
+   нарисовало бы вторую черту под каждой строкой. Снимаем.
+   Селектор с тегом обязателен: у .promo-card:hover специфичность (0,2,0),
+   а у .project-archive a:hover — (0,2,1), и общее правило иначе выиграет. */
+a.promo-card:hover, a.promo-card:focus-visible { text-decoration:none; }
 .promo-card strong { max-width:100%; font-size:clamp(15px, 2.3vw, 30px); font-weight:800; line-height:.98; letter-spacing:-.04em; overflow-wrap:break-word; }
 .promo-card span { max-width:100%; font-size:clamp(11px, 1.05vw, 14px); line-height:1.3; overflow-wrap:break-word; }
 /* Крупная надпись на квадрате. Внутри <strong> лежат два <span>а — русский
@@ -447,6 +517,9 @@ body.dark-theme .project-note .language-switch button { color:#ded8cc; }
 body.dark-theme .project-note .language-switch button[aria-pressed="true"] { color:#161513; background:transparent; }
 @media (prefers-reduced-motion: reduce) {
   .project-note .language-switch::before, .project-note .language-switch button { transition:none; }
+  /* Подчёркивание на квадратах промо: при отключённой анимации черта
+     просто появляется целиком, без проезда по диагонали. */
+  .promo-card::after { transition:none; }
 }
 body.dark-theme .project-note .note-sidenote, body.dark-theme .project-note .note-marginnote { color:#c0c0c0; }
 body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e; border-bottom-color:#555; }
@@ -498,6 +571,8 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
   .promo-module { grid-column: span 1; }
   .archive-promos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+
 @media (max-width: 560px) {
   .project-archive { width: calc(100% - 1.5rem); }
   .archive-top { grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: 210px; }
