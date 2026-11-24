@@ -298,10 +298,12 @@ body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
    против 266px доступной ширины, поэтому перенос <br> больше не нужен и
    на 360px текст тоже не ломается.
 
-   Очерёдность. Шаг волны — переменная --promo-step (.3s), длительность
-   одной черты — --promo-dur (.24s). Шаг больше длительности, поэтому
+   Очерёдность. Шаг волны — переменная --promo-step (.16s), длительность
+   одной черты — --promo-dur (.12s). Шаг больше длительности, поэтому
    строки идут строго по очереди: черта успевает досохнуть, следующая
-   начинается через 0.06s после неё. Ничего не наезжает и не сливается.
+   начинается через 0.04s после неё, ничего не сливается. Шаг подбирался
+   так, чтобы волна читалась как очередь, но не заставляла ждать: три
+   строки проходятся за .44s, две — за .28s.
    Надпись и подпись — разные родители, поэтому нумерация внутри них
    начинается заново. Строки надписи получают 0 и шаг. Строкам подписи
    к этому прибавляется смещение, равное числу строк надписи: считаем его
@@ -327,8 +329,8 @@ body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
   text-decoration:none;
   /* Шаг волны и длительность одной черты. Шаг чуть больше длительности,
      чтобы строки шли именно по очереди. */
-  --promo-step: .3s;
-  --promo-dur: .24s;
+  --promo-step: .16s;
+  --promo-dur: .12s;
 }
 
 /* Обёртки языковых вариантов делаем блоками, чтобы строки внутри них
@@ -354,22 +356,22 @@ body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
   background-position: left bottom;
   /* Ширина 0 — в покое черты нет; высота — толщина черты. */
   background-size: 0% 3px;
-  transition: background-size var(--promo-dur, .24s) cubic-bezier(.4, 0, .2, 1);
+  transition: background-size var(--promo-dur, .12s) cubic-bezier(.4, 0, .2, 1);
 }
 
 /* Строки надписи: первая сразу, вторая через шаг. */
 .promo-line:nth-child(1) { transition-delay: 0s; }
-.promo-line:nth-child(2) { transition-delay: var(--promo-step, .3s); }
-.promo-line:nth-child(3) { transition-delay: calc(var(--promo-step, .3s) * 2); }
-.promo-line:nth-child(4) { transition-delay: calc(var(--promo-step, .3s) * 3); }
+.promo-line:nth-child(2) { transition-delay: var(--promo-step, .16s); }
+.promo-line:nth-child(3) { transition-delay: calc(var(--promo-step, .16s) * 2); }
+.promo-line:nth-child(4) { transition-delay: calc(var(--promo-step, .16s) * 3); }
 
 /* Строки подписи продолжают волну после надписи. */
-.promo-card > [data-language-content] .promo-line:nth-child(1) { transition-delay: calc(var(--promo-step, .3s) * 2); }
-.promo-card > [data-language-content] .promo-line:nth-child(2) { transition-delay: calc(var(--promo-step, .3s) * 3); }
+.promo-card > [data-language-content] .promo-line:nth-child(1) { transition-delay: calc(var(--promo-step, .16s) * 2); }
+.promo-card > [data-language-content] .promo-line:nth-child(2) { transition-delay: calc(var(--promo-step, .16s) * 3); }
 
 /* Надпись в одну строку — значит волна в подписи начинается на шаг раньше. */
-.promo-card:not(:has(strong .promo-line:nth-child(2))) > [data-language-content] .promo-line:nth-child(1) { transition-delay: var(--promo-step, .3s); }
-.promo-card:not(:has(strong .promo-line:nth-child(2))) > [data-language-content] .promo-line:nth-child(2) { transition-delay: calc(var(--promo-step, .3s) * 2); }
+.promo-card:not(:has(strong .promo-line:nth-child(2))) > [data-language-content] .promo-line:nth-child(1) { transition-delay: var(--promo-step, .16s); }
+.promo-card:not(:has(strong .promo-line:nth-child(2))) > [data-language-content] .promo-line:nth-child(2) { transition-delay: calc(var(--promo-step, .16s) * 2); }
 
 .promo-card:hover .promo-line,
 .promo-card:focus-visible .promo-line {
