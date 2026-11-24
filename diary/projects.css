@@ -270,85 +270,83 @@ body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
 .archive-promos-flow { display: contents; }
 .promo-module { grid-column:span 2; min-width:0; }
 .promo-module h2 { margin:0 0 11px; font-size:clamp(14px, 1.35vw, 19px); line-height:1.1; overflow-wrap:break-word; }
-/* Квадрат-промо: анимированное подчёркивание при наведении.
-   Одна черта, а не text-decoration: text-decoration:underline подчёркивает
-   каждую строку отдельно, а нужна одна линия.
+/* Квадрат-промо: подчёркивание при наведении.
+   Черта идёт под КАЖДОЙ строкой надписи отдельно — как настоящий
+   text-decoration:underline, только появляется плавно слева направо.
 
-   Как это нарисовано. Псевдоэлемент ::after размером с карточку несёт фон —
-   полосу толщиной 3px вдоль диагонали. Полоса сделана градиентом: области
-   одного цвета в градиенте — это изолинии, перпендикулярные его
-   направлению. Чтобы изолиния легла ровно по диагонали квадрата,
-   направление градиента поворачивают на 90° к ней, то есть на угол
-   atan2(227px, 100cqw). Высота карточки — та же константа 227px, что стоит
-   в height ниже; ширина берётся из cqw, потому что карточка занимает 1–2
-   колонки сетки и её ширина зависит от окна. Контейнер — inline-size (не
-   size): ширина карточки и так задана сеткой, поэтому containment по
-   горизонтали безопасен и не трогает высоту дорожки субгрида на телефоне.
+   Почему не text-decoration. Свойство underline не анимируется: браузер
+   рисует черту сразу целой, а нужно, чтобы она прорастала. Поэтому черта
+   нарисована фоном: сплошная заливка currentColor, у которой видна только
+   нижняя полоса в 3px (background-size 0% → 100% по ширине, 3px по высоте,
+   позиция left bottom). В покое ширина 0 — черты нет; при наведении 100% —
+   черта проезжает слева направо.
 
-   Как это проявляется. Сдвигать такую полосу вдоль диагонали нельзя:
-   вся диагональ лежит на одной изолинии, поэтому она появлялась бы вся
-   сразу. Поэтому полоса неподвижна, а по ней едет маска — градиент слева
-   направо, от непрозрачного к прозрачному. Пересечение полосы и маски
-   даёт черту, растущую слева направо: от верхней строки надписи до нижней.
-   Маска читается из переменной --promo-wipe, и она анимируется, потому что
-   зарегистрирована через @property (иначе браузер не знает, что это число,
-   и переключил бы значение рывком).
+   Почему под каждой строкой своя черта. Фон повешен не на карточку, а на
+   те элементы, внутри которых стоят <br>: это обёртки языковых вариантов
+   ([data-language-content]) — и в надписи, и в подписи под ней. Разрыв
+   строки физически находится внутри такого элемента, поэтому браузер
+   делит его на фрагменты по строкам. По умолчанию фон достаётся только
+   началу первого фрагмента и концу последнего — остальные строки остались
+   бы без черты. box-decoration-break: clone заставляет браузер дать
+   КАЖДОМУ фрагменту свой полный фон. Отсюда и черта под каждой строкой.
 
-   Совместимость: @property — baseline с 2024 (Chrome 85, Safari 16.4,
-   Firefox 128), CSS-тригонометрия — с 2023. Где чего-то нет, черта просто
-   появляется без плавного прорастания; сама черта рисуется всегда. */
+   Ширина фона считается от ширины фрагмента, то есть от длины самой
+   строки: короткая строка получает короткую черту, длинная — длинную.
+   Черта повторяет длину текста, как обычное подчёркивание, а не тянется
+   на всю карточку.
 
-@property --promo-wipe {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 0%;
-}
+   Совместимость: box-decoration-break — свойство давнее, в Chrome/Safari
+   работает через -webkit-, в Firefox напрямую; обе формы записаны.
 
-.promo-card { position:relative; overflow:hidden; container-type:inline-size; display:flex; box-sizing:border-box; width:100%; height:227px; padding:clamp(10px, 2vw, 22px); align-items:center; justify-content:center; flex-direction:column; gap:clamp(8px, 1.4vw, 16px); color:#fff !important; text-align:center; text-decoration:none; }
-.promo-card::after {
-  position:absolute;
-  inset:0;
-  z-index:1;
-  content:"";
-  pointer-events:none;
-  /* Толщина черты. */
-  --promo-rule-width: 3px;
-  /* Угол изолинии вдоль диагонали. Запасной вариант (36deg) — для браузеров
-     без CSS-тригонометрии; он верен для пропорций 227/310 (широкий экран). */
-  --promo-rule-angle: 36deg;
-  --promo-rule-angle: atan2(227px, 100cqw);
-  background-image: linear-gradient(var(--promo-rule-angle),
-    transparent calc(50% - var(--promo-rule-width) / 2),
-    currentColor calc(50% - var(--promo-rule-width) / 2),
-    currentColor calc(50% + var(--promo-rule-width) / 2),
-    transparent calc(50% + var(--promo-rule-width) / 2));
+   Про line-height. У надписи он поднят с .98 до 1.08 не для красоты: черта
+   рисуется внизу фрагмента, а при .98 под базовой линией оставалось 0.18px
+   запаса, тогда как нижние выносные Arimo («у», «р», «д») уходят на 0.208em
+   ниже базовой — 6.2px при кегле 30px. Черта легла бы прямо на буквы.
+   При 1.08 запас 4.7px, и 3px черта проходит под выносными. */
+
+.promo-card { position:relative; overflow:hidden; display:flex; box-sizing:border-box; width:100%; height:227px; padding:clamp(10px, 2vw, 22px); align-items:center; justify-content:center; flex-direction:column; gap:clamp(8px, 1.4vw, 16px); color:#fff !important; text-align:center; text-decoration:none; }
+.promo-card strong [data-language-content],
+.promo-card > [data-language-content] {
+  /* Подложка: всё прозрачно, кроме нижней полосы. currentColor — цвет
+     текста, поэтому черта автоматически подстраивается под тему карточки:
+     белая на тёмных, тёмная на светлых, розовая у DATE TRACKER. */
+  background-image: linear-gradient(currentColor, currentColor);
   background-repeat: no-repeat;
-  background-size: 100% 100%;
-  /* Маска едет слева направо: слева непрозрачно, справа прозрачно,
-     граница — на --promo-wipe. */
-  -webkit-mask-image: linear-gradient(to right, #000 var(--promo-wipe), transparent var(--promo-wipe));
-  mask-image: linear-gradient(to right, #000 var(--promo-wipe), transparent var(--promo-wipe));
-  --promo-wipe: 0%;
-  transition: --promo-wipe .45s cubic-bezier(.4, 0, .2, 1);
+  background-position: left bottom;
+  /* Ширина 0 — в покое черты нет; высота — толщина черты. */
+  background-size: 0% 3px;
+  /* Каждой строке — свой фон, то есть своя черта под своей строкой. */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size .45s cubic-bezier(.4, 0, .2, 1);
 }
-/* Финал: маска открыта целиком, черта прошла от верхней строки до нижней. */
-.promo-card:hover::after,
-.promo-card:focus-visible::after {
-  --promo-wipe: 100%;
+
+.promo-card:hover strong [data-language-content],
+.promo-card:hover > [data-language-content],
+.promo-card:focus-visible strong [data-language-content],
+.promo-card:focus-visible > [data-language-content] {
+  background-size: 100% 3px;
 }
+
 /* Общее правило архива подчёркивает все ссылки при наведении — здесь оно
-   нарисовало бы вторую черту под каждой строкой. Снимаем.
+   нарисовало бы вторую, статичную черту под каждой строкой. Снимаем.
    Селектор с тегом обязателен: у .promo-card:hover специфичность (0,2,0),
    а у .project-archive a:hover — (0,2,1), и общее правило иначе выиграет. */
 a.promo-card:hover, a.promo-card:focus-visible { text-decoration:none; }
-.promo-card strong { max-width:100%; font-size:clamp(15px, 2.3vw, 30px); font-weight:800; line-height:.98; letter-spacing:-.04em; overflow-wrap:break-word; }
+/* line-height 1.08, а не .98: под базовой линией нужно место для черты.
+   При .98 запас был 0.18px, а нижние выносные Arimo («у», «р», «д»)
+   уходят на 0.208em ниже базовой — 6.2px при кегле 30px. Черта легла бы
+   прямо на буквы. При 1.08 запас 4.7px: черта проходит под выносными.
+   Рост высоты — 7px на две строки, карточка центрирует контент и это
+   вмещает (фиксированные 227px, контент ~100px). */
+.promo-card strong { max-width:100%; font-size:clamp(15px, 2.3vw, 30px); font-weight:800; line-height:1.08; letter-spacing:-.04em; overflow-wrap:break-word; }
 .promo-card span { max-width:100%; font-size:clamp(11px, 1.05vw, 14px); line-height:1.3; overflow-wrap:break-word; }
 /* Крупная надпись на квадрате. Внутри <strong> лежат два <span>а — русский
    и английский варианты, переключаемые [hidden]. Без этого правила они
    попадают под .promo-card span выше (равная специфичность, но объявлено
    позже) и заголовок съёживается до кегля подписи: было 30px, стало 14px.
    Возвращаем им кегль, вес и трекинг самого <strong>. */
-.promo-card strong span { max-width:100%; font-size:inherit; font-weight:inherit; letter-spacing:inherit; line-height:.98; }
+.promo-card strong span { max-width:100%; font-size:inherit; font-weight:inherit; letter-spacing:inherit; line-height:inherit; }
 .promo-card--dark { background: #0b0b0b; }
 .promo-card--paper { color: #24133c !important; background: #f6e7e2; }
 .promo-card--paper strong { font-family: var(--archive-font); font-style: italic; }
@@ -518,8 +516,9 @@ body.dark-theme .project-note .language-switch button[aria-pressed="true"] { col
 @media (prefers-reduced-motion: reduce) {
   .project-note .language-switch::before, .project-note .language-switch button { transition:none; }
   /* Подчёркивание на квадратах промо: при отключённой анимации черта
-     просто появляется целиком, без проезда по диагонали. */
-  .promo-card::after { transition:none; }
+     появляется сразу целой, без проезда слева направо. */
+  .promo-card strong [data-language-content],
+  .promo-card > [data-language-content] { transition:none; }
 }
 body.dark-theme .project-note .note-sidenote, body.dark-theme .project-note .note-marginnote { color:#c0c0c0; }
 body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e; border-bottom-color:#555; }
