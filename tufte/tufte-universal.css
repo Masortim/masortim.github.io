@@ -198,14 +198,16 @@ h1 {
   line-height: 1;
   text-align: left;
   clear: both;
-  overflow-wrap: break-word;
-  /* Заголовки не переносятся по слогам: слово не рвётся через дефис.
-     Правило наследуется от .project-archive (hyphens:auto в
-     diary/projects.css), поэтому отменяем его явно. overflow-wrap выше
-     остаётся страховкой от переполнения — перенос по границе блока,
-     без дефиса, только если слово шире колонки целиком. */
+  /* Заголовки не рвутся вообще: ни по слогам, ни по границе блока.
+     hyphens отменяет переносы по слогам, унаследованные от .project-archive
+     (hyphens:auto в diary/projects.css); overflow-wrap:normal снимает
+     разрыв длинного слова, который был здесь раньше. Кегли h1 на сайте
+     рассчитаны так, чтобы самое длинное слово влезало целиком — см.
+     .project-note h1 в projects.css и .archive-brand h1 там же. */
   -webkit-hyphens: none;
   hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 h2 {
   font-weight: 400;
