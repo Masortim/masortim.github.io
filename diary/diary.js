@@ -132,6 +132,79 @@
 
   var storedTheme = readPreference(themeKey) || readPreference(tufteThemeKey);
   if (storedTheme === 'dark') document.body.className += ' dark-theme';
+
+  // Заставка на время загрузки шрифтов. Пока файлы не пришли, у страницы нет
+  // ни одного доступного шрифта (в стеке одно имя, запасных нет), и при
+  // font-display:swap браузер успел бы показать чужие буквы — на части систем
+  // с засечками. В helvetica.css стоит font-display:block, а здесь —
+  // сплошное поле по теме, чтобы читатель не смотрел на пустоту.
+  //
+  // Порядок важен: класс ставится синхронно, до первой отрисовки, иначе поле
+  // успеет мигнуть. Снимается после того, как все начертания загрузились, —
+  // или по таймеру, если Font Loading API нет или загрузка подвисла.
+  var FONT_STACK = '"HelveticaNeueCyr"';
+  var FONT_FACES = [
+    '400 1em ' + FONT_STACK,
+    'italic 400 1em ' + FONT_STACK,
+    '700 1em ' + FONT_STACK,
+    'italic 700 1em ' + FONT_STACK,
+    '800 1em ' + FONT_STACK
+  ];
+  var FONT_LOAD_TIMEOUT = 3000;
+
+  function markFontsReady() {
+    var veil = document.getElementById('fonts-loading');
+    if (veil) veil.className = 'fonts-loading fonts-ready';
+    if (document.body) document.body.className += ' fonts-ready';
+  }
+
+  function fontsAreLoaded() {
+    // document.fonts.check() не загружает файлы, а только отвечает, доступно
+    // ли начертание прямо сейчас. Если все пять доступны — грузить и ждать
+    // нечего, заставку не показываем вовсе.
+    if (!document.fonts || !document.fonts.check) return false;
+    for (var i = 0; i < FONT_FACES.length; i += 1) {
+      if (!document.fonts.check(FONT_FACES[i])) return false;
+    }
+    return true;
+  }
+
+  function hideFontVeilWhenReady() {
+    if (fontsAreLoaded()) {
+      markFontsReady();
+      return;
+    }
+    var veil = document.getElementById('fonts-loading');
+    if (veil) veil.className = 'fonts-loading';
+
+    var settled = false;
+    function finish() {
+      if (settled) return;
+      settled = true;
+      markFontsReady();
+    }
+
+    // Страховка: Font Loading API может отсутствовать (старый движок), а
+    // загрузка — подвиснуть. К трём секундам font-display:block перестаёт
+    // прятать текст, так что заставка к этому моменту должна уйти.
+    window.setTimeout(finish, FONT_LOAD_TIMEOUT);
+
+    if (!document.fonts || !document.fonts.load) return;
+
+    var pending = [];
+    for (var i = 0; i < FONT_FACES.length; i += 1) {
+      pending.push(document.fonts.load(FONT_FACES[i]));
+    }
+    if (!window.Promise || !window.Promise.all) return;
+
+    window.Promise.all(pending).then(function () {
+      // Даже если какое-то начертание не пришло (сеть отвалилась), заставку
+      // снимаем: держать поле дольше нет смысла, текст уже показан запасным.
+      finish();
+    }, function () {
+      finish();
+    });
+  }
   document.documentElement.style.colorScheme = storedTheme === 'dark' ? 'dark' : 'light';
   updateThemeColor(storedTheme === 'dark');
   updateThemeLabel();
@@ -150,6 +223,11 @@
       updateThemeLabel();
     });
   }
+
+  // Заставку запускаем сразу: скрипт подключён с defer, то есть выполняется
+  // после разбора разметки, но до первой отрисовки. Класс успевает встать
+  // раньше первого кадра, поэтому поле не мигает.
+  hideFontVeilWhenReady();
 
   // Ленивая загрузка MathJax и highlight.js для заметок с формулами/кодом.
   // Стили — в tufte-universal.css (разделы «Математика» и «Код»).
