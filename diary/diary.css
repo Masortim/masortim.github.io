@@ -87,9 +87,39 @@ body:not(.archive-home) .sidenote,
 body:not(.archive-home) .marginnote {
   -webkit-hyphens: none;
   hyphens: none;
+}
+
+/* overflow-wrap — отдельным правилом, только для обычного текста.
+   Заголовкам он не нужен: там слова не должны разрываться вообще,
+   и кегли h1 на сайте подобраны так, чтобы слово влезало целиком
+   (см. h1 в tufte/tufte-universal.css и .project-note h1 в projects.css).
+   Список тот же, что выше, минус h1–h4. */
+body:not(.archive-home),
+body:not(.archive-home) p,
+body:not(.archive-home) li,
+body:not(.archive-home) dt,
+body:not(.archive-home) dd,
+body:not(.archive-home) blockquote,
+body:not(.archive-home) figcaption,
+body:not(.archive-home) caption,
+body:not(.archive-home) td,
+body:not(.archive-home) th,
+body:not(.archive-home) a,
+body:not(.archive-home) .sidenote,
+body:not(.archive-home) .marginnote {
   /* Страховка от переполнения: очень длинное слово (URL, термин)
      переносится по границе блока, без дефиса. */
   overflow-wrap: break-word;
+}
+
+/* Заголовки: разрывов нет ни по слогам, ни по границе блока.
+   Специфичность как у правила выше, поэтому стоит после него. */
+body:not(.archive-home) h1,
+body:not(.archive-home) h2,
+body:not(.archive-home) h3,
+body:not(.archive-home) h4 {
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .skip-link {

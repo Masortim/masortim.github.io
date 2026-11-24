@@ -101,12 +101,15 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
   font-weight:800;
   letter-spacing:-.08em;
   line-height:.92;
-  /* Переносов по слогам нет. overflow-wrap — только страховка: если слово
-     всё же не поместится (экзотический шрифт), оно перенесётся по границе
-     блока без дефиса, а не вылезет за колонку. */
+  /* Разрывов слов нет ни на какой ширине: hyphens выключает переносы по
+     слогам, overflow-wrap:normal — разрыв длинного слова по границе блока.
+     Раньше здесь стоял break-word как «страховка», но он и был тем самым
+     механизмом, который резал слова на узких экранах. Кегль рассчитан так,
+     что самое длинное слово («разработчика») влезает целиком даже на 280px. */
   -webkit-hyphens:none;
   hyphens:none;
-  overflow-wrap:break-word;
+  overflow-wrap:normal;
+  word-break:normal;
 }
 /* Вводный абзац под шапкой. Переносов по слогам нет: родитель
    .project-archive ставит hyphens:auto для плотной шестиколоночной сетки,
@@ -476,10 +479,22 @@ body.tufte-note { background: var(--tufte-bg, #fffff8); }
 .project-note .language-switch button[aria-pressed="true"] { color:#fff; background:transparent; }
 .project-note .theme-toggle { display:grid; width:2rem; height:2rem; padding:0; place-items:center; position:absolute; top:50%; right:0; margin:0; border:0; border-radius:50%; color:#fff; background:#70513e; cursor:pointer; font:.8rem/1 var(--archive-font); transform:translateY(-50%); }
 .project-note .note-masthead { display:flex; width:55%; justify-content:space-between; gap:1rem; padding-bottom:.7rem; border-bottom:1px solid var(--tufte-rule, #d9d5ca); color:var(--tufte-faint, #68645c); font-family:var(--archive-font); font-size:.95rem; letter-spacing:.05em; font-variant:small-caps; }
-.project-note h1 { width:75%; margin:2rem 0 .8rem; font-weight:400; font-style:normal; /* Заголовок заметки: одна плавная формула на все ширины, без ступенек
-   на границах медиазапросов. Минимум 2.4rem (36px) — заметно крупнее
-   текста 21px даже на 320px; максимум — тафтиевские 3.2rem (48px). */
-font-size:clamp(2.4rem, 1.79rem + 2.8vw, 3.2rem); line-height:1.05; letter-spacing:0; }
+.project-note h1 { width:75%; margin:2rem 0 .8rem; font-weight:400; font-style:normal;
+/* Заголовок заметки: одна плавная формула на все ширины, без ступенек
+   на границах медиазапросов. Максимум — тафтиевские 3.2rem (48px).
+   Множитель подобран по самому длинному слову на сайте: «Крестики-нолики»
+   в заголовке заметки про крестики-нолики. При ширине h1 = 90% окна
+   (на ≤760px он занимает всю полосу) слово влезает целиком начиная с
+   280px: 11.5vw даёт 32.2px на 280px, 36.8px на 320px, 44.9px на 390px.
+   До 417px работает vw, дальше упирается в 3.2rem (48px) — на десктопе
+   кегль прежний.
+
+   Здесь именно min, а не clamp: нижней границы нет намеренно. clamp с
+   минимумом 2.25rem возвращал бы кегль к этому минимуму на узких экранах
+   и снова рвал слово — что и случилось при первой попытке.
+   Переносов и разрывов слов у h1 нет вообще — см. правило h1 в
+   tufte/tufte-universal.css. */
+font-size:min(11.5vw, 3.2rem); line-height:1.05; letter-spacing:0; }
 .project-note .note-dek { width:55%; max-width:39rem; margin:1rem 0 2rem; color:var(--tufte-muted, #514e46); font-size:1.4rem; line-height:1.6; font-style:italic; }
 .project-note .note-meta { display:flex; width:55%; flex-wrap:wrap; gap:.5rem 1.25rem; margin:0; padding:.8rem 0; border-top:1px solid var(--tufte-rule, #d9d5ca); border-bottom:1px solid var(--tufte-rule, #d9d5ca); color:var(--tufte-faint, #68645c); font-family:var(--archive-font); font-size:.95rem; letter-spacing:.03em; font-variant:small-caps; }
 .project-note h2 { width:55%; margin:2.1rem 0 0; font-weight:400; font-style:italic; font-size:2.2rem; line-height:1; }
