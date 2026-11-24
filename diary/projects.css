@@ -271,60 +271,108 @@ body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
 .promo-module { grid-column:span 2; min-width:0; }
 .promo-module h2 { margin:0 0 11px; font-size:clamp(14px, 1.35vw, 19px); line-height:1.1; overflow-wrap:break-word; }
 /* Квадрат-промо: подчёркивание при наведении.
-   Черта идёт под КАЖДОЙ строкой надписи отдельно — как настоящий
-   text-decoration:underline, только появляется плавно слева направо.
+   Черта идёт под КАЖДОЙ строкой отдельно и появляется ПО ОЧЕРЕДИ:
+   сначала верхняя, за ней каждая следующая — волной сверху вниз.
 
    Почему не text-decoration. Свойство underline не анимируется: браузер
-   рисует черту сразу целой, а нужно, чтобы она прорастала. Поэтому черта
-   нарисована фоном: сплошная заливка currentColor, у которой видна только
-   нижняя полоса в 3px (background-size 0% → 100% по ширине, 3px по высоте,
-   позиция left bottom). В покое ширина 0 — черты нет; при наведении 100% —
-   черта проезжает слева направо.
+   рисует черту сразу целой. Поэтому черта нарисована фоном: сплошная
+   заливка currentColor, у которой видна только нижняя полоса 3px.
+   background-size растёт с 0% до 100% по ширине — черта проезжает слева
+   направо. Цвет currentColor подстраивается под тему карточки сам:
+   белый на тёмных, тёмный на светлых, розовый у DATE TRACKER.
 
-   Почему под каждой строкой своя черта. Фон повешен не на карточку, а на
-   те элементы, внутри которых стоят <br>: это обёртки языковых вариантов
-   ([data-language-content]) — и в надписи, и в подписи под ней. Разрыв
-   строки физически находится внутри такого элемента, поэтому браузер
-   делит его на фрагменты по строкам. По умолчанию фон достаётся только
-   началу первого фрагмента и концу последнего — остальные строки остались
-   бы без черты. box-decoration-break: clone заставляет браузер дать
-   КАЖДОМУ фрагменту свой полный фон. Отсюда и черта под каждой строкой.
+   Почему строки — отдельные элементы. Раньше строки разделялись <br>
+   внутри одного span, а черту получали фрагменты этого span через
+   box-decoration-break: clone. Беда в том, что у всех фрагментов одного
+   элемента transition-delay общий: задержку по номеру строки так не
+   задать, и все черты неизбежно росли одновременно. Поэтому в разметке
+   каждая строка обёрнута в свой <span class="promo-line">. Отдельный
+   элемент — отдельная задержка, только так получается очерёдность.
 
-   Ширина фона считается от ширины фрагмента, то есть от длины самой
-   строки: короткая строка получает короткую черту, длинная — длинную.
-   Черта повторяет длину текста, как обычное подчёркивание, а не тянется
-   на всю карточку.
+   Почему display:block с width:fit-content. Блочность нужна, чтобы строки
+   шли строго друг под другом. Но обычный блок растянулся бы на всю ширину
+   карточки, и черта стала бы шире текста. width:fit-content сжимает
+   коробку по тексту, margin-inline:auto центрирует: получается то же
+   центрирование, что даёт text-align, но черта — ровно по длине строки.
+   Строки короткие: самая длинная «КЛАССИФИКАЦИЯ» — 254px при кегле 30px
+   против 266px доступной ширины, поэтому перенос <br> больше не нужен и
+   на 360px текст тоже не ломается.
 
-   Совместимость: box-decoration-break — свойство давнее, в Chrome/Safari
-   работает через -webkit-, в Firefox напрямую; обе формы записаны.
+   Очерёдность. Шаг волны — переменная --promo-step (.3s), длительность
+   одной черты — --promo-dur (.24s). Шаг больше длительности, поэтому
+   строки идут строго по очереди: черта успевает досохнуть, следующая
+   начинается через 0.06s после неё. Ничего не наезжает и не сливается.
+   Надпись и подпись — разные родители, поэтому нумерация внутри них
+   начинается заново. Строки надписи получают 0 и шаг. Строкам подписи
+   к этому прибавляется смещение, равное числу строк надписи: считаем его
+   через :has() — если у надписи есть вторая строка, смещение два шага,
+   иначе один. Без :has() сработает вариант «в надписи две строки», и на
+   одно-строчных карточках между надписью и подписью будет лишняя пауза
+   в один шаг: волна останется последовательной, просто чуть неровной. */
 
-   Про line-height. У надписи он поднят с .98 до 1.08 не для красоты: черта
-   рисуется внизу фрагмента, а при .98 под базовой линией оставалось 0.18px
-   запаса, тогда как нижние выносные Arimo («у», «р», «д») уходят на 0.208em
-   ниже базовой — 6.2px при кегле 30px. Черта легла бы прямо на буквы.
-   При 1.08 запас 4.7px, и 3px черта проходит под выносными. */
+.promo-card {
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  box-sizing:border-box;
+  width:100%;
+  height:227px;
+  padding:clamp(10px, 2vw, 22px);
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:clamp(8px, 1.4vw, 16px);
+  color:#fff !important;
+  text-align:center;
+  text-decoration:none;
+  /* Шаг волны и длительность одной черты. Шаг чуть больше длительности,
+     чтобы строки шли именно по очереди. */
+  --promo-step: .3s;
+  --promo-dur: .24s;
+}
 
-.promo-card { position:relative; overflow:hidden; display:flex; box-sizing:border-box; width:100%; height:227px; padding:clamp(10px, 2vw, 22px); align-items:center; justify-content:center; flex-direction:column; gap:clamp(8px, 1.4vw, 16px); color:#fff !important; text-align:center; text-decoration:none; }
-.promo-card strong [data-language-content],
-.promo-card > [data-language-content] {
-  /* Подложка: всё прозрачно, кроме нижней полосы. currentColor — цвет
-     текста, поэтому черта автоматически подстраивается под тему карточки:
-     белая на тёмных, тёмная на светлых, розовая у DATE TRACKER. */
+/* Обёртки языковых вариантов делаем блоками, чтобы строки внутри них
+   лежали предсказуемо. :not([hidden]) обязателен: правило display:block
+   перебило бы служебный стиль [hidden] в браузере, и на русской странице
+   показался бы английский вариант. */
+.promo-card > [data-language-content]:not([hidden]),
+.promo-card strong > [data-language-content]:not([hidden]) {
+  display:block;
+  max-width:100%;
+}
+
+.promo-line {
+  /* Блок, сжатый по тексту: своя строка, своя коробка, своя задержка,
+     а черта — по длине текста, а не по ширине карточки. */
+  display:block;
+  width:fit-content;
+  max-width:100%;
+  margin-inline:auto;
+  /* Подложка: всё прозрачно, кроме нижней полосы. */
   background-image: linear-gradient(currentColor, currentColor);
   background-repeat: no-repeat;
   background-position: left bottom;
   /* Ширина 0 — в покое черты нет; высота — толщина черты. */
   background-size: 0% 3px;
-  /* Каждой строке — свой фон, то есть своя черта под своей строкой. */
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  transition: background-size .45s cubic-bezier(.4, 0, .2, 1);
+  transition: background-size var(--promo-dur, .24s) cubic-bezier(.4, 0, .2, 1);
 }
 
-.promo-card:hover strong [data-language-content],
-.promo-card:hover > [data-language-content],
-.promo-card:focus-visible strong [data-language-content],
-.promo-card:focus-visible > [data-language-content] {
+/* Строки надписи: первая сразу, вторая через шаг. */
+.promo-line:nth-child(1) { transition-delay: 0s; }
+.promo-line:nth-child(2) { transition-delay: var(--promo-step, .3s); }
+.promo-line:nth-child(3) { transition-delay: calc(var(--promo-step, .3s) * 2); }
+.promo-line:nth-child(4) { transition-delay: calc(var(--promo-step, .3s) * 3); }
+
+/* Строки подписи продолжают волну после надписи. */
+.promo-card > [data-language-content] .promo-line:nth-child(1) { transition-delay: calc(var(--promo-step, .3s) * 2); }
+.promo-card > [data-language-content] .promo-line:nth-child(2) { transition-delay: calc(var(--promo-step, .3s) * 3); }
+
+/* Надпись в одну строку — значит волна в подписи начинается на шаг раньше. */
+.promo-card:not(:has(strong .promo-line:nth-child(2))) > [data-language-content] .promo-line:nth-child(1) { transition-delay: var(--promo-step, .3s); }
+.promo-card:not(:has(strong .promo-line:nth-child(2))) > [data-language-content] .promo-line:nth-child(2) { transition-delay: calc(var(--promo-step, .3s) * 2); }
+
+.promo-card:hover .promo-line,
+.promo-card:focus-visible .promo-line {
   background-size: 100% 3px;
 }
 
@@ -517,8 +565,7 @@ body.dark-theme .project-note .language-switch button[aria-pressed="true"] { col
   .project-note .language-switch::before, .project-note .language-switch button { transition:none; }
   /* Подчёркивание на квадратах промо: при отключённой анимации черта
      появляется сразу целой, без проезда слева направо. */
-  .promo-card strong [data-language-content],
-  .promo-card > [data-language-content] { transition:none; }
+  .promo-line { transition:none; }
 }
 body.dark-theme .project-note .note-sidenote, body.dark-theme .project-note .note-marginnote { color:#c0c0c0; }
 body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e; border-bottom-color:#555; }
