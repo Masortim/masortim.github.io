@@ -2,24 +2,28 @@
 /* ---------------------------------------------------------------------------
    Гарнитура страницы.
 
-   Первой стоит встроенная Helvetica Neue Cyrillic (fonts/helvetica.css):
+   Здесь только встроенная Helvetica Neue Cyrillic (fonts/helvetica.css):
    пять начертаний файлами, полный русский алфавит. Так рисунок текста
    одинаков у всех читателей на всех системах — на Windows и Linux настоящей
    Helvetica нет, и без встроенных файлов страница рисовалась бы запасным
    шрифтом, у каждого своим.
 
-   Дальше в стеке — системные Helvetica и её клоны на случай, если файлы не
-   загрузятся (медленная сеть, отключённые веб-шрифты): Helvetica Neue и
-   Helvetica на macOS, Arial на Windows, Nimbus Sans и Liberation Sans на
-   Linux. Имя "HelveticaNeueCyr" намеренно не совпадает с системным
-   "Helvetica Neue": иначе браузер мог бы переиспользовать локальную копию
-   вместо нашего файла, и рисунок поехал бы.
+   Запасных вариантов в стеке нет: ни системных Helvetica и её клонов, ни
+   Arial, ни generic-семейства на конце. Если файл почему-то не загрузится,
+   браузер отрисует текст своим шрифтом по умолчанию, но в обычной ситуации
+   подмешать чужой рисунок неоткуда — набор у всех один и тот же встроенный.
+   Имя "HelveticaNeueCyr" намеренно не совпадает с системным "Helvetica
+   Neue": иначе браузер мог бы переиспользовать локальную копию вместо
+   нашего файла, и рисунок поехал бы.
    --------------------------------------------------------------------------- */
-body.archive-home { margin:0; padding:0; }
+/* Шрифт на body тоже задан: без него сама страница наследовала бы дефолт
+   браузера и любой элемент вне .project-archive (.skip-link) рисовался бы
+   чужим шрифтом. Имя явное — переменная объявлена ниже, на .project-archive,
+   и на body ещё не действует. */
+body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
 .project-archive {
-  /* Встроенная Helvetica Neue Cyrillic; системные Helvetica и клоны —
-     запасной вариант. */
-  --archive-font: "HelveticaNeueCyr", "Helvetica Neue", Helvetica, "Nimbus Sans", "Liberation Sans", Arial, sans-serif;
+  /* Только встроенная гарнитура, без запасных вариантов. */
+  --archive-font: "HelveticaNeueCyr";
   --archive-gutter: 1.5%;
   /* Приглушённый серый для пояснительного текста: аннотация шапки,
      описания карточек, тексты нижних блоков. Заголовки (h1-h3) остаются
@@ -114,7 +118,19 @@ body.archive-home { margin:0; padding:0; }
 .archive-actions { display: flex; align-items: flex-start; flex-direction: column; gap: 5px; font-size: 12px; }
 .archive-actions button, .archive-actions .forum-link { display: inline-block; box-sizing:border-box; max-width:100%; border: 0; border-radius: 6px; padding: 4px 7px; color: #fff; background: #111; font: 700 clamp(10px, .9vw, 12px) var(--archive-font); overflow-wrap:break-word; cursor: pointer; }
 .archive-actions #grid-toggle { background: #aaa; }
-.archive-actions .language-switch { position: static; display: flex; gap: 4px; padding: 0; border: 0; border-radius: 0; box-shadow: none; font-size: 14px; }
+/* Переход «к проектам»: ссылка выезжает сверху по фокусу. Своё правило
+   шрифта нужно потому, что иначе она наследует дефолт браузера (моноширинный
+   в большинстве сборок) — единственный такой элемент на странице.
+   Имя семейства написано здесь явно, а не через var(--archive-font):
+   переменная объявлена на .project-archive, а .skip-link лежит выше него,
+   прямым ребёнком body, и до неё не достаёт. */
+.skip-link { font-family: "HelveticaNeueCyr"; }
+
+/* diary.css задаёт .language-switch моноширинный шрифт (для заметок Тафти).
+   На главной это обычная плашка в шапке, поэтому шрифт возвращаем к
+   основному. Правило с --archive-font обязательно: без него переключатель
+   языка выглядел бы единственным моноширинным элементом на странице. */
+.archive-actions .language-switch { position: static; display: flex; gap: 4px; padding: 0; border: 0; border-radius: 0; box-shadow: none; font-family: var(--archive-font); font-size: 14px; }
 .archive-actions .language-switch button { min-width: 0; min-height: 0; padding: 4px 7px; border: 0; border-radius:4px; color: #555; background: transparent; cursor: pointer; font: inherit; }
 .archive-actions .language-switch button[aria-pressed="true"] { color: #111; background: #ddd; }
 .archive-actions #theme-toggle { padding: 2px 5px; font-size: 12px; }
