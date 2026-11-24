@@ -9,14 +9,17 @@
   <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-  <link rel="stylesheet" href="/diary/diary.css">
-  <link rel="stylesheet" href="/fonts/helvetica.css?v=20261202a">
-  <link rel="stylesheet" href="/newsletter/newsletter.css?v=20261203a">
+  <link rel="stylesheet" href="/diary/diary.css?v=20261204a">
+  <link rel="stylesheet" href="/fonts/helvetica.css?v=20261204a">
+  <link rel="stylesheet" href="/newsletter/newsletter.css?v=20261204a">
   <script src="/diary/diary.js" defer></script>
   <script src="/newsletter/config.js?v=20261123m"></script>
   <script src="/newsletter/newsletter.js?v=20261123p" defer></script>
 </head>
 <body class="archive-home newsletter-page">
+  <!-- Заставка на время загрузки шрифтов: сплошное поле по теме.
+       diary.js снимает её, когда все начертания готовы. -->
+  <div id="fonts-loading" class="fonts-loading" aria-hidden="true"></div>
 <main class="project-archive newsletter-sheet">
 
   <header class="archive-top newsletter-top">

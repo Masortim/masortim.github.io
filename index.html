@@ -11,15 +11,18 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="alternate" type="application/rss+xml" hreflang="ru" title="Дневник разработчика · Masortim" href="/feed.xml">
   <link rel="alternate" type="application/rss+xml" hreflang="en" title="Developer Diary · Masortim" href="/feed-en.xml">
-  <link rel="stylesheet" href="/diary/diary.css">
+  <link rel="stylesheet" href="/diary/diary.css?v=20261204a">
   <!-- Встроенный шрифт: Helvetica Neue Cyrillic. Идёт до файлов, которые его
        используют, чтобы @font-face был объявлен раньше применения. -->
-  <link rel="stylesheet" href="/fonts/helvetica.css?v=20261202a">
-  <link rel="stylesheet" href="/diary/projects.css?v=20261203a">
+  <link rel="stylesheet" href="/fonts/helvetica.css?v=20261204a">
+  <link rel="stylesheet" href="/diary/projects.css?v=20261204a">
   <script src="/diary/diary.js" defer></script>
   <script src="/diary/archive.js" defer></script>
 </head>
 <body class="archive-home">
+  <!-- Заставка на время загрузки шрифтов: сплошное поле по теме.
+       diary.js снимает её, когда все начертания готовы. -->
+  <div id="fonts-loading" class="fonts-loading" aria-hidden="true"></div>
   <a class="skip-link" href="#archive">К проектам / Skip to projects</a>
   <main class="project-archive">
     <div class="archive-sheet">

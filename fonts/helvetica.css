@@ -23,13 +23,21 @@
 
    Про .woff. В папке лежат файлы .woff нулевого размера — они битые,
    поэтому в src не указаны. Используются .woff2: их понимают все браузеры,
-   вышедшие после 2016 года. */
+   вышедшие после 2016 года.
+
+   Про font-display: block. Стоит block, а не swap. При swap браузер сразу
+   рисует текст запасным шрифтом и подменяет его, когда файл догрузится —
+   читатель успевает увидеть чужие буквы, а с пустым стеком (только
+   HelveticaNeueCyr, без sans-serif) запасной может оказаться с засечками.
+   При block текст невидим до трёх секунд, а дальше всё равно показывается
+   запасным. Трёхсекундное окно перекрывает заставка в projects.css: она
+   закрывает экран сплошным полем и уходит, когда шрифты готовы. */
 
 @font-face {
   font-family: "HelveticaNeueCyr";
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
   src: url("./helveticaneuecyr-roman.woff2") format("woff2");
 }
 
@@ -37,7 +45,7 @@
   font-family: "HelveticaNeueCyr";
   font-style: italic;
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
   src: url("./helveticaneuecyr-italic.woff2") format("woff2");
 }
 
@@ -45,7 +53,7 @@
   font-family: "HelveticaNeueCyr";
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: block;
   src: url("./helveticaneuecyr-bold.woff2") format("woff2");
 }
 
@@ -56,7 +64,7 @@
   font-family: "HelveticaNeueCyr";
   font-style: italic;
   font-weight: 700;
-  font-display: swap;
+  font-display: block;
   src: url("./helveticaneuecyr-bolditalic.woff2") format("woff2");
 }
 
@@ -68,6 +76,6 @@
   font-family: "HelveticaNeueCyr";
   font-style: normal;
   font-weight: 800;
-  font-display: swap;
+  font-display: block;
   src: url("./helveticaneuecyr-heavy.woff2") format("woff2");
 }
