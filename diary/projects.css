@@ -819,17 +819,21 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
      заметок совсем: запас 120px на самых тесных 800–900px.
      Кегль 14px не меняется, ряды с заметками остаются на своих местах.
 
-     Колонки появляются только с 760px: ниже подколонка уже 106px,
-     и «Mermaid Live Editor» пришлось бы рвать посреди слова — а он и
-     так переносится по пробелу на «Mermaid» / «Live Editor». До 760px
-     блок остаётся одноколоночным и держится на запасе по высоте
-     (на 561px он 94px). */
+     Колонки появляются с 660px — там, где одноколоночному блоку
+     перестаёт хватать высоты (см. расчёт ниже). Ниже блок остаётся
+     одноколоночным: это возможно только до 650px, потому что описания
+     карточек там занимают 5–6 строк и ряды 5–6 самые высокие за весь
+     диапазон (351px на 561px, 295px на 650px). С 660px карточки
+     перестают расти, а ссылки продолжают: одна колонка перестаёт
+     влезать. Точка перехода проверена по шагам в 10px.
+     «Mermaid Live Editor» в подколонке (83–126px) переносится по
+     пробелу на «Mermaid» / «Live Editor» — посреди слова не рвётся. */
   .archive-column:nth-child(6) > .project-card { grid-row: var(--row-first) / span 3; grid-column: var(--column-slot); }
   .archive-column:nth-child(6) .project-card--link { margin-top: 0; }
   .archive-column:nth-child(6) .project-card--link > a { line-height: 1.1; }
 }
 
-@media (min-width: 760px) and (max-width: 900px) {
+@media (min-width: 660px) and (max-width: 900px) {
   .archive-column:nth-child(6) .project-card--link {
     columns: 2;
     column-gap: 10px;
