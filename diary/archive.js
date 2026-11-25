@@ -70,7 +70,23 @@
       var query = search.value.replace(/^\s+|\s+$/g, '').toLowerCase();
       var cards = document.querySelectorAll('.project-card');
       for (var c = 0; c < cards.length; c += 1) {
-        cards[c].hidden = query !== '' && cards[c].textContent.toLowerCase().indexOf(query) === -1;
+        var card = cards[c];
+        /* Колонка «Сообщества» — один блок со списком ссылок. Скрываем не
+           блок целиком, а неподходящие ссылки внутри него: иначе запрос
+           «devdocs» оставлял бы рядом и Transform. Блок прячется только
+           тогда, когда не подошла ни одна его ссылка. */
+        if (hasClassToken(card, 'project-card--link')) {
+          var links = card.getElementsByTagName('a');
+          var any = false;
+          for (var l = 0; l < links.length; l += 1) {
+            var hit = query === '' || links[l].textContent.toLowerCase().indexOf(query) !== -1;
+            links[l].hidden = !hit;
+            if (hit) any = true;
+          }
+          card.hidden = !any;
+        } else {
+          card.hidden = query !== '' && card.textContent.toLowerCase().indexOf(query) === -1;
+        }
       }
     });
   }
