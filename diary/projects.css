@@ -374,18 +374,18 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
      станет больше и блок перерастёт два ряда, лишняя высота разложится
      по трём рядам, а не по двум, и вторые карточки сдвинутся вдвое
      меньше. */
-  .archive-column:nth-child(6) > .project-card { grid-row: 2 / span 3; }
-  /* Интерлиньяж ссылок плотнее, чем у текста карточки, на всём
-     десктопе, и он же — единственный регулятор высоты списка. Кегль
-     не трогаем, отступы не трогаем: блок обязан оставаться ниже суммы
-     рядов 2–3, а сумма эта с числом ссылок не растёт. С каждой новой
-     ссылкой блок прибавляет ~16.8px при 1.2, поэтому запас тает:
-     на двадцати двух ссылках 1.2 давал минус 2.9px в окне
-     1226–1446px (45 точек из 204). 1.15 возвращает запас +13.2px
-     в худшей точке и оставляет его положительным везде. Дальше
-     опускаться нельзя без потери ритма: 1.1 уже сравнялся бы
-     с трёхколоночным режимом, где строка одна на всю подколонку. */
-  .archive-column:nth-child(6) .project-card--link > a { line-height: 1.15; }
+  .archive-column:nth-child(6) > .project-card { grid-row: 2 / span 4; }
+  /* Интерлиньяж ссылок плотнее, чем у текста карточки (1.2 против
+     1.32), и он НЕ подгоняется под высоту рядов с заметками. Когда
+     список перерастает эти ряды, правильное поведение — дать колонке
+     уйти вниз в следующий ряд, а не сжимать строки: кегль и просвет
+     между ссылками должны остаться прежними при любом их числе.
+     Раньше здесь стояло 1.15 — это было сжатием ради того, чтобы блок
+     уместился под рядами 2–3. Отменено: двадцать вторая ссылка при 1.2
+     выходит за их сумму максимум на 2.9px (окно 1226px), и лишняя
+     высота уходит в четвёртый ряд, пустой. Сдвиг вторых карточек
+     заметок от этого — доли пикселя. */
+  .archive-column:nth-child(6) .project-card--link > a { line-height: 1.2; }
 }
 .archive-view-all { margin:auto 0 8px; font-size:14px; font-weight:700; }
 .archive-bottom { padding-bottom:18px; border-bottom:1px solid var(--archive-horizontal-line); }
@@ -830,7 +830,7 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
      Online», «JSON Crack» и «HTTPie Web» переносятся по пробелу на две
      строки — посреди слова не рвётся. Ниже 561px сетка одноколоночная,
      и там блок течёт в общем потоке. */
-  .archive-column:nth-child(6) > .project-card { grid-row: var(--row-first) / span 3; grid-column: var(--column-slot); }
+  .archive-column:nth-child(6) > .project-card { grid-row: var(--row-first) / span 4; grid-column: var(--column-slot); }
   .archive-column:nth-child(6) .project-card--link { margin-top: 0; }
   .archive-column:nth-child(6) .project-card--link > a { line-height: 1.1; }
 }
