@@ -283,8 +283,12 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
 .project-card { margin:0 0 22px; overflow-wrap:break-word; }
 
 /* Название заметки — 16px на всех ширинах, строго ниже заголовка
-   колонки (18px) и строго выше описания (14px). */
-.project-card h3 { align-self:flex-start; width:100%; min-width:0; margin:0 0 6px; font-size:16px; font-weight:700; line-height:1.2; text-align:left; overflow-wrap:break-word; }
+   колонки (18px) и строго выше описания (14px).
+   Отступ до описания — 3px вместо 6px: название и описание читаются как
+   одна пара, а не как два независимых блока. По чернилам (а не по
+   метрикам) просвет при этом всё ещё 9px: у h3 при line-height 1.2
+   полуинтерлиньяж .144em, у p при 1.32 — .204em, плюс 3px отступа. */
+.project-card h3 { align-self:flex-start; width:100%; min-width:0; margin:0 0 3px; font-size:16px; font-weight:700; line-height:1.2; text-align:left; overflow-wrap:break-word; }
 
 .project-card h3 > a { display:block; }
 
