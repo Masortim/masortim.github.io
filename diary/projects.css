@@ -253,7 +253,13 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
   overflow-wrap:break-word;
 }
 .archive-column h2 > span[data-language-content] { font-size: inherit; font-weight: inherit; }
-.project-card { margin:0 0 22px; overflow-wrap:break-word; }
+/* Зазор между карточками по вертикали. Карточка — grid/flex-элемент,
+   поэтому её поля не схлопываются с полями детей: расстояние между
+   верхним и нижним рядом складывается из margin-bottom мета-строки (1em
+   от кегля 14px), этого margin и отступа перед заголовком следующей
+   карточки (--column-heading-pad). 14px вместо 22px даёт 38–47px вместо
+   42–53px — заметно плотнее при сохранении воздуха между группами. */
+.project-card { margin:0 0 14px; overflow-wrap:break-word; }
 /* Название заметки — 16px на всех ширинах, строго ниже заголовка
    колонки (18px) и строго выше описания (14px).
 
@@ -296,8 +302,14 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
 /* Мета-строка (дата · стек) остаётся основной: чёрной в светлой теме,
    #eee в тёмной. Она исключена из правила .project-card p:not(.project-meta)
    выше, поэтому цвет берётся из наследования .project-archive, а не из
-   приглушённой переменной --archive-muted. */
-.project-card .project-meta { margin-top:3px; margin-bottom:1em; font-size:clamp(10px,.85vw,12px); font-weight:700; overflow-wrap:break-word; }
+   приглушённой переменной --archive-muted.
+   Кегль 14px — такой же, как у описания (было clamp(10px,.85vw,12px)):
+   мета больше не мельче основного текста карточки. Полужирный и чёрный
+   цвет по-прежнему отличают её от приглушённого описания, поэтому
+   иерархия читается без разницы в кегле. Число строк не изменилось:
+   на 1279px длинная строка «16.10.2023 · C · C++ · C# · Windows Forms»
+   так же занимает две строки и на 12px, и на 14px. */
+.project-card .project-meta { margin-top:3px; margin-bottom:1em; font-size:14px; font-weight:700; overflow-wrap:break-word; }
 /* Иерархия главной: заголовок колонки 18px > название заметки 16px >
    описание 14px. Все три размера фиксированные — ни один не зависит
    от ширины окна, поэтому соотношение сохраняется на любом экране.
