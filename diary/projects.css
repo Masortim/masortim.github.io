@@ -160,7 +160,7 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
     font-size:clamp(2.25rem, 19.715cqw - .83px, 60.2px);
   }
   html[lang="en"] .archive-summary {
-    margin-top:calc(30px + clamp(7.272px, .9786vw - .193px, 12.16px) - .442em);
+    margin-top:calc(30px + clamp(7.272px, .9786vw - .193px, 12.16px) - .192em);
   }
 }
 /* Вводный абзац шапки. Он стоит на одной линии с ПЕРВОЙ строкой
@@ -182,6 +182,13 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
    margin-top + .442em кегля аннотации. Отсюда margin-top =
    30px + .202em(h1) − .442em(аннотации).
 
+   Дальше — .192em вместо .442em: это осознанный сдвиг вниз ещё на
+   .25em кегля аннотации (3.25px при 13px, 4px при 16px). Ровно по
+   строчным аннотация стояла впритык к уровню «н»/«к» и читалась
+   подвешенной; .25em даёт «чуть-чуть ниже». Верх аннотации при этом
+   оказывается на .25em ниже линии строчных h1 — это и есть желаемое
+   положение.
+
    Слагаемое .202 кегля заголовка записано прямо в vw, потому что в
    calc() нельзя взять процент от чужого font-size: у RU это
    1.2458vw − .245px (кламп 7.272–15.473px — те же 54.26 и 76.56px
@@ -191,16 +198,18 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
    медиазапросы сами ставят margin-top (20px и 12px) — там аннотация
    по-прежнему уходит под заголовок.
 
-   Запас по вертикали после сдвига: вторая строка заголовка начинается
-   на 10–21px ниже низа аннотации на русской странице и на 3–11px — на
-   английской. Аннотация стала на 5px ниже — это и есть та разница,
-   которая раньше держала её на уровне заглавной.
+   Запас по вертикали: вторая строка заголовка начинается на 7–17px
+   ниже низа аннотации на русской странице и на 0–7px — на английской.
+   На английской на 901px зазор нулевой, но это не касание: строка
+   «Diary» кончается на 92px, а аннотация начинается на 231px — по
+   горизонтали они не встречаются ни на какой ширине (у русской
+   «разработчика» перекрытие есть с 901px, там запас 7px и больше).
    Переносов по слогам нет: родитель
    .project-archive ставит hyphens:auto для плотной шестиколоночной сетки,
    но для связного текста дефисы в середине слов читаются плохо.
    overflow-wrap — страховка на случай, если слово всё же не поместится:
    тогда оно перейдёт на новую строку целиком, без дефиса. */
-.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; grid-row:1; margin:calc(30px + clamp(7.272px, 1.2458vw - .245px, 15.473px) - .442em) 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
+.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; grid-row:1; margin:calc(30px + clamp(7.272px, 1.2458vw - .245px, 15.473px) - .192em) 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
 .archive-controls { position:relative; z-index:1; grid-column:6; grid-row:1; display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-top:17px; min-width:0; }
 .archive-actions { display: flex; align-items: flex-start; flex-direction: column; gap: 5px; font-size: 12px; }
 .archive-actions button, .archive-actions .forum-link { display: inline-block; box-sizing:border-box; max-width:100%; border: 0; border-radius: 6px; padding: 4px 7px; color: #fff; background: #111; font: 700 clamp(10px, .9vw, 12px) var(--archive-font); overflow-wrap:break-word; cursor: pointer; }
