@@ -43,7 +43,28 @@
   }
   updateGridLabel();
 
+  /* Подпись и плейсхолдер поиска — на языке страницы: «Поиск» или
+     «Search», без двуязычной склейки. Язык берём из html[lang], его
+     ставит diary.js (а до его выполнения — разметка страницы), поэтому
+     вызов ставим и на клики по переключателю, и сразу при загрузке. */
   var search = document.querySelector('#project-search');
+  var searchLabel = document.querySelector('#project-search-label');
+  var searchPlaceholders = { ru: 'Поиск', en: 'Search' };
+
+  function updateSearchLabel() {
+    if (!search) return;
+    var language = document.documentElement.lang === 'en' ? 'en' : 'ru';
+    var text = searchPlaceholders[language];
+    search.setAttribute('placeholder', text);
+    search.setAttribute('aria-label', text);
+    if (searchLabel) searchLabel.textContent = text;
+  }
+
+  updateSearchLabel();
+  for (var s = 0; s < languageButtons.length; s += 1) {
+    languageButtons[s].addEventListener('click', updateSearchLabel);
+  }
+
   if (search) {
     search.addEventListener('input', function () {
       var query = search.value.replace(/^\s+|\s+$/g, '').toLowerCase();

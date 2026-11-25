@@ -23,9 +23,9 @@
   <!-- Встроенный шрифт: Helvetica Neue Cyrillic. Идёт до файлов, которые его
        используют, чтобы @font-face был объявлен раньше применения. -->
   <link rel="stylesheet" href="/fonts/helvetica.css?v=20261224a">
-  <link rel="stylesheet" href="/diary/projects-home.css?v=20261224a">
+  <link rel="stylesheet" href="/diary/projects-home.css?v=20261225a">
   <script src="/diary/diary.js" defer></script>
-  <script src="/diary/archive.js" defer></script>
+  <script src="/diary/archive.js?v=20261225a" defer></script>
 </head>
 <body class="archive-home">
   <!-- Заставка на время загрузки шрифтов: сплошное поле по теме.
@@ -46,7 +46,7 @@
             <a class="forum-link" href="https://github.com/Masortim" target="_blank" rel="noopener"><span data-language-content="ru">Репозитории ↗</span><span data-language-content="en" lang="en" hidden>Repositories ↗</span></a>
             <button id="theme-toggle" type="button" title="Переключить тему" aria-label="Переключить тему">☾</button>
           </div>
-          <label class="archive-search"><span class="visually-hidden">Поиск проектов / Search projects</span><input id="project-search" type="search" placeholder="Поиск / Search" autocomplete="off"></label>
+          <label class="archive-search"><span class="visually-hidden" id="project-search-label">Поиск</span><input id="project-search" type="search" placeholder="Поиск" autocomplete="off" aria-labelledby="project-search-label"></label>
         </div>
       </header>
 
