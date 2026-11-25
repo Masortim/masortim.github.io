@@ -309,16 +309,23 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
    страхует от совсем длинных слов. */
 @media (min-width: 901px) {
   .archive-column { display:contents; }
-  .archive-column:nth-child(1) > h2, .archive-column:nth-child(1) > .project-card:first-of-type { grid-column:1; }
-  .archive-column:nth-child(2) > h2, .archive-column:nth-child(2) > .project-card:first-of-type { grid-column:2; }
-  .archive-column:nth-child(3) > h2, .archive-column:nth-child(3) > .project-card:first-of-type { grid-column:3; }
-  .archive-column:nth-child(4) > h2, .archive-column:nth-child(4) > .project-card:first-of-type { grid-column:4; }
-  .archive-column:nth-child(5) > h2, .archive-column:nth-child(5) > .project-card:first-of-type { grid-column:5; }
-  .archive-column:nth-child(6) > h2, .archive-column:nth-child(6) > .project-card:first-of-type { grid-column:6; }
-  .archive-column > h2, .archive-column > .project-card { min-width:0; }
-  .archive-column > h2 { grid-row:1; }
-  .archive-column > .project-card:first-of-type { grid-row:2; }
-  .archive-column:nth-child(-n+3) > .project-card:nth-of-type(2) { grid-row:3; }
+  /* Каждая колонка получает свой слот в шестиколоночной сетке. Слот
+     задан переменной и применяется к заголовку и к карточкам одной
+     колонки — иначе вторая карточка, у которой указана только строка,
+     попадала бы в первую свободную ячейку, то есть могла уехать в чужую
+     колонку (у «Обучения» теперь две карточки, у «Инструментов» одна).
+     Шестая колонка («Сообщества») пока пустая: у неё раскладывается
+     только заголовок, карточек нет, и в выравнивании она не участвует. */
+  .archive-column:nth-child(1) { --column-slot: 1; }
+  .archive-column:nth-child(2) { --column-slot: 2; }
+  .archive-column:nth-child(3) { --column-slot: 3; }
+  .archive-column:nth-child(4) { --column-slot: 4; }
+  .archive-column:nth-child(5) { --column-slot: 5; }
+  .archive-column:nth-child(6) { --column-slot: 6; }
+  .archive-column > h2 { grid-row: 1; grid-column: var(--column-slot); }
+  .archive-column > .project-card { min-width: 0; grid-column: var(--column-slot); }
+  .archive-column > .project-card:first-of-type { grid-row: 2; }
+  .archive-column > .project-card:nth-of-type(2) { grid-row: 3; }
 }
 .archive-view-all { margin:auto 0 8px; font-size:14px; font-weight:700; }
 .archive-bottom { padding-bottom:18px; border-bottom:1px solid var(--archive-horizontal-line); }
