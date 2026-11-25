@@ -363,6 +363,12 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
 
 .project-card--link > a { display:block; margin:0; font-size:14px; font-weight:700; line-height:1.32; color:inherit; text-decoration:none; overflow-wrap:break-word; }
 
+/* display:block выше перебивает служебный браузерный стиль [hidden]
+   (у него нулевая специфичность), поэтому поиск, который прячет
+   ссылки в этом блоке, визуально не работал: все ссылки оставались
+   на месте при любом запросе. Возвращаем [hidden] силу. */
+.project-card--link > a[hidden] { display:none; }
+
 .project-card--link > a:hover { color:#e16449; text-decoration:none; }
 
 .project-card--link > a:focus-visible { color:#e16449; outline:2px solid #e16449; outline-offset:2px; }
@@ -718,16 +724,34 @@ body.dark-theme .archive-search input { border-color: #555; color: #eee; backgro
      группой — «Обучением» и «Инструментами». У них карточки короче, чем
      в верхней тройке: с 700px ряды 5 и 6 набегают 260–277px, а блок из
      пятнадцати ссылок при интерлиньяже 1.32 занимает 287–289px и начал
-     бы растягивать строку. Поэтому здесь два послабления: интерлиньяж
-     ссылок плотнее (1.1 — 16 × 15.4 = 246px) и сам блок начинается
-     сразу под линией заголовка, без отступа сверху. Вместе это даёт
-     запас 13–15px на самых тесных 800–900px и 30–104px ниже. Кегль
-     не меняется, ряды с заметками остаются на своих местах.
-     Предел этого приёма — семнадцать ссылок: на 800px запас кончится,
-     и понадобится четвёртый ряд или две колонки ссылок. */
+     бы растягивать строку. Поэтому здесь три послабления: интерлиньяж
+     ссылок плотнее (1.1 — 17 × 15.4 = 262px), блок начинается сразу
+     под линией заголовка, без отступа сверху, и сами ссылки разложены
+     в две колонки — по девять и восемь. В две колонки блок занимает
+     девять строк по высоте (139px) и перестаёт упираться в ряды
+     заметок совсем: запас 120px на самых тесных 800–900px.
+     Кегль 14px не меняется, ряды с заметками остаются на своих местах.
+
+     Колонки появляются только с 760px: ниже подколонка уже 106px,
+     и «Mermaid Live Editor» пришлось бы рвать посреди слова — а он и
+     так переносится по пробелу на «Mermaid» / «Live Editor». До 760px
+     блок остаётся одноколоночным и держится на запасе по высоте
+     (на 561px он 94px). */
   .archive-column:nth-child(6) > .project-card { grid-row: var(--row-first) / span 3; grid-column: var(--column-slot); }
   .archive-column:nth-child(6) .project-card--link { margin-top: 0; }
   .archive-column:nth-child(6) .project-card--link > a { line-height: 1.1; }
+}
+
+@media (min-width: 760px) and (max-width: 900px) {
+  .archive-column:nth-child(6) .project-card--link {
+    columns: 2;
+    column-gap: 10px;
+    /* Высота не задаётся: блок и так ниже доступных трёх рядов. */
+  }
+  .archive-column:nth-child(6) .project-card--link > a {
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+  }
 }
 
 @media (max-width: 900px) {
