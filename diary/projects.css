@@ -130,12 +130,32 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
   overflow-wrap:normal;
   word-break:normal;
 }
-/* Вводный абзац под шапкой. Переносов по слогам нет: родитель
+/* Вводный абзац шапки. Он стоит на одной линии с ПЕРВОЙ строкой
+   заголовка, а не у верхнего края листа — там он оказывался раньше,
+   потому что у заголовка верхний отступ 30px (padding-top .archive-brand),
+   а у аннотации отступа не было вовсе.
+
+   Считается по верхней кромке самих букв, а не по метрикам шрифта: у
+   заголовка первая строка начинается с «Д» (верх 712/1000em), у
+   аннотации — с «З» (728/1000em). Верх строки в CSS — это
+   полуинтерлиньяж плюс ascender, поэтому кромка h1 отстоит от верха
+   листа на 30.21–30.33px (30px отступа плюс .006em строки), а кромка
+   аннотации — на .23em от верха её блока. Отсюда и margin-top:
+   30.3px − .23em.
+
+   Формула одна на весь десктоп: кегль аннотации меняется с 13 до 16px,
+   заголовка — с 34.5 до 55.5px, а расхождение кромок не выходит за
+   0.1px на русской странице и за 0.3px на английской (у латинских «D»
+   и «N» верх ровно 712/1000em, у них общей поправки нет) — на любой
+   ширине от 901 до 1920px. Ниже 900px медиазапросы сами
+   ставят margin-top (20px и 12px) — там аннотация по-прежнему уходит
+   под заголовок.
+   Переносов по слогам нет: родитель
    .project-archive ставит hyphens:auto для плотной шестиколоночной сетки,
    но для связного текста дефисы в середине слов читаются плохо.
    overflow-wrap — страховка на случай, если слово всё же не поместится:
    тогда оно перейдёт на новую строку целиком, без дефиса. */
-.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; grid-row:1; margin:0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
+.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; grid-row:1; margin:calc(30.3px - .23em) 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
 .archive-controls { position:relative; z-index:1; grid-column:6; grid-row:1; display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-top:17px; min-width:0; }
 /* Широкий десктоп (от 1280px). Колонка заголовка за это время перестаёт
    расти — лист упирается в свои 960px, — и в двух колонках кегль замирает
