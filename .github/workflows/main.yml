@@ -61,6 +61,16 @@ jobs:
       - name: Check Diary Scripts Are ES5
         run: node scripts/check-es5.mjs
 
+      # Главная и заметки больше не делят один CSS: из diary/projects.css и
+      # diary/diary.css собираются четыре файла по страницам. Заметка на
+      # телефоне грузила 37 КБ gzip стилей архива, которых на ней нет ни
+      # одного; после сборки — 24 КБ. Проверяем, что коммит не разошёлся с
+      # исходниками: файлы должны быть уже собраны локально.
+      - name: Build Page Styles
+        run: |
+          node scripts/build-css.mjs --write
+          git diff --exit-code -- diary/projects-home.css diary/diary-home.css diary/projects-note.css diary/diary-note.css
+
       - name: Test Newsletter Logic
         working-directory: ./newsletter
         run: npm test

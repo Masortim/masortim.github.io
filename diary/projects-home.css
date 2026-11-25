@@ -1,0 +1,745 @@
+/* Стили главной страницы — СГЕНЕРИРОВАННЫЙ файл, не править руками.
+
+   Источник: diary/projects.css и diary/diary.css. Правьте их, затем
+   запускайте `node scripts/build-css.mjs` (в CI это делает шаг «Build
+   Page Styles»).
+
+   Зачем разделено. Заметка на телефоне тянула 12 КБ стилей архива,
+   которых на ней нет ни одного, а главная — весь адаптер Tufte для
+   заметок. Теперь каждая страница получает только своё.
+
+   --------------------------------------------------------------------------- */
+/* Six-column modular archive based on the supplied 2009 reference. */
+/* ---------------------------------------------------------------------------
+   Гарнитура страницы.
+
+   Здесь только встроенная Helvetica Neue Cyrillic (fonts/helvetica.css):
+   пять начертаний файлами, полный русский алфавит. Так рисунок текста
+   одинаков у всех читателей на всех системах — на Windows и Linux настоящей
+   Helvetica нет, и без встроенных файлов страница рисовалась бы запасным
+   шрифтом, у каждого своим.
+
+   Запасных вариантов в стеке нет: ни системных Helvetica и её клонов, ни
+   Arial, ни generic-семейства на конце. Если файл почему-то не загрузится,
+   браузер отрисует текст своим шрифтом по умолчанию, но в обычной ситуации
+   подмешать чужой рисунок неоткуда — набор у всех один и тот же встроенный.
+   Имя "HelveticaNeueCyr" намеренно не совпадает с системным "Helvetica
+   Neue": иначе браузер мог бы переиспользовать локальную копию вместо
+   нашего файла, и рисунок поехал бы.
+   --------------------------------------------------------------------------- */
+/* Шрифт на body тоже задан: без него сама страница наследовала бы дефолт
+   браузера и любой элемент вне .project-archive (.skip-link) рисовался бы
+   чужим шрифтом. Имя явное — переменная объявлена ниже, на .project-archive,
+   и на body ещё не действует. */
+body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
+
+.project-archive {
+  /* Только встроенная гарнитура, без запасных вариантов. */
+  --archive-font: "HelveticaNeueCyr";
+  --archive-gutter: 1.5%;
+  /* Приглушённый серый для пояснительного текста: аннотация шапки,
+     описания карточек, тексты нижних блоков. Заголовки (h1-h3) остаются
+     чёрными — контраст держит иерархию. В тёмной теме переопределяется
+     ниже на #b4b4b4. */
+  --archive-muted: #666;
+  width: min(960px, 76%);
+  margin: 0 auto;
+  color: #111;
+  background: #fff;
+  font: 16px/1.2 var(--archive-font);
+  /* Плотная шестиколоночная сетка архива переносится по слогам.
+     Заметки (.project-note) — наоборот, без переносов (см. diary.css). */
+  -webkit-hyphens:auto;
+  hyphens:auto;
+  hyphenate-character:"-";
+}
+
+.project-archive a { color: inherit; text-decoration: none; }
+
+.project-archive a:hover { text-decoration: underline; }
+
+.archive-sheet { --archive-grid-line:transparent; --archive-horizontal-line:transparent; --archive-subtle-line:transparent; position:relative; border-right:1px solid var(--archive-grid-line); border-left:1px solid var(--archive-grid-line); }
+
+.archive-sheet::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(90deg, transparent calc(15.416667% - .5px), var(--archive-grid-line) calc(15.416667% - .5px), var(--archive-grid-line) calc(15.416667% + .5px), transparent calc(15.416667% + .5px)),
+    linear-gradient(90deg, transparent calc(16.916667% - .5px), var(--archive-grid-line) calc(16.916667% - .5px), var(--archive-grid-line) calc(16.916667% + .5px), transparent calc(16.916667% + .5px)),
+    linear-gradient(90deg, transparent calc(32.333333% - .5px), var(--archive-grid-line) calc(32.333333% - .5px), var(--archive-grid-line) calc(32.333333% + .5px), transparent calc(32.333333% + .5px)),
+    linear-gradient(90deg, transparent calc(33.833333% - .5px), var(--archive-grid-line) calc(33.833333% - .5px), var(--archive-grid-line) calc(33.833333% + .5px), transparent calc(33.833333% + .5px)),
+    linear-gradient(90deg, transparent calc(49.250000% - .5px), var(--archive-grid-line) calc(49.250000% - .5px), var(--archive-grid-line) calc(49.250000% + .5px), transparent calc(49.250000% + .5px)),
+    linear-gradient(90deg, transparent calc(50.750000% - .5px), var(--archive-grid-line) calc(50.750000% - .5px), var(--archive-grid-line) calc(50.750000% + .5px), transparent calc(50.750000% + .5px)),
+    linear-gradient(90deg, transparent calc(66.166667% - .5px), var(--archive-grid-line) calc(66.166667% - .5px), var(--archive-grid-line) calc(66.166667% + .5px), transparent calc(66.166667% + .5px)),
+    linear-gradient(90deg, transparent calc(67.666667% - .5px), var(--archive-grid-line) calc(67.666667% - .5px), var(--archive-grid-line) calc(67.666667% + .5px), transparent calc(67.666667% + .5px)),
+    linear-gradient(90deg, transparent calc(83.083333% - .5px), var(--archive-grid-line) calc(83.083333% - .5px), var(--archive-grid-line) calc(83.083333% + .5px), transparent calc(83.083333% + .5px)),
+    linear-gradient(90deg, transparent calc(84.583333% - .5px), var(--archive-grid-line) calc(84.583333% - .5px), var(--archive-grid-line) calc(84.583333% + .5px), transparent calc(84.583333% + .5px));
+}
+
+.archive-main-grid, .archive-bottom, .archive-promos, .archive-promos-flow, .archive-copyright { position: relative; z-index: 1; }
+
+.archive-top, .archive-columns, .archive-bottom, .archive-promos {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  column-gap: var(--archive-gutter);
+}
+
+.archive-top { box-sizing:border-box; min-height:225px; border-bottom:1px solid var(--archive-horizontal-line); }
+
+/* Заголовок главной: на мобильных он должен оставаться крупным, но
+   переносов по слогам у заголовка нет — слово рвётся только по пробелу.
+
+   Кегль считается от ШИРИНЫ КОЛОНКИ (.archive-brand — контейнер), а не от
+   ширины окна: в шестиколоночной сетке заголовку отданы две колонки, и от
+   окна эта доля меняется нелинейно.
+
+   Заголовок занимает две колонки (1–2), аннотация — третью, контролы
+   шестую, и так на всём десктопе: аннотация никогда не сдвигается в
+   четвёртую колонку. Кегль при этом держится максимально крупным — до
+   той ширины, где слово «разработчика» подходит к аннотации вплотную.
+   Формула 17.4225cqw − .666px как раз это и делает: она масштабирует
+   заголовок вместе с колонкой так, чтобы конец слова всегда оставался
+   на 4px левее букв аннотации. Отсюда кегль 37.8px на 901px и 53.3px на
+   1280px и шире (там лист упирается в свои 960px, и колонка перестаёт
+   расти).
+
+   17.4225cqw — это 100/6.006·1.0464: правый край «разработчика» при
+   трекинге -.08em достаёт до 6.006 кегля (включая вынос последней «а»),
+   а две колонки с зазором — это 1.0464 ширины самого блока заголовка.
+
+   Прежний потолок 3.7rem (55.5px) больше недостижим: в двух колонках под
+   него нужно 340px, а максимальная ширина блока — 309.8px. Кегль 53.3px на
+   широком экране на 4% меньше прежнего 55.5px, зато аннотация остаётся там,
+   где ей место, и наложение исключено самой формулой, а не отдельным
+   медиазапросом.
+
+   Сужение до смены положения блоков. Медиазапрос до 900px переводит лист
+   на три колонки и уводит аннотацию под заголовок: в двух колонках на такой
+   ширине слово уже не помещается в 33.75px (при 861px его правый край
+   равнялся бы ширине блока в точности). Под заголовком кегль снова растёт:
+   блок занимает все три колонки, и те же 16.65cqw − .666px держат полные
+   3.4rem (51px) до 347px, а ниже сжимаются вместе с полем.
+
+   Шапка — одна строка сетки: заголовок, аннотация и контролы стоят
+   в первом ряду, у всех явный grid-row:1. Без него авторазмещение
+   уводило аннотацию во второй ряд: её колонки начинались там, где уже
+   стоял заголовок, и свободного места в первом ряду не оставалось.
+   В мобильных медиазапросах ряд переопределён (2 и 3): там заголовок
+   занимает все колонки, и без явного ряда аннотация с контролами
+   ложились бы прямо на него.
+   Первая строка font-size — запасной вариант для браузеров без
+   контейнерных единиц: 4.28vw − .8px повторяет ту же прямую от ширины
+   окна (37.8px на 901px, 53.3px на 1263px), поэтому и там слово не
+   доходит до аннотации. */
+.archive-brand { position:relative; z-index:1; grid-column:1 / span 2; grid-row:1; padding-top:30px; container-type:inline-size; }
+
+.archive-brand h1 {
+  margin:0;
+  font-size:clamp(2.25rem, 4.28vw - .8px, 53.3px);
+  font-size:clamp(2.25rem, 17.4225cqw - .666px, 53.3px);
+  font-weight:800;
+  letter-spacing:-.08em;
+  line-height:.92;
+  /* Разрывов слов нет ни на какой ширине: hyphens выключает переносы по
+     слогам, overflow-wrap:normal — разрыв длинного слова по границе блока.
+     Раньше здесь стоял break-word как «страховка», но он и был тем самым
+     механизмом, который резал слова на узких экранах. Кегль рассчитан так,
+     что самое длинное слово («разработчика») влезает целиком даже на 280px. */
+  -webkit-hyphens:none;
+  hyphens:none;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+
+/* Вводный абзац шапки. Он стоит на одной линии с ПЕРВОЙ строкой
+   заголовка, а не у верхнего края листа — там он оказывался раньше,
+   потому что у заголовка верхний отступ 30px (padding-top .archive-brand),
+   а у аннотации отступа не было вовсе.
+
+   Считается по верхней кромке самих букв, а не по метрикам шрифта: у
+   заголовка первая строка начинается с «Д» (верх 712/1000em), у
+   аннотации — с «З» (728/1000em). Верх строки в CSS — это
+   полуинтерлиньяж плюс ascender, поэтому кромка h1 отстоит от верха
+   листа на 30.21–30.33px (30px отступа плюс .006em строки), а кромка
+   аннотации — на .23em от верха её блока. Отсюда и margin-top:
+   30.3px − .23em.
+
+   Формула одна на весь десктоп: кегль аннотации меняется с 13 до 16px,
+   заголовка — с 37.8 до 53.3px, а расхождение кромок не выходит за
+   0.1px на русской странице и за 0.3px на английской (у латинских «D»
+   и «N» верх ровно 712/1000em, у них общей поправки нет) — на любой
+   ширине от 901 до 1920px. Ниже 900px медиазапросы сами
+   ставят margin-top (20px и 12px) — там аннотация по-прежнему уходит
+   под заголовок.
+   Переносов по слогам нет: родитель
+   .project-archive ставит hyphens:auto для плотной шестиколоночной сетки,
+   но для связного текста дефисы в середине слов читаются плохо.
+   overflow-wrap — страховка на случай, если слово всё же не поместится:
+   тогда оно перейдёт на новую строку целиком, без дефиса. */
+.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; grid-row:1; margin:calc(30.3px - .23em) 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
+
+.archive-controls { position:relative; z-index:1; grid-column:6; grid-row:1; display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-top:17px; min-width:0; }
+
+.archive-actions { display: flex; align-items: flex-start; flex-direction: column; gap: 5px; font-size: 12px; }
+
+.archive-actions button, .archive-actions .forum-link { display: inline-block; box-sizing:border-box; max-width:100%; border: 0; border-radius: 6px; padding: 4px 7px; color: #fff; background: #111; font: 700 clamp(10px, .9vw, 12px) var(--archive-font); overflow-wrap:break-word; cursor: pointer; }
+
+.archive-actions #grid-toggle { background: #aaa; }
+
+/* diary.css задаёт .language-switch моноширинный шрифт (для заметок Тафти).
+   На главной это обычная плашка в шапке, поэтому шрифт возвращаем к
+   основному. Правило с --archive-font обязательно: без него переключатель
+   языка выглядел бы единственным моноширинным элементом на странице. */
+.archive-actions .language-switch { position: static; display: flex; gap: 4px; padding: 0; border: 0; border-radius: 0; box-shadow: none; font-family: var(--archive-font); font-size: 14px; }
+
+.archive-actions .language-switch button { min-width: 0; min-height: 0; padding: 4px 7px; border: 0; border-radius:4px; color: #555; background: transparent; cursor: pointer; font: inherit; }
+
+.archive-actions .language-switch button[aria-pressed="true"] { color: #111; background: #ddd; }
+
+.archive-actions #theme-toggle { padding: 2px 5px; font-size: 12px; }
+
+.archive-search { align-self:stretch; margin-top:44px; }
+
+.archive-search input { display: block; box-sizing: border-box; width: 100%; height: 23px; padding: 3px 6px; border: 1px solid #bbb; border-radius: 0; background: #f3f3f3; color: #111; font: 12px var(--archive-font); }
+
+.archive-columns {
+  position:relative;
+  border-bottom:1px solid var(--archive-horizontal-line);
+  /* Геометрия заголовков колонок вынесена в переменные: одна и та же
+     формула задаёт поля заголовка и положение линии сетки под ним. */
+  --column-heading-pad: clamp(10px, 1.3vw, 19px);
+  /* Кегль заголовка колонки — 18px на всех ширинах, без исключений.
+     Замер реальным шрифтом: «Исследования» при 18px занимает ~150px,
+     а колонка в шестиколоночной сетке бывает 105.6px (окно 901px)
+     и 148px (от ~1273px). Поэтому на узком десктопе слово переносится
+     — и это норма: переносы по слогам в архиве уже включены осознанно
+     (hyphens:auto у .project-archive), иначе шестиколоночная сетка
+     не помещается в 960px вообще. Лучше перенос, чем заголовок,
+     который мельче названия заметки под ним. */
+  --column-heading-size: 18px;
+  --column-heading-line: 1.12;
+  --column-heading-height: calc(2 * var(--column-heading-pad) + var(--column-heading-line) * var(--column-heading-size));
+}
+
+/* Линия сетки (видна в режиме «Сетка») проходит ровно по нижней границе
+   заголовка: padding сверху + строка + padding снизу. */
+.archive-columns::before { position:absolute; top:var(--column-heading-height); right:0; left:0; height:1px; background:var(--archive-subtle-line); content:""; }
+
+.archive-column { display:flex; min-width:0; flex-direction:column; padding:0 0 1rem; }
+
+/* Заголовки колонок («Проекты», «Утилиты», «Исследования», «Обучение»,
+   «Инструменты», «Сообщества»): поле над надписью и под ней одинаковое.
+   Раньше снизу добавлялся margin 10px — отступ под надписью был больше, чем
+   над ней. Теперь вертикальные margin равны нулю, а padding задаёт одинаковые
+   поля сверху и снизу. */
+.archive-column h2 {
+  display:flex;
+  align-items:center;
+  min-width:0;
+  margin:0;
+  padding:var(--column-heading-pad) 0;
+  font-size:var(--column-heading-size);
+  font-weight:700;
+  line-height:var(--column-heading-line);
+  white-space:normal;
+  overflow-wrap:break-word;
+}
+
+.archive-column h2 > span[data-language-content] { font-size: inherit; font-weight: inherit; }
+
+.project-card { margin:0 0 22px; overflow-wrap:break-word; }
+
+/* Название заметки — 16px на всех ширинах, строго ниже заголовка
+   колонки (18px) и строго выше описания (14px). */
+.project-card h3 { align-self:flex-start; width:100%; min-width:0; margin:0 0 6px; font-size:16px; font-weight:700; line-height:1.2; text-align:left; overflow-wrap:break-word; }
+
+.project-card h3 > a { display:block; }
+
+/* Наведение на название заметки: подчёркивание не появляется, вместо
+   него заголовок меняет цвет с чёрного на терракотовый #E16449 —
+   ровно этот оттенок задан в задаче.
+   Общее правило .project-archive a:hover подчёркивает все ссылки архива,
+   поэтому здесь подчёркивание явно снимается. Цвет задаётся селектором
+   на сам элемент: он специфичнее, чем `color: inherit` у .project-archive a.
+   Важно про доступность: на белом #E16449 даёт 3.43:1 — для кегля
+   карточки (11–15px) это ниже порога AA 4.5:1, поэтому «только цветом»
+   ограничиваться нельзя и у ссылки с клавиатуры остаётся видимое кольцо
+   фокуса: цвет — приятный акцент, а не единственный признак интерактивности. */
+.project-card h3 > a:hover { color: #e16449; text-decoration: none; }
+
+.project-card h3 > a:focus-visible { color: #e16449; text-decoration: none; outline: 2px solid #e16449; outline-offset: 2px; }
+
+.project-card p:not(.project-meta) { margin:0 0 6px; color:var(--archive-muted); font-size:14px; line-height:1.45; overflow-wrap:break-word; }
+
+/* Мета-строка (дата · стек) остаётся основной: чёрной в светлой теме,
+   #eee в тёмной. Она исключена из правила .project-card p:not(.project-meta)
+   выше, поэтому цвет берётся из наследования .project-archive, а не из
+   приглушённой переменной --archive-muted. */
+.project-card .project-meta { margin-top:3px; margin-bottom:1em; font-size:clamp(10px,.85vw,12px); font-weight:700; overflow-wrap:break-word; }
+
+/* Иерархия главной: заголовок колонки 18px > название заметки 16px >
+   описание 14px. Все три размера фиксированные — ни один не зависит
+   от ширины окна, поэтому соотношение сохраняется на любом экране.
+   Раньше здесь стояла плавная шкала для заголовка колонки: на окне
+   901–1050px он опускался до 13.9–15.6px и оказывался МЕНЬШЕ названия
+   заметки под ним — иерархия переворачивалась ровно там, где её
+   труднее всего заметить. Лишний перенос в узкой колонке вреда не
+   наносит: hyphens:auto уже рвёт по слогам, а overflow-wrap:break-word
+   страхует от совсем длинных слов. */
+@media (min-width: 901px) {
+  .archive-column { display:contents; }
+  .archive-column:nth-child(1) > h2, .archive-column:nth-child(1) > .project-card:first-of-type { grid-column:1; }
+  .archive-column:nth-child(2) > h2, .archive-column:nth-child(2) > .project-card:first-of-type { grid-column:2; }
+  .archive-column:nth-child(3) > h2, .archive-column:nth-child(3) > .project-card:first-of-type { grid-column:3; }
+  .archive-column:nth-child(4) > h2, .archive-column:nth-child(4) > .project-card:first-of-type { grid-column:4; }
+  .archive-column:nth-child(5) > h2, .archive-column:nth-child(5) > .project-card:first-of-type { grid-column:5; }
+  .archive-column:nth-child(6) > h2, .archive-column:nth-child(6) > .project-card:first-of-type { grid-column:6; }
+  .archive-column > h2, .archive-column > .project-card { min-width:0; }
+  .archive-column > h2 { grid-row:1; }
+  .archive-column > .project-card:first-of-type { grid-row:2; }
+  .archive-column:nth-child(-n+3) > .project-card:nth-of-type(2) { grid-row:3; }
+}
+
+.archive-view-all { margin:auto 0 8px; font-size:14px; font-weight:700; }
+
+.archive-bottom { padding-bottom:18px; border-bottom:1px solid var(--archive-horizontal-line); }
+
+.archive-bottom section { padding:14px 0 10px; overflow-wrap:break-word; }
+
+/* «О дневнике» занимает два столбца: это единственный блок с фразой
+   в две строки, и в одну узкую колонку она рвалась на «Короткие /
+   разборы репозиториев…». Текст тянется на оба столбца и читается
+   цельной строкой. Блоков в .archive-bottom теперь пять, поэтому
+   раскладка складывается без дыр на всех трёх сетках сразу:
+   6 колонок → 2+1+1+1+1, 3 колонки → 2+1 и 1+1+1, 2 колонки →
+   2 и две пары по 1. */
+.archive-bottom .about-section { grid-column: span 2; }
+
+/* Заголовки блоков внизу страницы («О дневнике», «Подписка», «Архив»,
+   «Темы», «Ссылки») — 17–20px. Нижняя граница намеренно выше 16px:
+   это заголовок раздела, и он не должен оказаться мельче названия
+   заметки в карточке (16px) — иначе иерархия ломается на телефоне,
+   где 20px недостижимы. */
+.archive-bottom h2 { margin:0 0 6px; font-size:clamp(17px,1.45vw,20px); line-height:1.15; overflow-wrap:break-word; }
+
+.archive-bottom p { margin:0 0 12px; color:var(--archive-muted); font-size:14px; line-height:1.4; }
+
+/* Ссылка на RSS в блоке «Подписка»: основной цвет и подчёркивание, чтобы
+   её было видно как действие, а не как обычный пояснительный текст.
+   Слева — стандартный знак RSS: оранжевый квадрат со скруглёнными углами
+   и белыми дугами. Квадрат рисуется прямо в SVG (#e8590c), поэтому
+   масштабируется вместе с текстом и остаётся оранжевым в обеих темах —
+   знак RSS узнаётся именно по плашке. Ссылка не переносится: иконка
+   и текст всегда в одну строку. */
+.archive-bottom .feed-link { display:inline-flex; flex-wrap:nowrap; align-items:center; gap:.3em; color:inherit; font-size:13px; font-weight:700; line-height:1.2; text-decoration:underline; text-underline-offset:2px; white-space:nowrap; }
+
+.archive-bottom .feed-link:hover { text-decoration-thickness:2px; }
+
+.archive-bottom .feed-icon { flex:none; width:1.1em; height:1.1em; }
+
+/* Текстовая доля держится единым куском: «RSS-рассылка ↗» должно
+   читаться одной строкой, а не ломаться по дефису. */
+.archive-bottom .feed-link > span { flex:0 0 auto; min-width:0; white-space:nowrap; }
+
+/* Языковых вариантов ссылки два — RU и EN, каждый со своим адресом фида.
+   Видимость переключает тот же механизм, что и остальной двуязычный
+   текст ([data-language-content] + hidden), поэтому адрес ссылки всегда
+   совпадает с активным языком даже без JavaScript. */
+.archive-bottom .feed-link[hidden] { display:none; }
+
+/* Колонка «Подписка» в шестиколоночной сетке сжимается до 105–148px.
+   Кегль привязан не к вьюпорту, а к фактической ширине колонки: .feed-slot
+   объявлен контейнером, и ссылки считаются от него через cqi.
+   Коэффициент подобран по самой длинной строке — «Email-рассылка ↗»
+   вместе с иконкой 1.1em и зазором .3em занимает 11.79 × кегль
+   («RSS-рассылка ↗» — 10.79). Берём 8.1cqi с запасом на сглаживание
+   шрифта: на колонке 147.7px это 11.96px, на 119.7px — 9.7px.
+   На широкой колонке упирается в 13px. */
+.archive-bottom .feed-slot { min-width:0; container-type:inline-size; }
+
+.archive-bottom .feed-link { font-size:min(13px, 8.1cqi); }
+
+.archive-promos { row-gap:24px; padding-top:16px; }
+
+/* Два блока промо (.archive-promos и .archive-promos--second) на узких
+   экранах сливаются в один непрерывный поток: вместо двух отдельных сеток
+   по 2 колонки (где 3 карточки дают 2 + пустую клетку) — один общий
+   контейнер, карточки идут подряд 2 в ряд без дыр. */
+.archive-promos-flow { display: contents; }
+
+.promo-module { grid-column:span 2; min-width:0; }
+
+.promo-module h2 { margin:0 0 11px; font-size:clamp(14px, 1.35vw, 19px); line-height:1.1; overflow-wrap:break-word; }
+
+/* Квадрат-промо: подчёркивание при наведении.
+   Черта идёт под КАЖДОЙ строкой отдельно и появляется ПО ОЧЕРЕДИ:
+   сначала верхняя, за ней каждая следующая — волной сверху вниз.
+
+   Почему не text-decoration. Свойство underline не анимируется: браузер
+   рисует черту сразу целой. Поэтому черта нарисована фоном: сплошная
+   заливка currentColor, у которой видна только нижняя полоса 3px.
+   background-size растёт с 0% до 100% по ширине — черта проезжает слева
+   направо. Цвет currentColor подстраивается под тему карточки сам:
+   белый на тёмных, тёмный на светлых, розовый у DATE TRACKER.
+
+   Почему строки — отдельные элементы. Раньше строки разделялись <br>
+   внутри одного span, а черту получали фрагменты этого span через
+   box-decoration-break: clone. Беда в том, что у всех фрагментов одного
+   элемента transition-delay общий: задержку по номеру строки так не
+   задать, и все черты неизбежно росли одновременно. Поэтому в разметке
+   каждая строка обёрнута в свой <span class="promo-line">. Отдельный
+   элемент — отдельная задержка, только так получается очерёдность.
+
+   Почему display:block с width:fit-content. Блочность нужна, чтобы строки
+   шли строго друг под другом. Но обычный блок растянулся бы на всю ширину
+   карточки, и черта стала бы шире текста. width:fit-content сжимает
+   коробку по тексту, margin-inline:auto центрирует: получается то же
+   центрирование, что даёт text-align, но черта — ровно по длине строки.
+   Строки короткие: самая длинная «КЛАССИФИКАЦИЯ» — 254px при кегле 30px
+   против 266px доступной ширины, поэтому перенос <br> больше не нужен и
+   на 360px текст тоже не ломается.
+
+   Очерёдность. Шаг волны — переменная --promo-step (.16s), длительность
+   одной черты — --promo-dur (.12s). Шаг больше длительности, поэтому
+   строки идут строго по очереди: черта успевает досохнуть, следующая
+   начинается через 0.04s после неё, ничего не сливается. Шаг подбирался
+   так, чтобы волна читалась как очередь, но не заставляла ждать: три
+   строки проходятся за .44s, две — за .28s.
+   Надпись и подпись — разные родители, поэтому нумерация внутри них
+   начинается заново. Строки надписи получают 0 и шаг. Строкам подписи
+   к этому прибавляется смещение, равное числу строк надписи: считаем его
+   через :has() — если у надписи есть вторая строка, смещение два шага,
+   иначе один. Без :has() сработает вариант «в надписи две строки», и на
+   одно-строчных карточках между надписью и подписью будет лишняя пауза
+   в один шаг: волна останется последовательной, просто чуть неровной. */
+.promo-card {
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  box-sizing:border-box;
+  width:100%;
+  height:227px;
+  padding:clamp(10px, 2vw, 22px);
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:clamp(8px, 1.4vw, 16px);
+  color:#fff !important;
+  text-align:center;
+  text-decoration:none;
+  /* Шаг волны и длительность одной черты. Шаг чуть больше длительности,
+     чтобы строки шли именно по очереди. */
+  --promo-step: .16s;
+  --promo-dur: .12s;
+}
+
+/* Обёртки языковых вариантов делаем блоками, чтобы строки внутри них
+   лежали предсказуемо. :not([hidden]) обязателен: правило display:block
+   перебило бы служебный стиль [hidden] в браузере, и на русской странице
+   показался бы английский вариант. */
+.promo-card > [data-language-content]:not([hidden]),
+.promo-card strong > [data-language-content]:not([hidden]) {
+  display:block;
+  max-width:100%;
+}
+
+.promo-line {
+  /* Блок, сжатый по тексту: своя строка, своя коробка, своя задержка,
+     а черта — по длине текста, а не по ширине карточки. */
+  display:block;
+  width:fit-content;
+  max-width:100%;
+  margin-inline:auto;
+  /* Подложка: всё прозрачно, кроме нижней полосы. */
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  /* Ширина 0 — в покое черты нет; высота — толщина черты. */
+  background-size: 0% 3px;
+  transition: background-size var(--promo-dur, .12s) cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Строки надписи: первая сразу, вторая через шаг. */
+.promo-line:nth-child(1) { transition-delay: 0s; }
+
+.promo-line:nth-child(2) { transition-delay: var(--promo-step, .16s); }
+
+.promo-line:nth-child(3) { transition-delay: calc(var(--promo-step, .16s) * 2); }
+
+.promo-line:nth-child(4) { transition-delay: calc(var(--promo-step, .16s) * 3); }
+
+/* Строки подписи продолжают волну после надписи. */
+.promo-card > [data-language-content] .promo-line:nth-child(1) { transition-delay: calc(var(--promo-step, .16s) * 2); }
+
+.promo-card > [data-language-content] .promo-line:nth-child(2) { transition-delay: calc(var(--promo-step, .16s) * 3); }
+
+/* Надпись в одну строку — значит волна в подписи начинается на шаг раньше. */
+.promo-card:not(:has(strong .promo-line:nth-child(2))) > [data-language-content] .promo-line:nth-child(1) { transition-delay: var(--promo-step, .16s); }
+
+.promo-card:not(:has(strong .promo-line:nth-child(2))) > [data-language-content] .promo-line:nth-child(2) { transition-delay: calc(var(--promo-step, .16s) * 2); }
+
+.promo-card:hover .promo-line,
+.promo-card:focus-visible .promo-line {
+  background-size: 100% 3px;
+}
+
+/* Общее правило архива подчёркивает все ссылки при наведении — здесь оно
+   нарисовало бы вторую, статичную черту под каждой строкой. Снимаем.
+   Селектор с тегом обязателен: у .promo-card:hover специфичность (0,2,0),
+   а у .project-archive a:hover — (0,2,1), и общее правило иначе выиграет. */
+a.promo-card:hover, a.promo-card:focus-visible { text-decoration:none; }
+
+/* Кегль промо подогнан под ширину карточки. Helvetica шире прежнего Arimo
+   примерно на 7%, и «КЛАССИФИКАЦИЯ» при 30px занимала 276.8px против
+   266.4px доступной ширины — строка разорвалась бы пополам. Поэтому
+   максимум 29px вместо 30px и множитель 2.15vw вместо 2.3vw: по всем
+   ширинам от 320 до 1920px текст остаётся в одну строку с запасом не
+   меньше 4px. Высота заглавных при этом почти не изменилась: 29px × 0.700
+   = 20.3px против прежних 30px × 0.688 = 20.6px.
+
+   line-height 1.08 нужен ради черты под строкой: у Helvetica под базовой
+   линией остаётся 13px при кегле 29px, а нижние выносные («у», «р», «д»)
+   уходят на 0.184em = 5.3px, плюс 3px на саму черту — итого 8.3px, запас
+   4.7px. */
+.promo-card strong { max-width:100%; font-size:clamp(15px, 2.15vw, 29px); font-weight:800; line-height:1.08; letter-spacing:-.04em; overflow-wrap:break-word; }
+
+.promo-card span { max-width:100%; font-size:clamp(11px, 1.05vw, 14px); line-height:1.3; overflow-wrap:break-word; }
+
+/* Крупная надпись на квадрате. Внутри <strong> лежат два <span>а — русский
+   и английский варианты, переключаемые [hidden]. Без этого правила они
+   попадают под .promo-card span выше (равная специфичность, но объявлено
+   позже) и заголовок съёживается до кегля подписи: было 30px, стало 14px.
+   Возвращаем им кегль, вес и трекинг самого <strong>. */
+.promo-card strong span { max-width:100%; font-size:inherit; font-weight:inherit; letter-spacing:inherit; line-height:inherit; }
+
+.promo-card--dark { background: #0b0b0b; }
+
+.promo-card--paper { color: #24133c !important; background: #f6e7e2; }
+
+.promo-card--paper strong { font-family: var(--archive-font); font-style: italic; }
+
+.promo-card--type { background: #111; }
+
+.promo-card--type strong { color: #e84467; }
+
+.promo-card--grid { color: #111 !important; background-color: #f8f8f4; background-image: linear-gradient(#ddd 1px, transparent 1px), linear-gradient(90deg, #ddd 1px, transparent 1px); background-size: 22px 22px; }
+
+.promo-card--pink { color: #35103c !important; background: #f4d8df; }
+
+.archive-promos--second { padding-bottom:18px; border-bottom:1px solid var(--archive-horizontal-line); }
+
+.archive-copyright { padding:2.4em 0 4.8em; font-size:12px; }
+
+body.dark-theme .project-archive{ color: #eee; }
+
+body.dark-theme .project-archive { background: #222; }
+
+/* Главная страница в тёмной теме: тёмным должен быть весь холст, а не
+   только центральная колонка. .project-archive — это min(960px, 76%),
+   поэтому на широком десктопе по бокам оставались белые поля: тело
+   страницы наследовало белый фон браузера. Фон body распространяется
+   на весь canvas (у html своего фона нет), так что поля становятся
+   тёмными при любой ширине окна. Правило привязано к .archive-home,
+   чтобы не перебивать собственный фон .tufte-note на страницах заметок. */
+body.dark-theme.archive-home { background: #222; }
+
+body.dark-theme .archive-sheet { --archive-grid-line:transparent; --archive-horizontal-line:transparent; --archive-subtle-line:transparent; border-color:var(--archive-grid-line); }
+
+body.dark-theme .archive-top, body.dark-theme .archive-columns, body.dark-theme .archive-bottom, body.dark-theme .archive-promos--second, body.dark-theme .archive-promos-flow { border-color:var(--archive-horizontal-line); }
+
+body.dark-theme .archive-columns::before, body.dark-theme .archive-column h2::after { background:var(--archive-subtle-line); }
+
+/* Тёмная тема: монохромный серый #b4b4b4.
+   На фоне #222 контраст 7.67:1 (выше AA 4.5:1 и AAA 7:1 для обычного
+   текста), при этом он заметно тише заголовков #eee (13.71:1).
+   Прежний #c7c7c7 (9.41:1) был слишком близок к #eee — серый читался
+   почти как белый. */
+body.dark-theme .project-archive { --archive-muted: #b4b4b4; }
+
+body.dark-theme .archive-column h2 { border-color: #555; }
+
+body.dark-theme .archive-actions .language-switch button { color: #ddd; }
+
+body.dark-theme .archive-actions .language-switch button[aria-pressed="true"] { color: #111; background: #ddd; }
+
+body.dark-theme .archive-search input { border-color: #555; color: #eee; background: #333; }
+
+/* Трёхколоночный диапазон. Верхняя граница 900px, нижняя — 561px:
+   ниже 560px сетка одноколоночная, и заголовки карточек должны идти
+   обычной вертикальной стопкой, а не по строкам общей сетки. */
+/* Заголовки вторых карточек («Крестики-нолики», «Измерение фигур на
+   изображении», «Каталог беспилотников») должны стоять на одной линии.
+   Раньше колонки были отдельными грид-ячейками, карточки внутри них шли
+   потоком, и вторая карточка начиналась там, где закончилась первая:
+   на 900px разъезд достигал 17px, на 700px — 35px.
+   Здесь колонка «растворяется» (display:contents), а её заголовок и
+   карточки становятся прямыми элементами общей трёхколоночной сетки.
+   Заголовки всех колонок — строка 1, первые карточки — строка 2,
+   вторые — строка 3. Второй ряд колонок («Обучение», «Инструменты»,
+   «Сообщества») занимает строки 4–6. */
+@media (min-width: 561px) and (max-width: 900px) {
+  .archive-column { display: contents; }
+  .archive-column:nth-child(1) { --column-slot: 1; --row-heading: 1; --row-first: 2; --row-second: 3; }
+  .archive-column:nth-child(2) { --column-slot: 2; --row-heading: 1; --row-first: 2; --row-second: 3; }
+  .archive-column:nth-child(3) { --column-slot: 3; --row-heading: 1; --row-first: 2; --row-second: 3; }
+  .archive-column:nth-child(4) { --column-slot: 1; --row-heading: 4; --row-first: 5; --row-second: 6; }
+  .archive-column:nth-child(5) { --column-slot: 2; --row-heading: 4; --row-first: 5; --row-second: 6; }
+  .archive-column:nth-child(6) { --column-slot: 3; --row-heading: 4; --row-first: 5; --row-second: 6; }
+  .archive-column > h2 { grid-row: var(--row-heading); grid-column: var(--column-slot); }
+  .archive-column > .project-card:first-of-type { grid-row: var(--row-first); grid-column: var(--column-slot); }
+  .archive-column > .project-card:nth-of-type(2) { grid-row: var(--row-second); grid-column: var(--column-slot); }
+}
+
+@media (max-width: 900px) {
+  .project-archive { width: 90%; }
+  .archive-sheet::before { display: none; }
+  .archive-top { height:auto; min-height:220px; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0 2%; padding-bottom:12px; }
+  .archive-brand { grid-column:1 / span 3; padding-top:20px; }
+  /* Под заголовком места больше, чем в двух колонках десктопа: он занимает
+     все три колонки сетки. Кегль из базового правила (от ширины блока,
+     17.42cqw) здесь не годится — блок втрое шире, и формула давала бы
+     51px уже на 560px, а на 900px упиралась бы в потолок. Поэтому здесь
+     своя формула: те же 16.65cqw минус те же .666px (в блоке на всю
+     ширину листа 4px запаса остаются до его правого края). Она держит
+     полные 3.4rem (51px) примерно до 347px, а ниже сжимается вместе с
+     полем — вплоть до 280px, где правый край слова приходится на 250px
+     при ширине блока 254px. */
+  .archive-brand h1 {
+    font-size:clamp(2.25rem, 14.985vw - 1px, 3.4rem);
+    font-size:clamp(2.25rem, 16.65cqw - .666px, 3.4rem);
+  }
+  .archive-summary { grid-column:2; grid-row:2; margin-top:20px; }
+  .archive-controls { grid-column:3; grid-row:2; margin-top:34px; }
+  .archive-search { margin-top:0; }
+  .archive-columns { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .archive-column { min-height: 0; padding: 0 0 1rem; }
+  /* Трёхколоночная сетка (≤900px) куда свободнее: колонки 186–364px,
+     поэтому заголовок колонки держит полные 18px — базовая переменная
+     .archive-columns здесь не переопределяется. */
+  .archive-column h2 {
+    position: relative;
+  }
+  .archive-column h2::after { position: absolute; right: 0; bottom: 0; left: 0; height: 1px; background:var(--archive-subtle-line); content:""; }
+  .archive-bottom { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .promo-module { grid-column: span 1; }
+  .archive-promos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .project-archive { width: calc(100% - 1.5rem); }
+  .archive-top { grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: 210px; }
+  .archive-columns { grid-template-columns:1fr; }
+  .archive-brand { grid-column:1 / span 2; padding-top:12px; }
+  .archive-summary { grid-column:1 / span 2; grid-row:2; margin-top:12px; }
+  .archive-controls { grid-column:1 / span 2; grid-row:3; margin:12px 0 4px; flex-direction:row; align-items:flex-start; }
+  .archive-actions { flex-direction:row; flex-wrap:wrap; }
+  .archive-search { flex:1; min-width:110px; }
+  .archive-bottom { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Промо: слить оба блока (.archive-promos и .archive-promos--second)
+     в один непрерывный поток по 2 в ряд — 2, 2, 2 без пустых клеток.
+     Обёртка .archive-promos-flow на узком экране сама становится сеткой,
+     а блоки внутри неё «растворяются» (display:contents), поэтому их
+     карточки попадают в общий поток. На широких экранах обёртка —
+     display:contents, и раскладка остаётся прежней. */
+  .archive-promos-flow {
+    display: grid;
+    /* Каждый promo-module занимает собственную строку из двух дорожек:
+       заголовок и карточка. Благодаря subgrid заголовки всех карточек
+       ряда получают общую высоту (по самой длинной подписи), а карточки
+       начинаются на одной линии и заканчиваются на одной. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto 1fr;
+    column-gap: var(--archive-gutter);
+    /* row-gap:0 — иначе зазор 24px попадает и между подписью и её карточкой
+       внутри одной группы (подпись «отрывается» от своего квадрата).
+       Между группами расстояние задаёт margin-bottom у карточки. */
+    row-gap: 0;
+    padding-top: 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--archive-horizontal-line);
+  }
+  .archive-promos-flow > .archive-promos,
+  .archive-promos-flow > .archive-promos--second { display: contents; }
+  /* Модуль промо — subgrid из двух дорожек (подпись + карточка):
+     подписи выравниваются по высоте, карточки стартуют и заканчиваются
+     на одной линии, поэтому ряд ровный, без «ступенек». */
+  .archive-promos-flow .promo-module {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    grid-column: span 1;
+    width: auto;
+  }
+  /* Подпись прижата к низу своей дорожки — вплотную к своему квадрату;
+     свободная высота дорожки (если подпись короче соседки) уходит вверх,
+     то есть в промежуток между группами, а не между подписью и квадратом. */
+  .archive-promos-flow .promo-module h2 {
+    align-self: end;
+    margin: 0 0 8px;
+  }
+  /* Квадрат растягивается по высоте дорожки; отступ снизу — расстояние
+     до следующей пары «подпись + квадрат». */
+  .archive-promos-flow .promo-card {
+    align-self: stretch;
+    margin-bottom: 24px;
+  }
+  /* На узкой карточке крупные надписи не должны ломаться посередине слова:
+     «UAV CLASSIFICATION» при 15px рвалось на «CLASSIFICATIO/N». */
+  .promo-card strong { font-size: clamp(11px, 3.6vw, 29px); }
+  .promo-card span { font-size: clamp(10px, 2.9vw, 14px); }
+  /* Та же поправка, что и в основном блоке: span'ы внутри <strong> — это
+     языковые варианты крупной надписи, а не подпись. Узкая карточка уже
+     ограничивает кегль через сам <strong>, поэтому здесь достаточно
+     вернуть наследование. */
+  .promo-card strong span { font-size: inherit; }
+}
+
+body.show-grid .archive-sheet { --archive-grid-line:rgba(210,40,40,.7); --archive-horizontal-line:rgba(210,40,40,.7); --archive-subtle-line:rgba(210,40,40,.7); }
+
+.project-card[hidden] { display: none; }
+
+/* Переход «к проектам»: ссылка выезжает сверху по фокусу. Своё правило
+   шрифта нужно потому, что иначе она наследует дефолт браузера (моноширинный
+   в большинстве сборок) — единственный такой элемент на странице.
+   Имя семейства написано здесь явно, а не через var(--archive-font):
+   переменная объявлена на .project-archive, а .skip-link лежит выше него,
+   прямым ребёнком body, и до неё не достаёт. */
+.skip-link { font-family: "HelveticaNeueCyr"; }
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+/* Знак Email-рассылки повторяет геометрию знака RSS: квадратная плашка
+   24 × 24 с тем же радиусом 4.5 и белый рисунок внутри. Разница только
+   в цвете и сюжете — оранжевый квадрат с дугами против зелёного
+   с конвертом. Одинаковые габариты держат строку ровной: обе иконки
+   занимают один и тот же квадрат 1.1em на любом кегле.
+   Цвет продублирован в разметке (fill="#16a34a"), правила ниже дают
+   тёмной теме более светлый зелёный. Рисунок белый в обеих темах. */
+.mail-icon .mail-icon-plate { fill: #16a34a !important; }
+
+body.dark-theme .mail-icon .mail-icon-plate { fill: #22c55e !important; }
+
+/* Знак YouTube в блоке «Ссылки»: та же квадратная плашка 24 × 24 с тем же
+   радиусом 4.5, что у RSS и Email, — строка остаётся ровной. Красный
+   взят из фирменного цвета YouTube; в тёмной теме он чуть светлее, иначе
+   плашка сливается с фоном #222. Рисунок — белый треугольник запуска,
+   без слова «YouTube»: мелкий текст внутри иконки не читается, а название
+   и так стоит рядом. */
+.social-icon .social-icon-plate { fill: #e01b16 !important; }
+
+body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
+
+#grid-toggle[aria-pressed="true"] { outline:none; box-shadow:none; }
+
+#grid-toggle:focus-visible { outline:2px solid #111; outline-offset:2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .project-note .language-switch::before, .project-note .language-switch button { transition:none; }
+  /* Подчёркивание на квадратах промо: при отключённой анимации черта
+     появляется сразу целой, без проезда слева направо. */
+  .promo-line { transition:none; }
+}

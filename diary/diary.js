@@ -142,15 +142,26 @@
   // Порядок важен: класс ставится синхронно, до первой отрисовки, иначе поле
   // успеет мигнуть. Снимается после того, как все начертания загрузились, —
   // или по таймеру, если Font Loading API нет или загрузка подвисла.
+  //
+  // Ждём ровно те начертания, которые есть на странице. Раньше список был
+  // общий на весь сайт и включал bolditalic (курсив 700) — 12 КБ, которых
+  // нигде нет: в стилях нет ни одного правила с курсивом и жирным сразу.
+  // Заставка ждала этот файл зря, и на мобильной сети именно он нередко
+  // оказывался последним. Заодно 800 (heavy) нужен только архиву: заголовки
+  // заметок прямые и весят 400.
   var FONT_STACK = '"HelveticaNeueCyr"';
+  var isNotePage = (' ' + document.body.className + ' ').indexOf(' tufte-note ') !== -1;
   var FONT_FACES = [
     '400 1em ' + FONT_STACK,
     'italic 400 1em ' + FONT_STACK,
-    '700 1em ' + FONT_STACK,
-    'italic 700 1em ' + FONT_STACK,
-    '800 1em ' + FONT_STACK
+    '700 1em ' + FONT_STACK
   ];
-  var FONT_LOAD_TIMEOUT = 3000;
+  if (!isNotePage) FONT_FACES.push('800 1em ' + FONT_STACK);
+  // Таймер — страховка, а не основной путь. Три секунды были привязаны к
+  // font-display:block (текст невидим ровно 3 с); ждать столько незачем:
+  // четыре файла — это доли секунды, а на медленной сети лучше показать
+  // текст запасным шрифтом через 1.2 с, чем держать поле.
+  var FONT_LOAD_TIMEOUT = 1200;
 
   function markFontsReady() {
     var veil = document.getElementById('fonts-loading');
@@ -174,8 +185,12 @@
       markFontsReady();
       return;
     }
+    // Заставку показывает скрипт, а не разметка: в CSS по умолчанию
+    // display:none. Иначе белое поле успевало появиться ещё до выполнения
+    // этого файла — на мобильной сети это и был «долгий белый экран».
+    // Класс ставится здесь, то есть только когда шрифтов действительно нет.
     var veil = document.getElementById('fonts-loading');
-    if (veil) veil.className = 'fonts-loading';
+    if (veil) veil.className = 'fonts-loading fonts-loading--pending';
 
     var settled = false;
     function finish() {
@@ -185,8 +200,9 @@
     }
 
     // Страховка: Font Loading API может отсутствовать (старый движок), а
-    // загрузка — подвиснуть. К трём секундам font-display:block перестаёт
-    // прятать текст, так что заставка к этому моменту должна уйти.
+    // загрузка — подвиснуть. Дольше 1.2 с поле не держим: за это время на
+    // медленной сети уже понятно, что шрифт не успевает, и лучше показать
+    // текст запасным, чем продолжать закрывать экран.
     window.setTimeout(finish, FONT_LOAD_TIMEOUT);
 
     if (!document.fonts || !document.fonts.load) return;
