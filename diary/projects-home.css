@@ -713,8 +713,16 @@ body.dark-theme .archive-search input { border-color: #555; color: #eee; backgro
   .archive-column > .project-card:first-of-type { grid-row: var(--row-first); grid-column: var(--column-slot); }
   .archive-column > .project-card:nth-of-type(2) { grid-row: var(--row-second); grid-column: var(--column-slot); }
   /* То же, что на десктопе: список ссылок «Сообществ» растянут на три
-     ряда своей пары (5–7), чтобы не задавать высоту рядов с заметками. */
+     ряда своей пары (5–7), чтобы не задавать высоту рядов с заметками.
+     В этом диапазоне «Сообщества» делят другую строку только с нижней
+     группой — «Обучением» и «Инструментами». У них карточки короче, чем
+     в верхней тройке: с 700px ряды 5 и 6 набегают 260–277px, а блок из
+     пятнадцати ссылок при интерлиньяже 1.32 занимает 287–289px и начал
+     бы растягивать строку. Поэтому здесь интерлиньяж ссылок плотнее
+     (1.15): 15 × 16.1 = 242px, запас 17–35px. Кегль не меняется,
+     второй ряд остаётся на своих местах. */
   .archive-column:nth-child(6) > .project-card { grid-row: var(--row-first) / span 3; grid-column: var(--column-slot); }
+  .archive-column:nth-child(6) .project-card--link > a { line-height: 1.15; }
 }
 
 @media (max-width: 900px) {
