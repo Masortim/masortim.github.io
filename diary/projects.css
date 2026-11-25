@@ -159,33 +159,48 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
     font-size:clamp(2.25rem, 4.84vw - .83px, 60.2px);
     font-size:clamp(2.25rem, 19.715cqw - .83px, 60.2px);
   }
+  html[lang="en"] .archive-summary {
+    margin-top:calc(30px + clamp(7.272px, .9786vw - .193px, 12.16px) - .442em);
+  }
 }
 /* Вводный абзац шапки. Он стоит на одной линии с ПЕРВОЙ строкой
    заголовка, а не у верхнего края листа — там он оказывался раньше,
    потому что у заголовка верхний отступ 30px (padding-top .archive-brand),
    а у аннотации отступа не было вовсе.
 
-   Считается по верхней кромке самих букв, а не по метрикам шрифта: у
-   заголовка первая строка начинается с «Д» (верх 712/1000em), у
-   аннотации — с «З» (728/1000em). Верх строки в CSS — это
-   полуинтерлиньяж плюс ascender, поэтому кромка h1 отстоит от верха
-   листа на 30.21–30.33px (30px отступа плюс .006em строки), а кромка
-   аннотации — на .23em от верха её блока. Отсюда и margin-top:
-   30.3px − .23em.
+   Выравнивание — по ЛИНИИ СТРОЧНЫХ, а не по верхней кромке заглавной.
+   Раньше верх аннотации совпадал с верхом «Д» (712/1000em), и первая
+   строка аннотации висела на 3px ниже строчных заголовка: у «Дневника»
+   после «Д» идут «н», «е», «в» с верхом 516/1000em, а глаз читает
+   строку по ним. Теперь обе линии строчных совпадают.
 
-   Формула одна на весь десктоп: кегль аннотации меняется с 13 до 16px,
-   заголовка — с 37.8 до 53.3px, а расхождение кромок не выходит за
-   0.1px на русской странице и за 0.3px на английской (у латинских «D»
-   и «N» верх ровно 712/1000em, у них общей поправки нет) — на любой
-   ширине от 901 до 1920px. Ниже 900px медиазапросы сами
-   ставят margin-top (20px и 12px) — там аннотация по-прежнему уходит
-   под заголовок.
+   Считается так. Верх строки в CSS — это полуинтерлиньяж плюс ascender.
+   Полуинтерлиньяж h1 при line-height .92 равен .004em, аннотации при
+   1.4 — .244em; ascender у обоих начертаний 714/1000em, строчные
+   516/1000em. Тогда линия строчных h1 отстоит от верха листа на
+   30px + .202em кегля заголовка, а линия строчных аннотации — на
+   margin-top + .442em кегля аннотации. Отсюда margin-top =
+   30px + .202em(h1) − .442em(аннотации).
+
+   Слагаемое .202 кегля заголовка записано прямо в vw, потому что в
+   calc() нельзя взять процент от чужого font-size: у RU это
+   1.2458vw − .245px (кламп 7.272–15.473px — те же 54.26 и 76.56px
+   кегля), у EN — .9786vw − .193px (7.272–12.16px — 42.69 и 60.2px). Оба клампа повторяют формулы кегля выше, поэтому линии
+   сходятся на всей ширине от 901 до 1920px: расхождение не больше
+   0.03px на русской странице и 0.00px на английской. Ниже 900px
+   медиазапросы сами ставят margin-top (20px и 12px) — там аннотация
+   по-прежнему уходит под заголовок.
+
+   Запас по вертикали после сдвига: вторая строка заголовка начинается
+   на 10–21px ниже низа аннотации на русской странице и на 3–11px — на
+   английской. Аннотация стала на 5px ниже — это и есть та разница,
+   которая раньше держала её на уровне заглавной.
    Переносов по слогам нет: родитель
    .project-archive ставит hyphens:auto для плотной шестиколоночной сетки,
    но для связного текста дефисы в середине слов читаются плохо.
    overflow-wrap — страховка на случай, если слово всё же не поместится:
    тогда оно перейдёт на новую строку целиком, без дефиса. */
-.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; grid-row:1; margin:calc(30.3px - .23em) 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
+.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; grid-row:1; margin:calc(30px + clamp(7.272px, 1.2458vw - .245px, 15.473px) - .442em) 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
 .archive-controls { position:relative; z-index:1; grid-column:6; grid-row:1; display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-top:17px; min-width:0; }
 .archive-actions { display: flex; align-items: flex-start; flex-direction: column; gap: 5px; font-size: 12px; }
 .archive-actions button, .archive-actions .forum-link { display: inline-block; box-sizing:border-box; max-width:100%; border: 0; border-radius: 6px; padding: 4px 7px; color: #fff; background: #111; font: 700 clamp(10px, .9vw, 12px) var(--archive-font); overflow-wrap:break-word; cursor: pointer; }
