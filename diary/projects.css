@@ -84,34 +84,39 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
    15.6 долей ширины колонки и нижняя граница 2.25rem подобраны под
    Helvetica Neue Cyrillic Bold при трекинге -.08em.
 
-   Предел 3.7rem и три колонки. Раньше под заголовок было отведено две
-   колонки из шести, и на десктопе кегль упирался в 48.4px: слово
-   «разработчика» занимало 300.7px из 310.4px колонки — запас 9.7px. Чтобы
-   заголовок стал крупнее, ему отдана третья колонка (см. .archive-brand:
-   grid-column 1 / span 3). Остальные блоки шапки остались на своих прежних
-   местах, в том же ряду: аннотация на третьей колонке (две колонки),
-   контролы в шестой.
+   Два режима — по тому, хватает ли места аннотации.
 
-   Аннотация стоит на третьей колонке, как до увеличения кегля, и это
-   осознанный размен. До увеличения слово кончалось на 28.6px раньше её
-   левого края; при 3.7rem оно заходит на её место: на 1440px на 15px,
-   на 901px — на 90px. Аннотация рисуется поверх конца слова, потому что
-   идёт в разметке позже и у обоих блоков position:relative. Такой размен
-   выбран сознательно — кегль важнее зазора.
+   Шапка — одна строка сетки: заголовок, аннотация и контролы стоят
+   в первом ряду, у всех явный grid-row:1. Без него авторазмещение
+   уводило аннотацию во второй ряд: её колонки начинались там, где уже
+   стоял заголовок, и свободного места в первом ряду не оставалось.
 
-   Потолок 3.7rem (55.5px) — это +14.6% к прежним 48.4px. Выше нельзя:
-   при 3.8rem слово «разработчика» (6.29 кегля) занимает 365px против
-   362px колонки на 1240px и начинает рваться. Проверено от 240 до
-   1920px: запас не меньше 6px нигде, разрывов нет ни при какой ширине.
-   На 901–1000px выигрыш больше всех — там кегль был придавлен узкой
-   колонкой (34.5px) и вырос до 52.6–55.5px.
+   До 1280px заголовок занимает две колонки (1–2), аннотация идёт сразу
+   за ним (3–4), контролы в шестой. Кегль упирается в 3.4rem (51px), но
+   фактически его ограничивает колонка: на десктопе это 48.4px. Слово
+   «разработчика» кончается за 20–29px до аннотации — наложения нет.
+
+   С 1280px лист упирается в свои 960px и колонка перестаёт расти, поэтому
+   под заголовок отдаётся третья колонка (1–3), аннотация сдвигается на
+   4–5. Заголовок получает 472.8px и дорос бы до 55.5px — это и есть
+   предел 3.7rem. Слово кончается за 147.7px до аннотации.
+
+   Почему переключение именно на 1280px. В двух колонках кегль замирает на
+   48.4px с 1240px, и дальше растёт только ширина листа, а не заголовок.
+   С 1280px третья колонка уже ничего не отнимает: и при 3.7rem слово
+   остаётся далеко от аннотации.
+
+   Потолок 3.7rem (55.5px) — +14.6% к прежним 48.4px. Выше нельзя: при
+   3.8rem слово (6.29 кегля) занимает 365px против 362px колонки на
+   1240px и начинает рваться. Проверено от 240 до 1920px: наложений нет
+   нигде, разрывов нет ни при какой ширине.
    Первая строка font-size — запасной вариант для браузеров без
    контейнерных единиц: они возьмут старую формулу от ширины окна. */
-.archive-brand { position:relative; z-index:1; grid-column:1 / span 3; padding-top:30px; container-type:inline-size; }
+.archive-brand { position:relative; z-index:1; grid-column:1 / span 2; grid-row:1; padding-top:30px; container-type:inline-size; }
 .archive-brand h1 {
   margin:0;
-  font-size:clamp(2.55rem, 1.74rem + 4.05vw, 3.7rem);
-  font-size:clamp(2.25rem, 15.6cqw, 3.7rem);
+  font-size:clamp(2.55rem, 1.74rem + 4.05vw, 3.4rem);
+  font-size:clamp(2.25rem, 15.6cqw, 3.4rem);
   font-weight:800;
   letter-spacing:-.08em;
   line-height:.92;
@@ -130,8 +135,21 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
    но для связного текста дефисы в середине слов читаются плохо.
    overflow-wrap — страховка на случай, если слово всё же не поместится:
    тогда оно перейдёт на новую строку целиком, без дефиса. */
-.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; margin:30px 0 0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
-.archive-controls { position:relative; z-index:1; grid-column:6; display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-top:17px; min-width:0; }
+.archive-summary { position:relative; z-index:1; grid-column:3 / span 2; grid-row:1; margin:0; padding:0; color:var(--archive-muted); font-size:clamp(13px,1.2vw,16px); font-style:italic; line-height:1.4; -webkit-hyphens:none; hyphens:none; overflow-wrap:break-word; }
+.archive-controls { position:relative; z-index:1; grid-column:6; grid-row:1; display:flex; flex-direction:column; align-items:stretch; gap:12px; margin-top:17px; min-width:0; }
+/* Широкий десктоп (от 1280px). Колонка заголовка за это время перестаёт
+   расти — лист упирается в свои 960px, — и в двух колонках кегль замирает
+   на 48.4px. С 1280px под заголовок отдаётся третья колонка: он получает
+   472.8px и дорос бы до 55.5px, а аннотация сдвигается на четвёртую.
+   Раньше так было на всех десктопных ширинах, но на 901–1279px третья
+   колонка отнимала место у аннотации, и слово «разработчика» ложилось
+   под её текст. Теперь ниже 1280px заголовок держится в двух колонках,
+   а наложение исчезает совсем: слово кончается за 20–134px до аннотации. */
+@media (min-width: 1280px) {
+  .archive-brand { grid-column:1 / span 3; }
+  .archive-brand h1 { font-size:clamp(2.25rem, 15.6cqw, 3.7rem); }
+  .archive-summary { grid-column:4 / span 2; }
+}
 .archive-actions { display: flex; align-items: flex-start; flex-direction: column; gap: 5px; font-size: 12px; }
 .archive-actions button, .archive-actions .forum-link { display: inline-block; box-sizing:border-box; max-width:100%; border: 0; border-radius: 6px; padding: 4px 7px; color: #fff; background: #111; font: 700 clamp(10px, .9vw, 12px) var(--archive-font); overflow-wrap:break-word; cursor: pointer; }
 .archive-actions #grid-toggle { background: #aaa; }
