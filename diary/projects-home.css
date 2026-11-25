@@ -344,6 +344,19 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
    так же занимает две строки и на 12px, и на 14px. */
 .project-card .project-meta { margin-top:3px; margin-bottom:1em; font-size:14px; font-weight:700; overflow-wrap:break-word; }
 
+/* Карточка-ссылка: только ссылка, без названия-заголовка, описания и
+   мета-строки. Так оформляются ссылки на внешние ресурсы в «Сообществах»
+   — у них нет заметки в дневнике, описывать нечего.
+   Кегль 14px — как у описания в обычной карточке (p), а не 16px, как у
+   названия: это не анонс заметки, а просто пункт списка ссылок.
+   Отступ сверху тот же, что у h3, — карточка встаёт в строку на одном
+   уровне с первыми карточками соседних колонок. */
+.project-card--link > a { display:block; margin:var(--column-heading-pad) 0 0; font-size:14px; font-weight:700; line-height:1.32; color:inherit; text-decoration:none; overflow-wrap:break-word; }
+
+.project-card--link > a:hover { color:#e16449; text-decoration:none; }
+
+.project-card--link > a:focus-visible { color:#e16449; outline:2px solid #e16449; outline-offset:2px; }
+
 /* Иерархия главной: заголовок колонки 18px > название заметки 16px >
    описание 14px. Все три размера фиксированные — ни один не зависит
    от ширины окна, поэтому соотношение сохраняется на любом экране.
