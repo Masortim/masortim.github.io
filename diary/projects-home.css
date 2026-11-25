@@ -395,6 +395,28 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
   .archive-column > .project-card { min-width: 0; grid-column: var(--column-slot); }
   .archive-column > .project-card:first-of-type { grid-row: 2; }
   .archive-column > .project-card:nth-of-type(2) { grid-row: 3; }
+  /* «Сообщества» — не карточка заметки, а список из десятка ссылок: он
+     выше любого ряда с заметками. Если оставить его в строке 2, высоту
+     этой строки задаёт именно он, и вторые карточки всех пяти колонок
+     уезжают вниз на разницу высот (на 1279px — на 55px, на 1440px —
+     на 55px, и тем сильнее, чем больше ссылок добавится).
+     Поэтому блок растянут на три ряда: в расчёте высоты строк
+     участвуют только карточки заметок, а список ссылок живёт внутри
+     готовой области. Пока он ниже суммы этих рядов (257px против 401px
+     на 1279px), он ни на что не влияет. Третий ряд — запас: если ссылок
+     станет больше и блок перерастёт два ряда, лишняя высота разложится
+     по трём рядам, а не по двум, и вторые карточки сдвинутся вдвое
+     меньше. */
+  .archive-column:nth-child(6) > .project-card { grid-row: 2 / span 3; }
+  /* На 901–1050px колонки самые узкие: описания занимают по 5–7 строк,
+     карточка вырастает, и строки 2–3 набегают всего 490–505px. Блок из
+     тринадцати ссылок при интерлиньяже 1.32 занимает 252px — больше
+     суммы двух нижних рядов карточек, и он всё равно растягивал бы
+     сетку. Здесь интерлиньяж ссылок плотнее (1.2): 13 × 16.8 = 218px,
+     и блок укладывается в 460px с запасом. Кегль не меняется.
+     Начиная с ~1051px колонки шире, карточки короче, и 1.32 снова
+     безопасен — вторая строка сетки выше 500px. */
+  .archive-column:nth-child(6) .project-card--link > a { line-height: 1.2; }
 }
 
 .archive-view-all { margin:auto 0 8px; font-size:14px; font-weight:700; }
@@ -690,6 +712,9 @@ body.dark-theme .archive-search input { border-color: #555; color: #eee; backgro
   .archive-column > h2 { grid-row: var(--row-heading); grid-column: var(--column-slot); }
   .archive-column > .project-card:first-of-type { grid-row: var(--row-first); grid-column: var(--column-slot); }
   .archive-column > .project-card:nth-of-type(2) { grid-row: var(--row-second); grid-column: var(--column-slot); }
+  /* То же, что на десктопе: список ссылок «Сообществ» растянут на три
+     ряда своей пары (5–7), чтобы не задавать высоту рядов с заметками. */
+  .archive-column:nth-child(6) > .project-card { grid-row: var(--row-first) / span 3; grid-column: var(--column-slot); }
 }
 
 @media (max-width: 900px) {
