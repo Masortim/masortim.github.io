@@ -794,4 +794,3 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
 #grid-toggle:focus-visible { outline:2px solid #111; outline-offset:2px; }
 body.show-grid .archive-sheet { --archive-grid-line:rgba(210,40,40,.7); --archive-horizontal-line:rgba(210,40,40,.7); --archive-subtle-line:rgba(210,40,40,.7); }
 .project-card[hidden] { display: none; }
-''

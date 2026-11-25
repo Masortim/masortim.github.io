@@ -1,0 +1,230 @@
+/* Стили заметок дневника — СГЕНЕРИРОВАННЫЙ файл, не править руками.
+
+   Источник: diary/projects.css и diary/diary.css. Правьте их, затем
+   запускайте `node scripts/build-css.mjs`.
+
+   --------------------------------------------------------------------------- */
+/* ============================================================================
+   ЗАМЕТКИ ДНЕВНИКА В СТИЛЕ TUFTE (адаптер над tufte-universal.css)
+   ============================================================================
+   Типографика заметок (ET Book, кегли, мера 55%, сноски, рисунки, математика,
+   код, таблицы, инфографика) полностью задаётся /tufte/tufte-universal.css.
+   Этот раздел — только адаптер: хром заметки (шапка, переключатели, мета,
+   подвал) и переименование заголовков под соглашение дневника:
+     .project-note h1 — заголовок документа (3.2rem, прямой, как h1.title);
+     .project-note h2 — раздел (2.2rem, курсив, как h1 в tufte-universal);
+     .project-note h3 — подраздел (1.7rem, курсив, как h2 в tufte-universal).
+   Хром — Helvetica (санс-сериф с кириллицей), капителью,
+   без моноширинного. Старые классы .note-sidenote/.note-marginnote/
+   .note-figure/.note-infographic сохранены как алиасы новых .sidenote/
+   .marginnote/figure/.tufte-chart.
+   ============================================================================ */
+body.tufte-note { background: var(--tufte-bg, #fffff8); }
+
+.project-note {
+  box-sizing: border-box;
+  width: auto;
+  max-width: 100%;
+  margin: 2rem 0 3rem;
+  padding-left: 0;
+  /* Шрифт, кегль и мера наследуются от tufte-universal.css (body). */
+}
+
+/* Языковые секции дневника — не Tufte-секции: без лишних отступов. */
+.project-note > section,
+.project-note section[data-language-content] { padding: 0; }
+
+/* body в tufte-universal.css занимает всю ширину окна (87.5% + padding-left
+   12.5%), поэтому правый край контента совпадает с краем браузера. Отступ
+   справа у самой строки управления держит кнопки на расстоянии от границы;
+   абсолютные дети (right:0) отсчитываются от её padding-box. */
+.project-note .note-controls { position:relative; display:block; height:2.6rem; margin:1rem 2.5rem 0 0; }
+
+/* Правый отступ от края окна: кнопки не прилипают к границе браузера. */
+.project-note .language-switch { position:absolute; top:50%; right:2.5rem; display:flex; gap:0; margin:0; padding:.15rem; border:1px solid var(--tufte-rule, #d9d5ca); border-radius:999px; box-shadow:none; background:var(--tufte-bg, #fffff8); font-family:var(--archive-font); font-size:.8rem; letter-spacing:.03em; transform:translateY(-50%); }
+
+.project-note .language-switch::before { position:absolute; z-index:0; top:.15rem; bottom:.15rem; left:.15rem; width:calc((100% - .3rem)/2); border-radius:999px; background:#70513e; content:""; transition:transform .22s ease; }
+
+.project-note .language-switch:has(button[data-language-choice="en"][aria-pressed="true"])::before { transform:translateX(calc(100% + .15rem)); }
+
+.project-note .language-switch button { position:relative; z-index:1; flex:1; min-width:2.2rem; min-height:1.8rem; padding:.25rem .4rem; border:0; border-radius:999px; color:var(--tufte-muted, #514e46); background:transparent; cursor:pointer; font:inherit; transition:color .22s ease; }
+
+.project-note .language-switch button[aria-pressed="true"] { color:#fff; background:transparent; }
+
+.project-note .theme-toggle { display:grid; width:2rem; height:2rem; padding:0; place-items:center; position:absolute; top:50%; right:0; margin:0; border:0; border-radius:50%; color:#fff; background:#70513e; cursor:pointer; font:.8rem/1 var(--archive-font); transform:translateY(-50%); }
+
+.project-note .note-masthead { display:flex; width:55%; justify-content:space-between; gap:1rem; padding-bottom:.7rem; border-bottom:1px solid var(--tufte-rule, #d9d5ca); color:var(--tufte-faint, #68645c); font-family:var(--archive-font); font-size:.95rem; letter-spacing:.05em; font-variant:small-caps; }
+
+.project-note h1 { width:75%; margin:2rem 0 .8rem; font-weight:400; font-style:normal;
+/* Заголовок заметки: одна плавная формула на все ширины, без ступенек
+   на границах медиазапросов. Максимум — тафтиевские 3.2rem (48px).
+   Множитель подобран по самому длинному слову на сайте: «Крестики-нолики»
+   в заголовке заметки про крестики-нолики. При ширине h1 = 90% окна
+   (на ≤760px он занимает всю полосу) слово влезает целиком начиная с
+   280px: 11.5vw даёт 32.2px на 280px, 36.8px на 320px, 44.9px на 390px.
+   До 417px работает vw, дальше упирается в 3.2rem (48px) — на десктопе
+   кегль прежний.
+
+   Здесь именно min, а не clamp: нижней границы нет намеренно. clamp с
+   минимумом 2.25rem возвращал бы кегль к этому минимуму на узких экранах
+   и снова рвал слово — что и случилось при первой попытке.
+   Переносов и разрывов слов у h1 нет вообще — см. правило h1 в
+   tufte/tufte-universal.css. */
+font-size:min(11.5vw, 3.2rem); line-height:1.05; letter-spacing:0; }
+
+.project-note .note-dek { width:55%; max-width:39rem; margin:1rem 0 2rem; color:var(--tufte-muted, #514e46); font-size:1.4rem; line-height:1.6; font-style:italic; }
+
+.project-note .note-meta { display:flex; width:55%; flex-wrap:wrap; gap:.5rem 1.25rem; margin:0; padding:.8rem 0; border-top:1px solid var(--tufte-rule, #d9d5ca); border-bottom:1px solid var(--tufte-rule, #d9d5ca); color:var(--tufte-faint, #68645c); font-family:var(--archive-font); font-size:.95rem; letter-spacing:.03em; font-variant:small-caps; }
+
+.project-note h2 { width:55%; margin:2.1rem 0 0; font-weight:400; font-style:italic; font-size:2.2rem; line-height:1; }
+
+.project-note h3 { width:55%; margin:2rem 0 0; font-weight:400; font-style:italic; font-size:1.7rem; line-height:1; }
+
+.project-note .note-footer { width:55%; margin-top:3rem; padding-top:1rem; border-top:1px solid var(--tufte-rule, #d9d5ca); font-family:var(--archive-font); font-size:.95rem; letter-spacing:.03em; }
+
+.project-note .note-footer a { font-family:inherit; }
+
+/* Алиасы старых классов заметок → канонические .sidenote/.marginnote. */
+.project-note .note-sidenote, .project-note .note-marginnote {
+  float:right;
+  clear:right;
+  box-sizing:border-box;
+  width:50%;
+  margin:0.3rem -60% 0 0;
+  font-size:1.1rem;
+  line-height:1.3;
+  font-variant-numeric:oldstyle-nums;
+}
+
+.project-note .note-figure { max-width:55%; margin:0 0 3em; clear:both; }
+
+.project-note .note-figure img, .project-note .note-figure svg { display:block; max-width:100%; height:auto; }
+
+.project-note .note-figure figcaption { float:right; clear:right; max-width:40%; margin-top:0; font-size:1.1rem; line-height:1.6; }
+
+.project-note .note-infographic { display:grid; width:100%; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr)); gap:.75rem; align-items:stretch; margin:2rem 0; font-family:var(--archive-font); font-size:1.1rem; line-height:1.4; letter-spacing:.03em; }
+
+.project-note .note-infographic__item { min-width:0; padding:.8rem 0; border-top:2px solid #916044; border-bottom:1px solid var(--tufte-rule, #d9d5ca); }
+
+.project-note .note-infographic__item strong { display:block; margin-bottom:.35rem; font-size:1.1rem; }
+
+.project-note .note-infographic__arrow { align-self:center; color:#916044; text-align:center; font-size:1.3rem; }
+
+@media (max-width:760px) {
+  .project-note { margin:1.25rem 0 2rem; }
+  .project-note .note-controls { margin:.75rem 0 0; }
+  .project-note .note-masthead, .project-note h1, .project-note .note-dek,
+  .project-note .note-meta, .project-note h2, .project-note h3,
+  .project-note .note-footer { width:100%; }
+
+  /* Шапка заметки: «Архив дневника» может занимать две строки,
+     подпись MASORTIM · LEARNING уходит на свою строку. */
+  .project-note .note-masthead {
+    flex-wrap:wrap;
+    gap:.35rem .9rem;
+    padding-bottom:.55rem;
+  }
+
+  /* Заголовки: кегль задаёт общая формула выше (она уже учитывает
+     ширину экрана). Здесь только интерлиньяж и поля — на телефоне
+     строки не должны слипаться. */
+  .project-note h1 {
+    margin:1.35rem 0 .6rem;
+    line-height:1.08;
+  }
+  .project-note h2 { margin:1.7rem 0 0; font-size:1.85rem; line-height:1.12; }
+  .project-note h3 { margin:1.5rem 0 0; font-size:1.5rem; line-height:1.2; }
+  .project-note .note-dek { margin:.8rem 0 1.4rem; font-size:1.25rem; line-height:1.45; }
+
+  /* Метаданные — читаемым кеглем (было 14.25px при 12px капители). */
+  .project-note .note-meta { gap:.4rem .9rem; padding:.65rem 0; font-size:1.05rem; }
+  .project-note .note-footer { margin-top:2rem; padding-top:.85rem; font-size:1.05rem; }
+
+  /* Подписи к рисункам на телефоне не должны быть мельче 15px. */
+  .project-note figure figcaption,
+  .project-note .note-figure figcaption { font-size:1rem; line-height:1.45; }
+
+  .project-note .note-sidenote, .project-note .note-marginnote {
+    float:none; clear:both; width:100%; margin:1rem 0; font-size:1.05rem;
+  }
+  .project-note .note-figure { max-width:100%; }
+  /* Таблицы и код не растягивают страницу: горизонтальная прокрутка
+     внутри блока, а не у всей заметки. */
+  .project-note table { display:block; overflow-x:auto; max-width:100%; }
+  .project-note pre { max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .project-note img, .project-note svg { max-width:100%; height:auto; }
+  .project-note .note-infographic { grid-template-columns:1fr; }
+  .project-note .note-infographic__arrow { transform:rotate(90deg); }
+}
+
+/* Совсем узкие экраны: поля и кегль ещё на шаг меньше. */
+@media (max-width:400px) {
+  /* h1 здесь намеренно не уменьшается: общая формула сама доходит
+     до 34px на 320px, и это уже минимум, ниже которого заголовок
+     теряет иерархию относительно текста 21px. */
+  .project-note h2 { font-size:1.6rem; }
+  .project-note h3 { font-size:1.35rem; }
+  .project-note .note-dek { font-size:1.15rem; }
+  .project-note .note-masthead { font-size:.9rem; }
+  .project-note .note-meta, .project-note .note-footer { font-size:1rem; }
+}
+
+body.dark-theme .project-note{ color: #eee; }
+
+body.dark-theme .project-note .note-dek, body.dark-theme .project-note .note-masthead, body.dark-theme .project-note .note-meta { color:#c5c0b7; }
+
+body.dark-theme .project-note .note-masthead, body.dark-theme .project-note .note-meta, body.dark-theme .project-note .note-footer { border-color:#555; }
+
+body.dark-theme .project-note .language-switch { border-color:#555; background:#2d2d2a; }
+
+body.dark-theme .project-note .language-switch::before { background:#d0a17e; }
+
+body.dark-theme .project-note .language-switch button { color:#ded8cc; }
+
+body.dark-theme .project-note .language-switch button[aria-pressed="true"] { color:#161513; background:transparent; }
+
+body.dark-theme .project-note .note-sidenote, body.dark-theme .project-note .note-marginnote { color:#c0c0c0; }
+
+body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e; border-bottom-color:#555; }
+
+/* Переход «к проектам»: ссылка выезжает сверху по фокусу. Своё правило
+   шрифта нужно потому, что иначе она наследует дефолт браузера (моноширинный
+   в большинстве сборок) — единственный такой элемент на странице.
+   Имя семейства написано здесь явно, а не через var(--archive-font):
+   переменная объявлена на .project-archive, а .skip-link лежит выше него,
+   прямым ребёнком body, и до неё не достаёт. */
+.skip-link { font-family: "HelveticaNeueCyr"; }
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+/* Знак Email-рассылки повторяет геометрию знака RSS: квадратная плашка
+   24 × 24 с тем же радиусом 4.5 и белый рисунок внутри. Разница только
+   в цвете и сюжете — оранжевый квадрат с дугами против зелёного
+   с конвертом. Одинаковые габариты держат строку ровной: обе иконки
+   занимают один и тот же квадрат 1.1em на любом кегле.
+   Цвет продублирован в разметке (fill="#16a34a"), правила ниже дают
+   тёмной теме более светлый зелёный. Рисунок белый в обеих темах. */
+.mail-icon .mail-icon-plate { fill: #16a34a !important; }
+
+body.dark-theme .mail-icon .mail-icon-plate { fill: #22c55e !important; }
+
+/* Знак YouTube в блоке «Ссылки»: та же квадратная плашка 24 × 24 с тем же
+   радиусом 4.5, что у RSS и Email, — строка остаётся ровной. Красный
+   взят из фирменного цвета YouTube; в тёмной теме он чуть светлее, иначе
+   плашка сливается с фоном #222. Рисунок — белый треугольник запуска,
+   без слова «YouTube»: мелкий текст внутри иконки не читается, а название
+   и так стоит рядом. */
+.social-icon .social-icon-plate { fill: #e01b16 !important; }
+
+body.dark-theme .social-icon .social-icon-plate { fill: #ff2b26 !important; }
+
+#grid-toggle[aria-pressed="true"] { outline:none; box-shadow:none; }
+
+#grid-toggle:focus-visible { outline:2px solid #111; outline-offset:2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .project-note .language-switch::before, .project-note .language-switch button { transition:none; }
+  /* Подчёркивание на квадратах промо: при отключённой анимации черта
+     появляется сразу целой, без проезда слева направо. */
+  .promo-line { transition:none; }
+}

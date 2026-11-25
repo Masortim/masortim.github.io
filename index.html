@@ -11,11 +11,19 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="alternate" type="application/rss+xml" hreflang="ru" title="Дневник разработчика · Masortim" href="/feed.xml">
   <link rel="alternate" type="application/rss+xml" hreflang="en" title="Developer Diary · Masortim" href="/feed-en.xml">
-  <link rel="stylesheet" href="/diary/diary.css?v=20261212a">
+  <!-- Шрифты, которые нужны первому экрану: заголовок (heavy/800),
+       аннотация (курсив 400) и обычный текст (400). preload поднимает
+       их в очередь раньше, чем браузер дойдёт до правил @font-face, —
+       именно эти файлы держали заставку дольше всего.
+       crossorigin обязателен: без него браузер скачает файл второй раз. -->
+  <link rel="preload" href="/fonts/helveticaneuecyr-heavy.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/helveticaneuecyr-roman.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/helveticaneuecyr-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/diary/diary-home.css?v=20261213a">
   <!-- Встроенный шрифт: Helvetica Neue Cyrillic. Идёт до файлов, которые его
        используют, чтобы @font-face был объявлен раньше применения. -->
-  <link rel="stylesheet" href="/fonts/helvetica.css?v=20261212a">
-  <link rel="stylesheet" href="/diary/projects.css?v=20261212a">
+  <link rel="stylesheet" href="/fonts/helvetica.css?v=20261213a">
+  <link rel="stylesheet" href="/diary/projects-home.css?v=20261213a">
   <script src="/diary/diary.js" defer></script>
   <script src="/diary/archive.js" defer></script>
 </head>
