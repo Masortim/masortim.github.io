@@ -252,13 +252,31 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
   --column-heading-size: 18px;
   --column-heading-line: 1.12;
   --column-heading-height: calc(2 * var(--column-heading-pad) + var(--column-heading-line) * var(--column-heading-size));
+  /* Нижнее поле блока равно верхнему — но по ЧЕРНИЛАМ, а не по метрикам.
+     Сверху линию отделяет от буквы только padding: строка заголовка
+     20.16px при кегле 18px, над «П» остаётся полулидинг 1.87px плюс
+     разница между ascender и высотой заглавной,
+     (20.16 - 16.42)/2 + (12.852 - 12.6) = 2.12px. Снизу к padding
+     добавляется ещё полулидинг и descender — 5.44px. Разница 3.312px
+     и есть та величина, на которую нижнее поле должно быть меньше
+     верхнего, чтобы просветы совпали. Если задать оба поля равными,
+     снизу получается на 3.3px больше — именно это и было видно, пока
+     отступ жил на .archive-column (padding-bottom:1rem = 16px).
+     Числа взяты из метрик самого шрифта (hhea ascender .714em,
+     descender .198em; OS/2 sCapHeight .700em), а не на глаз.
+     Нижняя граница берётся not ниже 4px: на узких ширинах вычитание
+     не должно обнулять поле. */
+  padding-bottom: calc(max(4px, var(--column-heading-pad) - 3.312px));
 }
 
 /* Линия сетки (видна в режиме «Сетка») проходит ровно по нижней границе
    заголовка: padding сверху + строка + padding снизу. */
 .archive-columns::before { position:absolute; top:var(--column-heading-height); right:0; left:0; height:1px; background:var(--archive-subtle-line); content:""; }
 
-.archive-column { display:flex; min-width:0; flex-direction:column; padding:0 0 1rem; }
+/* Нижнее поле блока задаёт .archive-columns (padding-bottom), а не
+   колонка: на десктопе колонки — display:contents, и их padding
+   игнорируется, а на узких ширинах он давал лишние 16px. */
+.archive-column { display:flex; min-width:0; flex-direction:column; }
 
 /* Заголовки колонок («Проекты», «Утилиты», «Исследования», «Обучение»,
    «Инструменты», «Подборка»): поле над надписью и под ней одинаковое.
@@ -792,7 +810,7 @@ body.dark-theme .archive-search input { border-color: #555; color: #eee; backgro
   .archive-controls { grid-column:3; grid-row:2; margin-top:34px; }
   .archive-search { margin-top:0; }
   .archive-columns { grid-template-columns: repeat(3,minmax(0,1fr)); }
-  .archive-column { min-height: 0; padding: 0 0 1rem; }
+  .archive-column { min-height: 0; }
   /* Трёхколоночная сетка (≤900px) куда свободнее: колонки 186–364px,
      поэтому заголовок колонки держит полные 18px — базовая переменная
      .archive-columns здесь не переопределяется. */
