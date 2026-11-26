@@ -236,7 +236,7 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
 .archive-columns::before { position:absolute; top:var(--column-heading-height); right:0; left:0; height:1px; background:var(--archive-subtle-line); content:""; }
 .archive-column { display:flex; min-width:0; flex-direction:column; padding:0 0 1rem; }
 /* Заголовки колонок («Проекты», «Утилиты», «Исследования», «Обучение»,
-   «Инструменты», «Сообщества»): поле над надписью и под ней одинаковое.
+   «Инструменты», «Подборка»): поле над надписью и под ней одинаковое.
    Раньше снизу добавлялся margin 10px — отступ под надписью был больше, чем
    над ней. Теперь вертикальные margin равны нулю, а padding задаёт одинаковые
    поля сверху и снизу. */
@@ -310,7 +310,7 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
    на 1279px длинная строка «16.10.2023 · C · C++ · C# · Windows Forms»
    так же занимает две строки и на 12px, и на 14px. */
 .project-card .project-meta { margin-top:3px; margin-bottom:1em; font-size:14px; font-weight:700; overflow-wrap:break-word; }
-/* Карточка-ссылка — колонка «Сообщества».
+/* Карточка-ссылка — колонка «Подборка».
    Это НЕ карточка заметки: у неё нет ни названия-заголовка, ни описания,
    ни мета-строки. Внутри — просто список внешних ссылок, идущих друг за
    другом, как строки обычного текста: тот же кегль, что у описания в
@@ -350,7 +350,7 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
      колонки — иначе вторая карточка, у которой указана только строка,
      попадала бы в первую свободную ячейку, то есть могла уехать в чужую
      колонку (у «Обучения» теперь две карточки, у «Инструментов» одна).
-     Шестая колонка («Сообщества») пока пустая: у неё раскладывается
+     Шестая колонка («Подборка») пока пустая: у неё раскладывается
      только заголовок, карточек нет, и в выравнивании она не участвует. */
   .archive-column:nth-child(1) { --column-slot: 1; }
   .archive-column:nth-child(2) { --column-slot: 2; }
@@ -362,7 +362,7 @@ body.archive-home { margin:0; padding:0; font-family:"HelveticaNeueCyr"; }
   .archive-column > .project-card { min-width: 0; grid-column: var(--column-slot); }
   .archive-column > .project-card:first-of-type { grid-row: 2; }
   .archive-column > .project-card:nth-of-type(2) { grid-row: 3; }
-  /* «Сообщества» — не карточка заметки, а список из десятка ссылок: он
+  /* «Подборка» — не карточка заметки, а список из десятка ссылок: он
      выше любого ряда с заметками. Если оставить его в строке 2, высоту
      этой строки задаёт именно он, и вторые карточки всех пяти колонок
      уезжают вниз на разницу высот. Поэтому блок растянут на несколько
@@ -802,7 +802,7 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
    карточки становятся прямыми элементами общей трёхколоночной сетки.
    Заголовки всех колонок — строка 1, первые карточки — строка 2,
    вторые — строка 3. Второй ряд колонок («Обучение», «Инструменты»,
-   «Сообщества») занимает строки 4–6. */
+   «Подборка») занимает строки 4–6. */
 @media (min-width: 561px) and (max-width: 900px) {
   .archive-column { display: contents; }
   .archive-column:nth-child(1) { --column-slot: 1; --row-heading: 1; --row-first: 2; --row-second: 3; }
@@ -816,7 +816,7 @@ body.dark-theme .project-note .note-infographic__item { border-top-color:#d0a17e
   .archive-column > .project-card:nth-of-type(2) { grid-row: var(--row-second); grid-column: var(--column-slot); }
   /* То же, что на десктопе: список ссылок «Сообществ» растянут на три
      ряда своей пары (5–7), чтобы не задавать высоту рядов с заметками.
-     В этом диапазоне «Сообщества» делят другую строку только с нижней
+     В этом диапазоне «Подборка» делят другую строку только с нижней
      группой — «Обучением» и «Инструментами». У них карточки короче, чем
      в верхней тройке: с 700px ряды 5 и 6 набегают 260–277px, а блок из
      пятнадцати ссылок при интерлиньяже 1.32 занимает 287–289px и начал
